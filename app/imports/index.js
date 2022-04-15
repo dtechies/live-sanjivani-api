@@ -11,7 +11,7 @@ const fs = require("fs");
 const UsersModel = db.UsersModel;
 const LanguageModel = db.LanguageModel;
 const CategoryModel = db.CategoryModel;
-const SubcategoryModel = db.CategoryModel;
+const SubcategoryModel = db.SubCategoryModel;
 const FavoriteModel = db.FavoriteModel;
 
 
