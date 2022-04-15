@@ -5,8 +5,8 @@ const cors = require('cors');
 require("dotenv").config();
 const app = express();
 const db = require('./app/models');
-db.sequelize.sync();
-db.sequelize.sync({ alter: true });
+// db.sequelize.sync();
+// db.sequelize.sync({ alter: true });
 
 // Should Use  Development only
 // db.sequelize.sync({ force: true }).then(() => {
@@ -51,7 +51,7 @@ require('./app/routes/LanguageRoutes')(app);
 require('./app/routes/CategoryRoutes')(app);
 require('./app/routes/SubcategoryRoutes')(app);
 require('./app/routes/FavoriteRoutes')(app);
-// require('./app/routes/UserRoutes')(app);
+require('./app/routes/UserRoutes')(app);
 
 
 // set port, listen for requests

@@ -221,5 +221,5 @@ const toFloat = (number) => { return Number(Number(number).toFixed(2)) }
 module.exports = {
     validations, verifyToken, token, response, systemError, validateHeaders, arrayValidatior, hashPassword,
     comparePassword, encryptData, decryptData, emailtrigger, bcrypt, smscredentials, templateids, generateOTP,
-    SMS_URL, _copy, toFloat
+    SMS_URL, _copy, toFloat,jwt
 }
