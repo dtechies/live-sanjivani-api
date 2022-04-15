@@ -5,8 +5,8 @@ const cors = require('cors');
 require("dotenv").config();
 const app = express();
 const db = require('./app/models');
-db.sequelize.sync();
-db.sequelize.sync({ alter: true });
+// db.sequelize.sync();
+// db.sequelize.sync({ alter: true });
 
 // Should Use  Development only
 // db.sequelize.sync({ force: true }).then(() => {
@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome To Samsara' });
 });
 // Include All Routes
-// require('./app/routes/UserRoutes')(app);
+require('./app/routes/UserRoutes')(app);
 
 
 // set port, listen for requests

@@ -221,7 +221,5 @@ const toFloat = (number) => { return Number(Number(number).toFixed(2)) }
 module.exports = {
     validations, verifyToken, token, response, systemError, validateHeaders, arrayValidatior, hashPassword,
     comparePassword, encryptData, decryptData, emailtrigger, bcrypt, smscredentials, templateids, generateOTP,
-    SMS_URL, _copy,singleDiamond, toFloat, BaseUrl,BlogBaseUrl,RingSizerBaseUrl,KnowYourJewelleryBaseUrl,
-    CertificationBaseUrl, LandingPageBannerBaseUrl, LandingPageContentBaseUrl,
-    LandingPagePromisesBaseUrl,DesignCategoryBaseUrl,SocialMediaBaseUrl, LandingPageEmail
+    SMS_URL, _copy, toFloat,jwt
 }
