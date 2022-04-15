@@ -24,5 +24,9 @@ db.MedicineStrengthModel = require('./MedicineStrengthModel')(sequelize, Sequeli
 db.ReminderFrequencyModel = require('./ReminderFrequencyModel')(sequelize, Sequelize);
 db.ReminderTimeModel = require('./ReminderTimeModel')(sequelize, Sequelize);
 db.MedicineReminderModel = require('./MedicineReminderModel')(sequelize, Sequelize);
+db.LanguageModel = require('./LanguageModel')(sequelize, Sequelize);
+db.CategoryModel = require('./CategoryModel')(sequelize, Sequelize);
+db.SubCategoryModel = require('./SubcategoryModel')(sequelize, Sequelize);
+db.FavoriteModel = require('./FavoriteModel')(sequelize, Sequelize);
 
 module.exports = db;

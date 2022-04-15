@@ -9,6 +9,12 @@ const systemError = "System error. Please contact your administrator";
 const messages = {
     SomethingWentWrong:"Something Went Wrong!",
     TokenExpired: "Token has expired",
+    NoLanguage:"No Language Found.",
+    NoCategory:"No Category Found.",
+    NoSubCategory:"No SubCategory Found.",
+    NoFavorites:"USer Favorite List Not Found.",
+    SomethingWentWrong:"Something Went Wrong!",
+    Success: "Record Found.",
     UserCreated: "User Created Successfully.",
     InvalidCredentials:"Invalid Credentials!",
     UserLogin:"User Login successfully.",

@@ -21,9 +21,12 @@ const MedicineStrengthModel = db.MedicineStrengthModel;
 const ReminderFrequencyModel = db.ReminderFrequencyModel;
 const ReminderTimeModel = db.ReminderTimeModel;
 const MedicineReminderModel = db.MedicineReminderModel;
-
+const LanguageModel = db.LanguageModel;
+const CategoryModel = db.CategoryModel;
+const SubcategoryModel = db.CategoryModel;
+const FavoriteModel = db.FavoriteModel;
 
 module.exports = {
     constants, utils, ejs, fs, axios, moment, db, sgMail,UsersModel,DoctorsModel, MedicineFormModel,
-    MedicineStrengthModel, ReminderFrequencyModel, ReminderTimeModel, MedicineReminderModel, S3
+    MedicineStrengthModel, ReminderFrequencyModel, ReminderTimeModel, MedicineReminderModel,LanguageModel, CategoryModel, SubcategoryModel, FavoriteModel, S3
 }

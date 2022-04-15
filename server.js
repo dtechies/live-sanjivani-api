@@ -49,6 +49,10 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome To Live Sanjivani' });
 });
 // Include All Routes
+require('./app/routes/LanguageRoutes')(app);
+require('./app/routes/CategoryRoutes')(app);
+require('./app/routes/SubcategoryRoutes')(app);
+require('./app/routes/FavoriteRoutes')(app);
 require('./app/routes/UserRoutes')(app);
 require('./app/routes/MedicineReminderRoutes')(app);
 
