@@ -8,9 +8,15 @@ const systemError = "System error. Please contact your administrator";
 
 const messages = {
     TokenExpired: "Token has expired",
+    NoLanguage:"No Language Found.",
+    NoCategory:"No Category Found.",
+    NoSubCategory:"No SubCategory Found.",
+    NoFavorites:"USer Favorite List Not Found.",
+    SomethingWentWrong:"Something Went Wrong!",
+    Success: "Record Found."
 }
 
-const responseObj = (status = false, statusCode = "500", message = messages.SomethingWentWromg, isTokenExpired = false, data = {}) => {
+const responseObj = (status = false, statusCode = "500", message = messages.SomethingWentWrong, isTokenExpired = false, data = {}) => {
     return { status, statusCode, message, isTokenExpired, data }
 }
 

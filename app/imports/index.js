@@ -9,8 +9,12 @@ const fs = require("fs");
 
 // models 
 const UsersModel = db.UsersModel;
+const LanguageModel = db.LanguageModel;
+const CategoryModel = db.CategoryModel;
+const SubcategoryModel = db.CategoryModel;
+const FavoriteModel = db.FavoriteModel;
 
 
 module.exports = {
-    constants, utils, ejs, fs, axios, moment, db, sgMail,UsersModel
+    constants, utils, ejs, fs, axios, moment, db, sgMail, UsersModel, LanguageModel, CategoryModel, SubcategoryModel, FavoriteModel
 }

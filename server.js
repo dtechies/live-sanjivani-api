@@ -47,6 +47,10 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome To Samsara' });
 });
 // Include All Routes
+require('./app/routes/LanguageRoutes')(app);
+require('./app/routes/CategoryRoutes')(app);
+require('./app/routes/SubcategoryRoutes')(app);
+require('./app/routes/FavoriteRoutes')(app);
 // require('./app/routes/UserRoutes')(app);
 
 

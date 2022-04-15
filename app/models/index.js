@@ -18,5 +18,9 @@ db.sequelize = sequelize;
 
 
 db.UsersModel = require('./UsersModel')(sequelize, Sequelize);
+db.LanguageModel = require('./LanguageModel')(sequelize, Sequelize);
+db.CategoryModel = require('./CategoryModel')(sequelize, Sequelize);
+db.SubCategoryModel = require('./SubcategoryModel')(sequelize, Sequelize);
+db.FavoriteModel = require('./FavoriteModel')(sequelize, Sequelize);
 
 module.exports = db;

@@ -1,7 +1,7 @@
 module.exports = (app) => {
-    const languageController = require('../controllers/LanguageController');
+    const categoryController = require('../controllers/CategoryController');
     // const validationController = require('../controllers/ValidationController')
     var router = require('express').Router();
-    router.post('/all-language', [ languageController.allLanguage]);
+    router.get('/all-category', [ categoryController.allCategory]);
     app.use('/', router);
 };
