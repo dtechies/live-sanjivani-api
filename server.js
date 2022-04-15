@@ -4,6 +4,7 @@ const cors = require('cors');
 
 require("dotenv").config();
 const app = express();
+const fileUpload = require('express-fileupload')
 const db = require('./app/models');
 // db.sequelize.sync();
 // db.sequelize.sync({ alter: true });
@@ -12,6 +13,7 @@ const db = require('./app/models');
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log('Drop and re-sync db.');
 // });
+app.use(fileUpload({ createParentPath: true }));
 
 app.use(function (req, res, next) {
 
@@ -44,10 +46,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // simple route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome To Samsara' });
+  res.json({ message: 'Welcome To Live Sanjivani' });
 });
 // Include All Routes
 require('./app/routes/UserRoutes')(app);
+require('./app/routes/MedicineReminderRoutes')(app);
 
 
 // set port, listen for requests

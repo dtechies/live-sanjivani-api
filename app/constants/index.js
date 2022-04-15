@@ -16,6 +16,9 @@ const messages = {
     Authorization:"Authentication failed!",
     InvalidToken:"Invalid Token!",
     DataFound:"Data Found.",
+    AddSuccess:"Data Added Successfully.",
+    InvalidFile:"Invalid File!",
+
 }
 
 const responseObj = (status = false, statusCode = "500", message = messages.SomethingWentWrong, isTokenExpired = false, data = {}) => {

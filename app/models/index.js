@@ -18,5 +18,11 @@ db.sequelize = sequelize;
 
 
 db.UsersModel = require('./UsersModel')(sequelize, Sequelize);
+db.DoctorsModel = require('./DoctorsModel')(sequelize, Sequelize);
+db.MedicineFormModel = require('./MedicineFormModel')(sequelize, Sequelize);
+db.MedicineStrengthModel = require('./MedicineStrengthModel')(sequelize, Sequelize);
+db.ReminderFrequencyModel = require('./ReminderFrequencyModel')(sequelize, Sequelize);
+db.ReminderTimeModel = require('./ReminderTimeModel')(sequelize, Sequelize);
+db.MedicineReminderModel = require('./MedicineReminderModel')(sequelize, Sequelize);
 
 module.exports = db;
