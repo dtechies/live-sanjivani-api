@@ -1,7 +1,7 @@
 
 const { UsersModel } = require('../../models');
 const constants = require("../../constants")
-let { jwt } = require("../../utils/Utils");
+let { jwt } = require("../../imports");
 const dotenv = require("dotenv");
 dotenv.config();
 const auth = () => {

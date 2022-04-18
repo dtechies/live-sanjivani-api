@@ -28,5 +28,8 @@ db.LanguageModel = require('./LanguageModel')(sequelize, Sequelize);
 db.CategoryModel = require('./CategoryModel')(sequelize, Sequelize);
 db.SubCategoryModel = require('./SubcategoryModel')(sequelize, Sequelize);
 db.FavoriteModel = require('./FavoriteModel')(sequelize, Sequelize);
+db.TipForDayModel = require('./TipForDayModel')(sequelize, Sequelize);
+db.AppointmentReminderModel=require('./AppointmentReminderModel')(sequelize, Sequelize);
+db.MedicalJounalNoteModel=require('./MedicalJournalNoteModel')(sequelize, Sequelize);
 
 module.exports = db;

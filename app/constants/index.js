@@ -22,6 +22,7 @@ const messages = {
     Authorization:"Authentication failed!",
     InvalidToken:"Invalid Token!",
     DataFound:"Data Found.",
+    UpdateStatus:"Status Updated.",
     AddSuccess:"Data Added Successfully.",
     InvalidFile:"Invalid File!",
 

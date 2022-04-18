@@ -55,6 +55,8 @@ require('./app/routes/SubcategoryRoutes')(app);
 require('./app/routes/FavoriteRoutes')(app);
 require('./app/routes/UserRoutes')(app);
 require('./app/routes/MedicineReminderRoutes')(app);
+require('./app/routes/AppointmentReminderRoutes')(app);
+require('./app/routes/MedicalJournalNoteRoutes')(app);
 
 
 // set port, listen for requests

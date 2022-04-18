@@ -5,6 +5,9 @@ module.exports = (app) => {
     var router = require('express').Router();
     router.get('/get-medicine-reminder-list', [auth(),medicineReminderController.getMedicineReminderList]);
     router.post('/add-medicine-reminder', [auth(),medicineReminderController.addMedicineReminder]);
-    
+    router.post('/edit-medicine-reminder-status', [auth(),medicineReminderController.editMedicineReminderStatus]);
+    router.get('/get-medicine-reminder-profile', [auth(),medicineReminderController.getMedicineReminderProfile]);
+    router.get('/get-tip-for-day', [auth(),medicineReminderController.getTipForDay]);
+
     app.use('/', router);
 };

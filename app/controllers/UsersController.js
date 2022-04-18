@@ -1,8 +1,9 @@
 const { UsersModel } = require('../imports');
 const constants = require("../imports").constants
 let { successCallback } = require("../constants");
-let { jwt } = require("../utils/Utils");
+let { jwt } = require("../imports");
 const dotenv = require("dotenv");
+const { raw } = require('express');
 dotenv.config();
 exports.registerUser = async (req, res, next) => {
     try {
@@ -22,14 +23,16 @@ exports.registerUser = async (req, res, next) => {
 
 exports.usersLogin = async(req, res, next) => {
     const mob_no=req.body.mob_no
-    const user = await UsersModel.findOne({mob_no:mob_no});
+    console.log(mob_no)
+    const user = await UsersModel.findOne({where:{mob_no:mob_no}},{raw:true});
+    console.log(user)
     if (!user) {
         return res.json(constants.responseObj(true, 401, constants.messages.InvalidCredentials))
     }
-
+    
     // user matched!
     const secretKey = process.env.SECRET_JWT || "theseissecret";
-    const token = jwt.sign({mob_no: user.mob_no},
+    const token = jwt.sign({mob_no: user.mob_no,user_id:user.id},
         secretKey, {
             expiresIn: "24h",
         }
