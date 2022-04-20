@@ -7,7 +7,7 @@ exports.allCategory = async (req, res, next) => {
     let category= await CategoryModel.findAll()
     console.log(category)
     if(category.length){
-        return res.json(constants.responseObj(true, 200, constants.messages.success, false, category))
+        return res.json(constants.responseObj(true, 200, constants.messages.Success, false, category))
     }else{
         return res.json(constants.responseObj(false, 202, constants.messages.NoCategory))
     }

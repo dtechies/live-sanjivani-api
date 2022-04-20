@@ -1,5 +1,5 @@
 const {
-    MedicalJounalNoteModel,
+    MedicalJournalNoteModel,
   
 } = require("../imports");
 const constants = require("../imports").constants;
@@ -11,7 +11,7 @@ dotenv.config();
 exports.getMedicalJournalNoteList = async (req, res, next) => {
   try {
     
-    const MedicalJournalNoteData = await MedicalJounalNoteModel.findAll();
+    const MedicalJournalNoteData = await MedicalJournalNoteModel.findAll();
     
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
@@ -36,10 +36,10 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
             constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
         }
 
-    const MedicalJournalNoteData = await MedicalJounalNoteModel.findOne({where:{user_id:decoded.user_id}});
+    const MedicalJournalNoteData = await MedicalJournalNoteModel.findOne({where:{user_id:decoded.user_id}});
     if(MedicalJournalNoteData){
         try {
-        const EditMedicalJournalNote = await MedicalJounalNoteModel.update({name:req.body.name},{where:{id:MedicalJournalNoteData.id}});
+        const EditMedicalJournalNote = await MedicalJournalNoteModel.update({name:req.body.name},{where:{id:MedicalJournalNoteData.id}});
 
         if (EditMedicalJournalNote) {
           return res.json(
@@ -64,11 +64,10 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
           user_id: decoded.user_id,
           name: req.body.name,
          };
-        const MedicalJournalNote = await MedicalJounalNoteModel.create(
+        const MedicalJournalNote = await MedicalJournalNoteModel.create(
           MedicalJournalNoteData
         );
-        console.log(MedicalJournalNote, "MedicalJournalNote log");
-        if (MedicalJournalNote) {
+         if (MedicalJournalNote) {
           return res.json(
             constants.responseObj(true, 201, constants.messages.AddSuccess)
           );

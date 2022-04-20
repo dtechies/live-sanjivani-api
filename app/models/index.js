@@ -30,6 +30,15 @@ db.SubCategoryModel = require('./SubcategoryModel')(sequelize, Sequelize);
 db.FavoriteModel = require('./FavoriteModel')(sequelize, Sequelize);
 db.TipForDayModel = require('./TipForDayModel')(sequelize, Sequelize);
 db.AppointmentReminderModel=require('./AppointmentReminderModel')(sequelize, Sequelize);
-db.MedicalJounalNoteModel=require('./MedicalJournalNoteModel')(sequelize, Sequelize);
+db.MedicalJournalNoteModel=require('./MedicalJournalNoteModel')(sequelize, Sequelize);
+db.HelpSupportModel=require('./HelpSupportModel')(sequelize, Sequelize);
 
+Object.keys(db).forEach((modelName)=>{
+  if('associate' in db[modelName]){
+    db[modelName].associate(db)
+  }
+})
 module.exports = db;
+
+
+

@@ -25,13 +25,16 @@ const ReminderTimeModel = db.ReminderTimeModel;
 const MedicineReminderModel = db.MedicineReminderModel;
 const LanguageModel = db.LanguageModel;
 const CategoryModel = db.CategoryModel;
-const SubcategoryModel = db.CategoryModel;
+const SubcategoryModel = db.SubCategoryModel;
 const FavoriteModel = db.FavoriteModel;
 const TipForDayModel = db.TipForDayModel;
 const AppointmentReminderModel=db.AppointmentReminderModel;
-const MedicalJounalNoteModel=db.MedicalJounalNoteModel;
+const MedicalJournalNoteModel=db.MedicalJournalNoteModel;
+const HelpSupportModel=db.HelpSupportModel;
 
 module.exports = {
     constants, jwt, ejs, fs, axios, moment, db, sgMail,UsersModel,DoctorsModel, MedicineFormModel,
-    MedicineStrengthModel, ReminderFrequencyModel, ReminderTimeModel, MedicineReminderModel,LanguageModel, CategoryModel, SubcategoryModel, FavoriteModel, S3, TipForDayModel,AppointmentReminderModel, MedicalJounalNoteModel
+    MedicineStrengthModel, ReminderFrequencyModel, ReminderTimeModel, MedicineReminderModel,LanguageModel,
+    CategoryModel, SubcategoryModel, FavoriteModel, S3, TipForDayModel,AppointmentReminderModel, MedicalJournalNoteModel,HelpSupportModel
 }
+ 

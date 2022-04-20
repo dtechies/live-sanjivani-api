@@ -13,7 +13,7 @@ let { jwt } = require("../imports");
 const { TipForDayModel } = require("../models");
 dotenv.config();
 
-exports.getMedicineReminderList = async (req, res, next) => {
+exports.addMedicineReminderView = async (req, res, next) => {
   try {
     const DoctorsData = await DoctorsModel.findAll();
     const MedicineData = await MedicineFormModel.findAll();
@@ -48,7 +48,7 @@ exports.getMedicineReminderProfile = async (req, res, next) => {
             constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
         }
   try {
-    const MedicineReminderProfileData = await MedicineReminderModel.findAll({where:{id:decoded.user_id}});
+    const MedicineReminderProfileData = await MedicineReminderModel.findAll({where:{user_id:decoded.user_id}});
    
 
     return res.json(
@@ -100,6 +100,19 @@ exports.getTipForDay = async (req, res, next) => {
 };
 
 exports.addMedicineReminder = async (req, res, next) => {
+
+ const DoctorData = await DoctorsModel.findOne({where:{doctor_name:req.body.doctor_name,speciality:req.body.speciality}});
+  if(DoctorData){
+  var Doctor_id=DoctorData.id
+   }else{
+   const DoctorData = await DoctorsModel.create({doctor_name:req.body.doctor_name,speciality:req.body.speciality});
+       if(!DoctorData){
+         return res.json(constants.responseObj(false,500,constants.messages.SomethingWentWrong));
+        }
+        const DoctorId = await DoctorsModel.findOne({where:{doctor_name:req.body.doctor_name,speciality:req.body.speciality}});
+       var Doctor_id = DoctorId.id
+      }
+
   try {
     let medicine_image = req.files.medicine_image;
     let filename = medicine_image.name;
@@ -114,7 +127,7 @@ exports.addMedicineReminder = async (req, res, next) => {
       } else {
         let medicineReminderData = {
           user_id: req.body.user_id,
-          referred_by_doctor: req.body.referred_by_doctor,
+          doctor_id: Doctor_id,
           medicine_name: req.body.medicine_name,
           medicine_image: images.image,
           medicine_form: req.body.medicine_form,

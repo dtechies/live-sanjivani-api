@@ -2,8 +2,6 @@ module.exports = (sequelize, Sequelize) => {
     const AppointmentReminderModel = sequelize.define(
         'appointment_reminder',
         {
-            user_id: { type: Sequelize.INTEGER,references: {model: 'user',key: 'id'} },
-            doctor_name: { type: Sequelize.STRING(50), notNull: true },
             date: { type: Sequelize.DATEONLY, notNull: true },
             address1: { type: Sequelize.STRING(50), notNull: true },
             address2: { type: Sequelize.STRING(50), notNull: true },
@@ -19,5 +17,14 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'appointment_reminder',
         }
     );
+     AppointmentReminderModel.associate =(models) => {
+        AppointmentReminderModel.belongsTo(models.DoctorsModel, {
+          foreignKey: 'doctor_id'
+        });
+         AppointmentReminderModel.belongsTo(models.UsersModel, {
+          foreignKey: 'user_id',
+        //   targetKey: 'user_id'
+        })
+      }
     return AppointmentReminderModel;
 };

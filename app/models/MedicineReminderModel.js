@@ -1,13 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
-    const MedicationReminderModel = sequelize.define(
+    const MedicineReminderModel = sequelize.define(
         'medicine_reminder',
         {
-            user_id: { type: Sequelize.INTEGER,references: {model: 'user',key: 'id'} },
-            referred_by_doctor: { type: Sequelize.STRING(50), notNull: true },
             medicine_name: { type: Sequelize.STRING(100), notNull: true },
             medicine_image: { type: Sequelize.STRING(50), notNull: true },
             medicine_form: { type: Sequelize.STRING(50), notNull: true },
-            dose: { type: Sequelize.INTEGER, notNull: true , unique: true},
+            dose: { type: Sequelize.INTEGER, notNull: true },
             medicine_strength	: { type: Sequelize.STRING(50), notNull: true },
             medicine_strength_unit	: { type: Sequelize.STRING(50), notNull: true },
             reminder_frequency	: { type: Sequelize.STRING(50), notNull: true },
@@ -23,5 +21,14 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'medicine_reminder',
         }
     );
-    return MedicationReminderModel;
+     MedicineReminderModel.associate =(models) => {
+        MedicineReminderModel.belongsTo(models.DoctorsModel, {
+          foreignKey: 'doctor_id'
+        });
+          MedicineReminderModel.belongsTo(models.UsersModel, {
+          foreignKey: 'user_id',
+          // targetKey: 'user_id'
+        })
+      }
+    return MedicineReminderModel;
 };

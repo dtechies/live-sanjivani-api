@@ -6,8 +6,8 @@ require("dotenv").config();
 const app = express();
 const fileUpload = require('express-fileupload')
 const db = require('./app/models');
-// db.sequelize.sync();
-// db.sequelize.sync({ alter: true });
+//   db.sequelize.sync();
+//  db.sequelize.sync({ alter: true });
 
 // Should Use  Development only
 // db.sequelize.sync({ force: true }).then(() => {
@@ -57,6 +57,8 @@ require('./app/routes/UserRoutes')(app);
 require('./app/routes/MedicineReminderRoutes')(app);
 require('./app/routes/AppointmentReminderRoutes')(app);
 require('./app/routes/MedicalJournalNoteRoutes')(app);
+require('./app/routes/GenerateSendPdfRoutes')(app);
+require('./app/routes/HelpSupportRoutes')(app);
 
 
 // set port, listen for requests

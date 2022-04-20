@@ -2,8 +2,11 @@ module.exports = (sequelize, Sequelize) => {
     const MedicalJournalNoteModel = sequelize.define(
         'medical_journal_note',
         {
-            user_id: { type: Sequelize.INTEGER,references: {model: 'user',key: 'id'} },
-            name: { type: Sequelize.STRING(50), notNull: true },
+            // user_id: { type: Sequelize.INTEGER,references: {model: 'user',key: 'id'} },
+            name: { type: Sequelize.STRING(50), notNull: false },
+            time: { type: Sequelize.TIME, notNull: false },
+            description: { type: Sequelize.STRING(50), notNull: false },
+            image: { type: Sequelize.STRING(50), notNull: false },
         },
         {
             timestamps: true,
@@ -11,5 +14,13 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'medical_journal_note',
         }
     );
+    MedicalJournalNoteModel.associate =(models) => {
+        MedicalJournalNoteModel.belongsTo(models.UsersModel, {
+          foreignKey: 'user_id',
+          // targetKey: 'user_id'
+        })
+         
+      }
     return MedicalJournalNoteModel;
 };
+

@@ -18,7 +18,7 @@ exports.addFavorites = async (req, res, next) => {
                     user_id: req.body.user_id,
                     subcategory_id: req.body.subcategory_id,
                     value: req.body.value,
-                    is_selected:true
+                    is_selected:req.body.is_selected,
                 }).then(async(favorites)=>{
                     return res.json(constants.responseObj(true, 200, constants.messages.Success))
 

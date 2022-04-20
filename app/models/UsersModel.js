@@ -18,5 +18,21 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'user',
         }
     );
+     UsersModel.associate =(models) => {
+        UsersModel.hasMany(models.AppointmentReminderModel, {
+          foreignKey: 'user_id',
+            // sourceKey:'user_id'
+        })
+         UsersModel.hasMany(models.FavoriteModel, {
+          foreignKey: 'user_id',
+          // sourceKey:'user_id'
+        })
+         UsersModel.hasMany(models.MedicalJournalNoteModel, {
+          foreignKey: 'user_id',
+         //  sourceKey:'user_id'
+        })
+       
+        
+      }
     return UsersModel;
 };

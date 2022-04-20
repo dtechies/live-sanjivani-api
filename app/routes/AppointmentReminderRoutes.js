@@ -3,7 +3,7 @@ module.exports = (app) => {
     const auth = require("./middleware/auth.middleware");
 
     var router = require('express').Router();
-    router.get('/get-appointment-reminder-list', [auth(),appointmentReminderController.getAppointmentReminderList]);
+    router.get('/add-appointment-reminder-view', [auth(),appointmentReminderController.addAppointmentReminderView]);
     router.post('/add-appointment-reminder', [auth(),appointmentReminderController.addAppointmentReminder]);
     router.post('/edit-appointment-reminder-status', [auth(),appointmentReminderController.editAppointmentReminderStatus]);
     router.get('/get-appointment-reminder-profile', [auth(),appointmentReminderController.getAppointmentReminderProfile]);
