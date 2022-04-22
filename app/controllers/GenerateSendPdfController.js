@@ -19,7 +19,7 @@ dotenv.config();
 exports.getSubcategoryData = async (req, res, next) => {
   try {
     let categoryData = await CategoryModel.findAll(
-        { where:{id:req.body.category_id}, 
+        {
         include: [
           {
             model:SubcategoryModel,

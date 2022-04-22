@@ -2,29 +2,48 @@ const { FavoriteModel,SubcategoryModel } = require('../imports');
 const constants = require("../imports").constants
 let { successCallback } = require("../constants");
 const http = require("https");
+let { jwt } = require("../imports/");
+const sequelize = require('sequelize');
 
 exports.userFavorites = async (req, res, next) => {
-    let getSubValue = await FavoriteModel.findAll({where:{user_id:req.body.user_id,is_selected:1},raw: true})
-    if(getSubValue.length){        
-        let subCategory= await SubcategoryModel.findAll({raw: true})
-        let arrObj = []
-        if(subCategory.length){
-        for(let i=0;i<subCategory.length;i++){
-                for(let j=0;j<getSubValue.length;j++){                    
-                    if(getSubValue[j].subcategory_id==subCategory[i].id){
-                        subCategory[i].value=getSubValue[i].value
-                        arrObj.push(subCategory[i])
-                    }                
-            }
+  
+        const authHeader = req.headers.authorization;
+        const token = authHeader.replace("Bearer ", "");
+        const secretKey = process.env.SECRET_JWT || "theseissecret";
+        const decoded = jwt.verify(token, secretKey)
+        if(!decoded){
+            constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
         }
-        return res.json(constants.responseObj(true, 200, constants.messages.Success, false, arrObj))
-        }else{
-            return res.json(constants.responseObj(false, 202, constants.messages.NoSubCategory))
-        }   
-    }else{
-        return res.json(constants.responseObj(false, 202, constants.messages.NoFavorites))
-    }
-}
+        
+       try{
+         //let subCategoryDataa = await FavoriteModel.findAll( {attributes: [sequelize.fn("max", sequelize.col('id'))],group: ['subcategory_id'], where:{user_id:decoded.user_id,is_selected:1}})
+         let subCategoryDataa = await FavoriteModel.findAll( {where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],limit:1})
+         
+        console.log(subCategoryDataa,"subCategoryDataa--------------")
+       let subCategoryData =await FavoriteModel.findAll( {where:{user_id:decoded.user_id,is_selected:1},}, 
+        { 
+         include:[ {model : SubcategoryModel,where:{category_id:subCategoryDataa.category_id},
+        }]
+     });
+
+    //     let subCategoryData = await SubcategoryModel.findAll(    
+    //     { 
+    //      include:[ {model : FavoriteModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
+    //     }]
+    //  });
+    return res.json(
+      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+       subCategoryData,      
+      })
+    );
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+};
+
 
 exports.addFavorites = async (req, res, next) => {
      FavoriteModel.create({
