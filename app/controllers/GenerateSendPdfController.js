@@ -18,7 +18,7 @@ dotenv.config();
 
 exports.getSubcategoryData = async (req, res, next) => {
   try {
-    let CategoryData = await CategoryModel.findAll(
+    let categoryData = await CategoryModel.findAll(
         { where:{id:req.body.category_id}, 
         include: [
           {
@@ -29,11 +29,11 @@ exports.getSubcategoryData = async (req, res, next) => {
         ],
         order: [['id', 'DESC']],
     });
-    let abc = await invoicePdf(CategoryData)
+    let abc = await invoicePdf(categoryData)
     console.log(abc)
      return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
-        CategoryData,
+        categoryData,
       })
     );
   } catch (error) {
