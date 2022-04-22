@@ -7,11 +7,11 @@ const { raw } = require('express');
 dotenv.config();
 exports.registerUser = async (req, res, next) => {
     try {
-        let usersData={ first_name: req.body.first_name, last_name: req.body.last_name, gender: req.body.gender, dob:req.body.dob ,mob_no:req.body.mob_no,language:req.body.language,is_medicine_reminder:req.body.is_medicine_reminder,is_appointment_reminder:req.body.is_appointment_reminder}
-        const user = await UsersModel.create(usersData);
-        console.log(user,"user log")
-        if(user){
-            return res.json(constants.responseObj(true, 201, constants.messages.UserCreated))
+        let usersData={ first_name: req.body.first_name, last_name: req.body.last_name, gender: req.body.gender, email:req.body.email,dob:req.body.dob ,mob_no:req.body.mob_no,language:req.body.language,is_medicine_reminder:req.body.is_medicine_reminder,is_appointment_reminder:req.body.is_appointment_reminder}
+        const addUser = await UsersModel.create(usersData);
+        if(addUser){
+            const user = await UsersModel.findOne({where:{mob_no:req.body.mob_no}},{raw:true});
+           return res.json(constants.responseObj(true, 201, constants.messages.UserCreated,false,user))
         }else{
             return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
         }
@@ -24,11 +24,11 @@ exports.registerUser = async (req, res, next) => {
 exports.usersLogin = async(req, res, next) => {
     const mob_no=req.body.mob_no
     console.log(mob_no)
-    const user = await UsersModel.findOne({where:{mob_no:mob_no}},{raw:true});
-    console.log(user)
+    let user = await UsersModel.findOne({where:{mob_no:mob_no}},{raw:true});
+   
     if (!user) {
         return res.json(constants.responseObj(true, 401, constants.messages.InvalidCredentials))
-    }
+    };
     
     // user matched!
     const secretKey = process.env.SECRET_JWT || "theseissecret";
@@ -37,7 +37,8 @@ exports.usersLogin = async(req, res, next) => {
             expiresIn: "24h",
         }
     );
-    return res.json(constants.responseObj(true, 200,false, constants.messages.UserLogin,{user,token }))
+    user.dataValues.token=token;
+    return res.json(constants.responseObj(true, 200,false, constants.messages.UserLogin,{user }))
 };
 
 exports.getReminderOptions = async (req, res, next) => {    

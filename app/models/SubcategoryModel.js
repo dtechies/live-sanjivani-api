@@ -12,12 +12,12 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'subcategory',
         });
           SubcategoryModel.associate =(models) => {
-        SubcategoryModel.belongsTo(models.CategoryModel, {
+          SubcategoryModel.belongsTo(models.CategoryModel, {
           foreignKey: 'category_id'
         });
        
         SubcategoryModel.hasMany(models.FavoriteModel, {
-          foreignKey: 'category_id'
+          foreignKey: 'subcategory_id'
         })
         
       }

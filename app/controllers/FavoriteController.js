@@ -7,7 +7,7 @@ exports.userFavorites = async (req, res, next) => {
     let favorite= await FavoriteModel.findAll()
     console.log(favorite)
     if(favorite.length){
-        return res.json(constants.responseObj(true, 200, constants.messages.success, false, favorite))
+        return res.json(constants.responseObj(true, 200, constants.messages.Success, false, favorite))
     }else{
         return res.json(constants.responseObj(false, 202, constants.messages.NoFavorites))
     }

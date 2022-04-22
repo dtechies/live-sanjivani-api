@@ -3,9 +3,9 @@ const options = { expiresIn: '60d', issuer: '' };
 const Cryptr = require('cryptr')
 const algorithm = new Cryptr('sanjivani#$&&codentic@$$');
 const sgMail = require("@sendgrid/mail");
-
-
-
+const ejs = require("ejs");
+const fs = require("fs");
+var pdf = require('html-pdf');
 
 var bcrypt;
 try {
@@ -167,31 +167,52 @@ function emailtrigger(email, html, emailsubject, cb) {
         }
     })();
 }
-function adminemailtrigger(userdata, html, emailsubject, cb) {
-    let sendgrid_api_key = process.env.SENDGRID_API_KEY
-    console.log(sendgrid_api_key, 'sendgrid_api_key');
-    sgMail.setApiKey(sendgrid_api_key);
-    const msg = {
-        to: 'example@codentic.com',
-        from: "example@codentic.com",
-        subject: emailsubject.subject,
-        html: html,
-    };
-    (async () => {
-        try {
-            await sgMail.send(msg)
-                .then((resp) => {
-                    // console.log(resp,'resp')
-                    cb(null, true);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        } catch (err) {
-            console.error(err.toString());
-        }
-    })();
+
+function invoicePdf(CategoryData) {
+    console.log(__dirname.slice(0, -5) )
+  let compiled = ejs.compile(
+    fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
+    );
+   let html = compiled({
+    title: "EJS",
+   CategoryData: CategoryData,
+  });
+  var options = {
+    format: "A4",
+    header: {
+      height: "10mm",
+    },
+    footer: {
+      height: "10mm",
+    },
+  };
+  let pdfAttachement = `sharingdata.pdf`;
+  pdf
+    .create(html, options)
+    .toFile(__dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement, (err, result) => {
+      pdfData = result;
+      if (err) {
+        console.log(err);
+      } else {
+        fs.stat(
+          __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+          function (err, stats) {
+            if (err) {
+              return console.error(err);
+            }
+            // fs.unlink(
+            //   __dirname + "/sharingpdffiles/" + pdfAttachement,
+            //   function (err) {
+            //     if (err) return console.log(err);
+            //     console.log("Pdf File deleted successfully");
+            //   }
+            // );
+          }
+        );
+      }
+    });
 }
+
 // const SENDGRID_API_KEY = "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";
 
 
@@ -221,5 +242,5 @@ const toFloat = (number) => { return Number(Number(number).toFixed(2)) }
 module.exports = {
     validations, verifyToken, token, response, systemError, validateHeaders, arrayValidatior, hashPassword,
     comparePassword, encryptData, decryptData, emailtrigger, bcrypt, smscredentials, templateids, generateOTP,
-    SMS_URL, _copy, toFloat,jwt
+    SMS_URL, _copy, toFloat,jwt,invoicePdf
 }
