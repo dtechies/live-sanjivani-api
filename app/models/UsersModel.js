@@ -11,6 +11,7 @@ module.exports = (sequelize, Sequelize) => {
             language	: { type: Sequelize.STRING(50), notNull: true },
             is_medicine_reminder	: { type: Sequelize.TINYINT(1), notNull: true },
             is_appointment_reminder	: { type: Sequelize.TINYINT(1), notNull: true },
+             otp: { type: Sequelize.STRING },
         },
         {
             timestamps: true,

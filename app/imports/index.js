@@ -7,13 +7,18 @@ const ejs = require("ejs");
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 
+
+
+
 require("dotenv").config();
 const AWS = require('aws-sdk')
+AWS.config.region = 'us-east-1';
 AWS.config.update({
-    accessKeyId: process.env.accessKeyId,
-    secretAccessKey:process.env.secretAccessKey,
-    region:process.env.region
+    accessKeyId: 'AKIAWEN5XFEYNIR6VQEM',
+    secretAccessKey:'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',
+    region:'us-east-1'
 });
+
 const S3 = new AWS.S3()
 // models 
 const UsersModel = db.UsersModel;
@@ -31,10 +36,12 @@ const TipForDayModel = db.TipForDayModel;
 const AppointmentReminderModel=db.AppointmentReminderModel;
 const MedicalJournalNoteModel=db.MedicalJournalNoteModel;
 const HelpSupportModel=db.HelpSupportModel;
+const otpModel=db.otpModel;
 
 module.exports = {
     constants, jwt, ejs, fs, axios, moment, db, sgMail,UsersModel,DoctorsModel, MedicineFormModel,
     MedicineStrengthModel, ReminderFrequencyModel, ReminderTimeModel, MedicineReminderModel,LanguageModel,
-    CategoryModel, SubcategoryModel, FavoriteModel, S3, TipForDayModel,AppointmentReminderModel, MedicalJournalNoteModel,HelpSupportModel
+    CategoryModel, SubcategoryModel, FavoriteModel, S3, TipForDayModel,AppointmentReminderModel,
+    MedicalJournalNoteModel,HelpSupportModel,AWS,otpModel
 }
  

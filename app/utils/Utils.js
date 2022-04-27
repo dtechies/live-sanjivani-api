@@ -6,6 +6,7 @@ const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
 var pdf = require('html-pdf');
+const { S3 } = require("../imports");
 
 var bcrypt;
 try {
@@ -56,6 +57,8 @@ const comparePassword = async (plainPassword, hash) => {
 //   if (value1 == value2) return true
 //   return false
 // }
+
+
 
 validations = (requestData, schema, cb) => {
     let keys = Object.keys(requestData)
@@ -168,15 +171,22 @@ function emailtrigger(email, html, emailsubject, cb) {
     })();
 }
 
+function generateReferralString(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
 function invoicePdf(CategoryData) {
     console.log(__dirname.slice(0, -5) )
   let compiled = ejs.compile(
     fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
     );
-   let html = compiled({
-    title: "EJS",
-   CategoryData: CategoryData,
-  });
+   let html = compiled({title: "EJS", CategoryData: CategoryData});
   var options = {
     format: "A4",
     header: {
@@ -186,35 +196,58 @@ function invoicePdf(CategoryData) {
       height: "10mm",
     },
   };
-  let pdfAttachement = `sharingdata.pdf`;
-  pdf
-    .create(html, options)
-    .toFile(__dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement, (err, result) => {
+  let pdfAttachement =`${generateReferralString(10)}.pdf`
+  // `sharingdata.pdf`;
+  pdf.create(html, options).toFile(__dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement, (err, result) => {
       pdfData = result;
+          var params = {     
+            Bucket: "live-sanjivani",
+            Body:  fs.readFileSync(
+              __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement
+            ),
+    
+            Key: "useFavouriteCategoryPDF/" + pdfAttachement,
+            ContentType: "application/pdf",
+            ACL: "public-read",
+          };
+            S3.upload(params, async function (err, data) {
+                if (err) {
+                console.log(err);
+                } else {
+                     console.log(data.Location,'s3path pdf-----------------');
+                  fs.stat(
+                        __dirname.slice(0, -5)+ "/healthpdf/" + pdfAttachement,
+                        function (err, stats) {
+                          if (err) {
+                            return console.error(err);
+                          }
+                         fs.unlink(
+                            __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+                            function (err) {
+                              if (err) return console.log(err);
+                              console.log("Pdf File deleted successfully");
+                            }
+                          );
+                        }
+                      );
+                }
+            })
       if (err) {
         console.log(err);
       } else {
-        fs.stat(
-          __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+        fs.stat( __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
           function (err, stats) {
             if (err) {
               return console.error(err);
             }
-            // fs.unlink(
-            //   __dirname + "/sharingpdffiles/" + pdfAttachement,
-            //   function (err) {
-            //     if (err) return console.log(err);
-            //     console.log("Pdf File deleted successfully");
-            //   }
-            // );
           }
         );
       }
     });
-}
+}   
 
+   
 // const SENDGRID_API_KEY = "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";
-
 
 //SMS credentials
 let smscredentials = {

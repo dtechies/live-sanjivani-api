@@ -5,6 +5,7 @@ module.exports = (sequelize, Sequelize) => {
             name: { type: Sequelize.STRING, notNull: true },
             icon: { type: Sequelize.STRING, notNull: true },
             unit: { type: Sequelize.STRING, notNull: true },
+            type: { type: Sequelize.STRING, notNull: false },
         },
         {
             timestamps: true,

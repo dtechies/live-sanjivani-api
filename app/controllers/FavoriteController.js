@@ -14,23 +14,21 @@ exports.userFavorites = async (req, res, next) => {
         if(!decoded){
             constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
         }
-        
+
        try{
-         //let subCategoryDataa = await FavoriteModel.findAll( {attributes: [sequelize.fn("max", sequelize.col('id'))],group: ['subcategory_id'], where:{user_id:decoded.user_id,is_selected:1}})
-         let subCategoryDataa = await FavoriteModel.findAll( {where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],limit:1})
-         
-        console.log(subCategoryDataa,"subCategoryDataa--------------")
-       let subCategoryData =await FavoriteModel.findAll( {where:{user_id:decoded.user_id,is_selected:1},}, 
+         let subCategoryfav= await FavoriteModel.findAll( {attributes: ['subcategory_id'],group: ['subcategory_id'], where:{user_id:decoded.user_id,is_selected:1},raw:true })
+         let obj=[]
+         for(let i=0;i<subCategoryfav.length;i++){
+            obj.push(subCategoryfav[i].subcategory_id)
+         }
+         console.log(obj)
+          let subCategoryData = await SubcategoryModel.findAll( 
         { 
-         include:[ {model : SubcategoryModel,where:{category_id:subCategoryDataa.category_id},
+          where:{id:obj},
+         include:[ {model : FavoriteModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
         }]
      });
-
-    //     let subCategoryData = await SubcategoryModel.findAll(    
-    //     { 
-    //      include:[ {model : FavoriteModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
-    //     }]
-    //  });
+     
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
        subCategoryData,      

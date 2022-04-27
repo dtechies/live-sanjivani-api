@@ -47,7 +47,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
     else {
     var params = {
       Bucket: "live-sanjivani",
-      Key: `medicalJournalNoteImages/${req.body.image}`,
+      Key: `medicalJournalNoteImages/${MedicalJournalNote.image}`,
     };
    S3.deleteObject(params, function (err, data) {
       if (err) {

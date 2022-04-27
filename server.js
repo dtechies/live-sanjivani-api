@@ -59,6 +59,7 @@ require('./app/routes/AppointmentReminderRoutes')(app);
 require('./app/routes/MedicalJournalNoteRoutes')(app);
 require('./app/routes/GenerateSendPdfRoutes')(app);
 require('./app/routes/HelpSupportRoutes')(app);
+require('./app/routes/GetOTPRoutes')(app);
 
 
 // set port, listen for requests
@@ -66,3 +67,5 @@ const PORT = process.env.PORT || 1818;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+

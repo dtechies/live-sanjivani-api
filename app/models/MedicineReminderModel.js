@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
         'medicine_reminder',
         {
             medicine_name: { type: Sequelize.STRING(100), notNull: true },
-            medicine_image: { type: Sequelize.STRING(50), notNull: true },
+            medicine_image: { type: Sequelize.STRING(200), notNull: true },
             medicine_form: { type: Sequelize.STRING(50), notNull: true },
             dose: { type: Sequelize.INTEGER, notNull: true },
             medicine_strength	: { type: Sequelize.STRING(50), notNull: true },
@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
             reminder_frequency	: { type: Sequelize.STRING(50), notNull: true },
             frequency_value	: { type: Sequelize.STRING(50), notNull: true },
             reminder_time	: { type: Sequelize.STRING(50), notNull: true },
-            user_selected_time	: { type: Sequelize.TIME, notNull: true },
+            user_selected_time	:{ type: Sequelize.STRING(50), notNull: true },
             pills_remaining	: { type: Sequelize.INTEGER, notNull: true },
             status	: { type: Sequelize.BOOLEAN, notNull: true },
         },

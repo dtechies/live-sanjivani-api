@@ -4,6 +4,7 @@ let { successCallback } = require("../constants");
 let { jwt } = require("../imports");
 const dotenv = require("dotenv");
 const { raw } = require('express');
+const { decode } = require('jsonwebtoken');
 dotenv.config();
 exports.registerUser = async (req, res, next) => {
     try {
@@ -11,6 +12,13 @@ exports.registerUser = async (req, res, next) => {
         const addUser = await UsersModel.create(usersData);
         if(addUser){
             const user = await UsersModel.findOne({where:{mob_no:req.body.mob_no}},{raw:true});
+
+            const secretKey = process.env.SECRET_JWT || "theseissecret";
+            const token = jwt.sign({mob_no: user.mob_no,user_id:user.id},
+            secretKey, {
+            expiresIn: "24h",
+            });
+           user.dataValues.token=token;
            return res.json(constants.responseObj(true, 201, constants.messages.UserCreated,false,user))
         }else{
             return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
@@ -23,22 +31,21 @@ exports.registerUser = async (req, res, next) => {
 
 exports.usersLogin = async(req, res, next) => {
     const mob_no=req.body.mob_no
+    const Otp=req.body.otp
     console.log(mob_no)
     let user = await UsersModel.findOne({where:{mob_no:mob_no}},{raw:true});
-   
     if (!user) {
-        return res.json(constants.responseObj(true, 401, constants.messages.InvalidCredentials))
+        return res.json(constants.responseObj(false, 401, constants.messages.InvalidCredentials))
     };
-    
+   if (user.otp==Otp) {
+     
     // user matched!
     const secretKey = process.env.SECRET_JWT || "theseissecret";
     const token = jwt.sign({mob_no: user.mob_no,user_id:user.id},
-        secretKey, {
-            expiresIn: "24h",
-        }
-    );
+        secretKey, {expiresIn: "24h", } );
     user.dataValues.token=token;
-    return res.json(constants.responseObj(true, 200,false, constants.messages.UserLogin,{user }))
+    return res.json(constants.responseObj(true, 200, constants.messages.UserLogin,false,{user }))
+    };
 };
 
 exports.getReminderOptions = async (req, res, next) => {    
@@ -48,7 +55,7 @@ exports.getReminderOptions = async (req, res, next) => {
         const secretKey = process.env.SECRET_JWT || "theseissecret";
         const decoded = jwt.verify(token, secretKey)
 
-        const userData = await UsersModel.findOne({attributes: ['is_medicine_reminder','is_appointment_reminder']},{where:{mob_no:decoded}});
+        const userData = await UsersModel.findOne({where:{mob_no:decoded.mob_no},attributes: ['is_medicine_reminder','is_appointment_reminder']},);
         if(userData){
             return res.json(constants.responseObj(true, 201, constants.messages.DataFound,false,userData))
         }else{

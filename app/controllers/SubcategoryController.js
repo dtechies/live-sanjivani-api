@@ -13,21 +13,13 @@ exports.allSubCategory = async (req, res, next) => {
             constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
         }
 
-    console.log(req.body.user_id)
-    let subCategory= await SubcategoryModel.findAll({raw: true})
-    if(subCategory.length){        
-        let getSubValue = await FavoriteModel.findAll({where:{user_id:decoded.user_id},raw: true})
-        for(let i=0;i<subCategory.length;i++){
-            subCategory[i].value="0"
-            if(getSubValue.length){
-            for(let j=0;j<getSubValue.length;j++){
-                if(getSubValue[j].subcategory_id==subCategory[i].id){
-                    subCategory[i].value=getSubValue[i].value
-                }
-            }
-        }
-        }
-        return res.json(constants.responseObj(true, 200, constants.messages.Success, false, subCategory))
+     let subCategoryData = await SubcategoryModel.findAll( 
+        { 
+         include:[ {model : FavoriteModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
+        }]
+    })
+    if(subCategoryData){
+        return res.json(constants.responseObj(true, 200, constants.messages.Success, false, subCategoryData))
     }else{
         return res.json(constants.responseObj(false, 202, constants.messages.NoSubCategory))
     }
