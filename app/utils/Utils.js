@@ -206,7 +206,7 @@ function invoicePdf(CategoryData) {
               __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement
             ),
     
-            Key: "useFavouriteCategoryPDF/" + pdfAttachement,
+            Key: "userFavouriteCategoryPDF/" + pdfAttachement,
             ContentType: "application/pdf",
             ACL: "public-read",
           };
@@ -244,6 +244,24 @@ function invoicePdf(CategoryData) {
         );
       }
     });
+
+ await function downloadPdfS3(fileName,filepath){
+    try{
+        var params = {
+        Bucket: "live-sanjivani",
+        Key: "userFavouriteCategoryPDF/" + fileName,};
+
+    res.attachment(Key);
+    var fileStream = imports.S3.getObject(params).createReadStream();
+    fileStream.pipe(res);
+
+    return 
+    }
+    catch(err){
+        console.log(err,"download pdf error log")
+
+    }
+}
 }   
 
    

@@ -60,6 +60,8 @@ require('./app/routes/MedicalJournalNoteRoutes')(app);
 require('./app/routes/GenerateSendPdfRoutes')(app);
 require('./app/routes/HelpSupportRoutes')(app);
 require('./app/routes/GetOTPRoutes')(app);
+require('./app/routes/GetNotificationRoutes')(app);
+require('./app/routes/PDFDownloadRoutes')(app);
 
 
 // set port, listen for requests
