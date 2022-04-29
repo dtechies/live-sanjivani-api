@@ -62,7 +62,7 @@ require('./app/routes/HelpSupportRoutes')(app);
 require('./app/routes/GetOTPRoutes')(app);
 require('./app/routes/GetNotificationRoutes')(app);
 require('./app/routes/PDFDownloadRoutes')(app);
-
+require('./app/routes/SendmailRoutes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 1818;

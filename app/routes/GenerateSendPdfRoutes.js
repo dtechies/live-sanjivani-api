@@ -3,7 +3,7 @@ module.exports = (app) => {
     const auth = require("./middleware/auth.middleware");
 
     var router = require('express').Router();
-    router.get('/get-subcategory-data', [auth(),GenerateSendPdfController.getSubcategoryData]);
+    router.post('/get-user-favSubCategories-pdf', [auth(),GenerateSendPdfController.sendMail]);
       
     app.use('/', router);
 };
