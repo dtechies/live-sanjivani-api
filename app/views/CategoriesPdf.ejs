@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Category PDF</title>
+         <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+           
+  </head>
+    <body>
+     <div>           
+  <table class="table table-bordered" style="width:90%; border: groove;margin-left: 30px;">
+  <thead>
+    <tr>
+      <th scope="col">Sr.</th>
+      <th scope="col">Category</th>
+      <th scope="col">Sub Category</th>
+      <th scope="col">Value</th>
+    </tr>
+   </thead>
+   <tbody>
+        <% for(var i=0; i < CategoryData.length; i++) { %>
+        <% for(var j=0; j < CategoryData[i].subcategories.length; j++) { %>
+    <tr>
+      
+      <td><%= j+1 %></td>
+      <td> <%= CategoryData[i].name %> </td>
+  <td> <%= CategoryData[i].subcategories[j].name %></td>
+  <td> <%= CategoryData[i].subcategories[j].user_favorites.length?CategoryData[i].subcategories[j].user_favorites[0].value:0 + ' ' + CategoryData[i].subcategories[j].unit %>
+  </td>
+  </tr>
+   
+   <% } %>
+   <% } %>
+   </tbody>
+   </table>
+   </div>
+   </body>
+   </html>
+   

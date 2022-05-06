@@ -11,5 +11,10 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'doctors',
         }
     );
+    DoctorsModel.associate =(models) => {
+        DoctorsModel.hasMany(models.MedicineReminderModel, {
+          foreignKey: 'doctor_id'
+        });
+      }
     return DoctorsModel;
 };
