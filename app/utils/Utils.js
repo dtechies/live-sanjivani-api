@@ -3,11 +3,9 @@ const options = { expiresIn: '60d', issuer: '' };
 const Cryptr = require('cryptr')
 const algorithm = new Cryptr('sanjivani#$&&codentic@$$');
 const sgMail = require("@sendgrid/mail");
-const ejs = require("ejs");
-const fs = require("fs");
-var pdf = require('html-pdf');
-const { S3 } = require("../imports");
-var AWS = require('aws-sdk');
+
+
+
 
 var bcrypt;
 try {
@@ -48,6 +46,16 @@ const comparePassword = async (plainPassword, hash) => {
         return false
     }
 }
+// encryptPassword = (password)=>{
+//   return cryptr.encrypt(password); 
+// }
+// decryptedPassword = (encryptedPassword)=>{
+//   return cryptr.decrypt(encryptedPassword);
+// }
+// compareSync = (value1, value2) => {
+//   if (value1 == value2) return true
+//   return false
+// }
 
 validations = (requestData, schema, cb) => {
     let keys = Object.keys(requestData)
@@ -132,143 +140,88 @@ const encryptData = (text) => {
 const decryptData = (text) => {
     return algorithm.decrypt(text);
 }
-function generateReferralString(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
 
-function healthPdf(CategoryData) {
-    console.log(__dirname.slice(0, -5) )
-  let compiled = ejs.compile(
-    fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
-    );
-   let html = compiled({title: "EJS", CategoryData: CategoryData});
-  var options = {
-    format: "A4",
-    header: {
-      height: "10mm",
-    },
-    footer: {
-      height: "10mm",
-    },
-  };
-  let pdfAttachement =`${generateReferralString(10)}.pdf`
-  // `sharingdata.pdf`;
-  pdf.create(html, options).toFile(__dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement, (err, result) => {
-      pdfData = result;
-          var params = {     
-            Bucket: "live-sanjivani",
-            Body:  fs.readFileSync(
-              __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement
-            ),
-    
-            Key: "userFavouriteCategoryPDF/" + pdfAttachement,
-            ContentType: "application/pdf",
-            ACL: "public-read",
-          };
-            S3.upload(params, async function (err, data) {
-                if (err) {
-                console.log(err);
-                } else {
-                     console.log(data.Location,'s3path pdf-----------------');
-                  fs.stat(
-                        __dirname.slice(0, -5)+ "/healthpdf/" + pdfAttachement,
-                        function (err, stats) {
-                          if (err) {
-                            return console.error(err);
-                          }
-                         fs.unlink(
-                            __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
-                            function (err) {
-                              if (err){ return console.log(err);
-                              }else{
-                                   console.log("Pdf File deleted successfully");
-                                   //return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong));
-                              }
-                             
-                            }
-                          );
-                        }
-                      );
-                }
-            })
-    });
 
-//   function downloadPdfS3(fileName,filepath){
-//     try{
-//         var params = {
-//         Bucket: "live-sanjivani",
-//         Key: "userFavouriteCategoryPDF/" + fileName,};
-
-//     res.attachment(Key);
-//     var fileStream = imports.S3.getObject(params).createReadStream();
-//     fileStream.pipe(res);
-
-//     return 
-//     }
-//     catch(err){
-//         console.log(err,"download pdf error log")
-//         return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong));
-
-//     }
-// }
-return pdfAttachement
-}   
-  async function sendPdf(email,pdf) {
- console.log(pdf,"pdf from function---------------")
-    const ses = new AWS.SES({"AWSAccessKeyId":"AKIAWEN5XFEYFIH3IWYR",
-    "AWSSecretKey":"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",
-    "region":'us-east-1'});
-    // Create sendEmail params 
-    var params = {
-    Destination: { /* required */
-    CcAddresses: [
-      'codentic.users@gmail.com',
-      /* more items */
-    ],
-    ToAddresses: [email]     /* more items */
-    
-  },
-  Message: { /* required */
-    Body: { /* required */
-      Html: {
-       Charset: "UTF-8",
-       Data: `<h3>Health report</h3>
-              <p>Download ypu pdf <a href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}">here</a></p>`
-      },
-      Text: {
-       Charset: "UTF-8",
-       Data: "TEXT_FORMAT_BODY"
-      }
-     },
-     Subject: {
-      Charset: 'UTF-8',
-      Data: 'Test email'
-     }
-    },
-    Source: 'codentic.users@gmail.com', /* required */
-    ReplyToAddresses: [
-    email,
-    /* more items */
-  ],
-  } ;
-  ses.sendEmail(params, (err, data) => {
-  if (err){
-       console.log(err)
-        // return res.json(constants.responseObj(true, 201, constants.messages.Success));}
-  }
-    else{
-       console.log(data)
-        //return res.json(constants.responseObj(true, 201, constants.messages.Success));
+function emailtrigger(email, html, emailsubject, cb) {
+    let sendgrid_api_key = process.env.SENDGRID_API_KEY
+    sgMail.setApiKey(sendgrid_api_key);
+    let msg
+    msg = {
+        to: email,
+        from: "hey@example.com",
+        subject: emailsubject.subject,
+        html: html,
+    };
+    (async () => {
+        try {
+            await sgMail.send(msg)
+                .then((resp) => {
+                    console.log(resp,'resp')
+                    cb(null, true);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } catch (err) {
+            console.error(err.toString());
         }
-  })
-  } 
+    })();
+}
+function adminemailtrigger(userdata, html, emailsubject, cb) {
+    let sendgrid_api_key = process.env.SENDGRID_API_KEY
+    console.log(sendgrid_api_key, 'sendgrid_api_key');
+    sgMail.setApiKey(sendgrid_api_key);
+    const msg = {
+        to: 'example@codentic.com',
+        from: "example@codentic.com",
+        subject: emailsubject.subject,
+        html: html,
+    };
+    (async () => {
+        try {
+            await sgMail.send(msg)
+                .then((resp) => {
+                    // console.log(resp,'resp')
+                    cb(null, true);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } catch (err) {
+            console.error(err.toString());
+        }
+    })();
+}
+// const SENDGRID_API_KEY = "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";
+
+
+//SMS credentials
+let smscredentials = {
+    "username": "xxxx",
+    "password": "xxxx",
+    "from": "xxxx"
+}
+let templateids = {
+    otp_template_id: 'xxxx'
+}
+
+let SMS_URL = 'https://api.smsu.in/smpp'
+function generateOTP() {
+    return Math.floor(1000 + Math.random() * 9000)
+}
+
+//Send Otp function start
+
+//send otp function end
+const _copy = e => JSON.parse(JSON.stringify(e))
+
+
+const toFloat = (number) => { return Number(Number(number).toFixed(2)) }
+
 module.exports = {
     validations, verifyToken, token, response, systemError, validateHeaders, arrayValidatior, hashPassword,
-    comparePassword, encryptData, decryptData,bcrypt,jwt,healthPdf,sendPdf
+    comparePassword, encryptData, decryptData, emailtrigger, bcrypt, smscredentials, templateids, generateOTP,
+    SMS_URL, _copy,singleDiamond, toFloat, BaseUrl,BlogBaseUrl,RingSizerBaseUrl,KnowYourJewelleryBaseUrl,
+    CertificationBaseUrl, LandingPageBannerBaseUrl, LandingPageContentBaseUrl,
+    LandingPagePromisesBaseUrl,DesignCategoryBaseUrl,SocialMediaBaseUrl, LandingPageEmail
 }
