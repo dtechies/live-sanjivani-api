@@ -4,7 +4,7 @@ This is the Live-Sanjivani project.
 
 ## Configure website locally
 
-Node version: >= v16.14.2 (LTS)
+Node version: >= v14.17.3 (LTS)
 
 Steps:
 

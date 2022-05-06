@@ -7,28 +7,10 @@ const invalidStatusCode = 401;
 const systemError = "System error. Please contact your administrator";
 
 const messages = {
-    SomethingWentWrong:"Something Went Wrong!",
     TokenExpired: "Token has expired",
-    NoLanguage:"No Language Found.",
-    NoCategory:"No Category Found.",
-    NoSubCategory:"No SubCategory Found.",
-    NoFavorites:"USer Favorite List Not Found.",
-    SomethingWentWrong:"Something Went Wrong!",
-    Success: "Record Found.",
-    UserCreated: "User Created Successfully.",
-    InvalidCredentials:"Invalid Credentials!",
-    UserLogin:"User Login successfully.",
-    AccessDenied:"Access denied. No credentials sent!",
-    Authorization:"Authentication failed!",
-    InvalidToken:"Invalid Token!",
-    DataFound:"Data Found.",
-    UpdateStatus:"Status Updated.",
-    AddSuccess:"Data Added Successfully.",
-    InvalidFile:"Invalid File!",
-
 }
 
-const responseObj = (status = false, statusCode = "500", message = messages.SomethingWentWrong, isTokenExpired = false, data = {}) => {
+const responseObj = (status = false, statusCode = "500", message = messages.SomethingWentWromg, isTokenExpired = false, data = {}) => {
     return { status, statusCode, message, isTokenExpired, data }
 }
 
@@ -40,7 +22,7 @@ const resultCallbacks = {
         statusCode: errorStatusCode,
         message: systemError,
     },
-    invalidCredentialsCallback: {   
+    invalidCredentialsCallback: {
         status: statusFalse,
         statusCode: invalidStatusCode,
     },
