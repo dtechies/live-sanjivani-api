@@ -1,74 +1,72 @@
-const { Users, db, logger, utils, sgMail, ejs, fs, NewsLetter, moment, axios } = require('../imports');
-const { token, triggerEmail, bcrypt, _copy } = require("../utils/Utils");
+const { UsersModel } = require('../imports');
 const constants = require("../imports").constants
 let { successCallback } = require("../constants");
-const http = require("https");
-
-exports.newsLetterEmail = async (req, res, next) => {
+let { jwt } = require("../imports");
+const dotenv = require("dotenv");
+const { raw } = require('express');
+const { decode } = require('jsonwebtoken');
+dotenv.config();
+exports.registerUser = async (req, res, next) => {
     try {
-        let requestData = req.body
-        let requestHeadear = req.headers.userid
-        console.log(requestData,"requestData")
-        let whereCondition = {}
-        whereCondition = {
-            user_id: requestHeadear,
-            email: requestData.email
+        var random = Math.floor(1000 + Math.random() * 9000)
+        let usersData={ first_name: req.body.first_name, last_name: req.body.last_name, gender: req.body.gender, email:req.body.email,dob:req.body.dob ,mob_no:req.body.mob_no,language:req.body.language,
+            is_medicine_reminder:req.body.is_medicine_reminder,is_appointment_reminder:req.body.is_appointment_reminder,otp:random}
+        const addUser = await UsersModel.create(usersData);
+        if(addUser){
+            const user = await UsersModel.findOne({where:{mob_no:req.body.mob_no}},{raw:true});
+
+            const secretKey = process.env.SECRET_JWT || "theseissecret";
+            const token = jwt.sign({mob_no: user.mob_no,user_id:user.id},
+            secretKey, {
+            expiresIn: "24h",
+            });
+           user.dataValues.token=token;
+           return res.json(constants.responseObj(true, 201, constants.messages.UserCreated,false,user))
+        }else{
+            return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
         }
-        NewsLetter.findOne({
-        where: whereCondition,
-        }).then(async (result) => {
-            console.log(result,"result")
-            result = _copy(result)
-            if(!result){
-                NewsLetter.create({
-                    user_id: requestHeadear,
-                    email: requestData.email
-                }).then(async(result1)=>{
-                    console.log(result1,"result1");
-                    let email = result1.email
-                    Users.findOne({
-                        attributes: ["user_name"],
-                        where: {id: requestHeadear}
-                    }).then(async (data) => {
-                        if(data){
-                            console.log(data,"data")
-                            var compiled = ejs.compile(fs.readFileSync(__dirname + "/emailTamplates/newslettersubscription.html", "utf8"));
-                            var html = compiled({
-                            title: "html",
-                            username: data.user_name,
-                            });
-                            subject = {subject: "Thanks for subscribe"} ;
-    
-                            utils.emailtrigger(email, html, subject, 
-                                function (err, emailresult) {
-                                    console.log("user email success");
-                                }
-                            );
-                            return res.json({ result: constants.responseObj(true, 200, constants.messages.success, false, result1) })
-                        }else{
-                            console.log("hee");
-                            res.json(utils.response(false, 401, false, constants.messages.dataNotFound))
-                        }
-                    }).catch((error) => {
-                        console.log(error, "------>data");
-                        return res.json({ result: constants.responseObj(false, 500, constants.messages.SomethingWentWromg) })
-                    });
-                }).catch((error) => {
-                    console.log(error, "------>reult1");
-                    return res.json({ result: constants.responseObj(false, 500, constants.messages.SomethingWentWromg) })
-                });
-                
-            }else {
-                console.log("hee");
-                res.json(utils.response(false, 401, false, constants.messages.emailExists))
-            }
-        }).catch((error) => {
-            console.log(error, "------>result");
-            return res.json({ result: constants.responseObj(false, 500, constants.messages.SomethingWentWromg) })
-        });
     }catch (error) {
         console.log(error, 'error');
-        logger.error(JSON.stringify(error))
-        return res.json({ result: constants.responseObj(false, 500, constants.messages.SomethingWentWromg) })
+        return res.json(constants.responseObj(false, 500, error.errors[0].message))
+    }
+}
+
+exports.usersLogin = async(req, res, next) => {
+    const mob_no=req.body.mob_no
+    const Otp=req.body.otp
+    console.log(mob_no)
+    let user = await UsersModel.findOne({where:{mob_no:mob_no}},{raw:true});
+    if (!user) {
+        return res.json(constants.responseObj(false, 401, constants.messages.InvalidCredentials))
+    };
+   if (user.otp==Otp) {
+     
+    // user matched!
+    const secretKey = process.env.SECRET_JWT || "theseissecret";
+    const token = jwt.sign({mob_no: user.mob_no,user_id:user.id},
+        secretKey, {expiresIn: "24h", } );
+    user.dataValues.token=token;
+    return res.json(constants.responseObj(true, 200, constants.messages.UserLogin,false,{user }))
+    }else{
+          return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
+    }
+};
+
+exports.getReminderOptions = async (req, res, next) => {    
+    try {
+        const authHeader = req.headers.authorization;
+        const token = authHeader.replace("Bearer ", "");
+        const secretKey = process.env.SECRET_JWT || "theseissecret";
+        const decoded = jwt.verify(token, secretKey)
+
+        const userData = await UsersModel.findOne({where:{mob_no:decoded.mob_no},attributes: ['is_medicine_reminder','is_appointment_reminder']},);
+        if(userData){
+            return res.json(constants.responseObj(true, 201, constants.messages.DataFound,false,userData))
+        }else{
+            return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
+        }
+    }catch (error) {
+        console.log(error, 'error');
+        return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
     }
 }
