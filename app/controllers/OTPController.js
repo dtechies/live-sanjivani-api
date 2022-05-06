@@ -13,12 +13,12 @@ var AWS = require('aws-sdk');
 });
 
 var sns = new AWS.SNS();
-var PhoneNumber= '+' + '919157768902';
+var PhoneNumber= '+' + '917046892973';
 
       var random = Math.floor(1000 + Math.random() * 9000)
        
     var params = {
-        Message: "Your verification code is"+`${random}`,
+        Message: "Your verification code is "+`${random}`,
         PhoneNumber: PhoneNumber
     };
 
@@ -33,7 +33,7 @@ var PhoneNumber= '+' + '919157768902';
         const EditUserOTP = await UsersModel.update({otp:random},{where:{mob_no:PhoneNumber.replace('+91','')}});
 
         if (EditUserOTP) {
-          return res.json(constants.responseObj(true, 201, constants.messages.AddSuccess));
+          return res.json(constants.responseObj(true, 201, constants.messages.Success,false,{otp:random}));
         } else {
           return res.json(constants.responseObj(false,500,constants.messages.SomethingWentWrong));
         }
@@ -47,3 +47,8 @@ var PhoneNumber= '+' + '919157768902';
        });
  
  }
+
+
+ 
+
+

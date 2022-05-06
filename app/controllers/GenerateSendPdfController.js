@@ -6,7 +6,6 @@ const {
 } = require("../imports");
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
-const dotenv = require("dotenv");
 let { jwt } = require("../imports/");
 const sequelize = require('sequelize');
 const db = require('../../app/models');
@@ -22,9 +21,7 @@ var AWS = require('aws-sdk');
 });
 
  exports.sendMail = async (req, res, next) => {
-
-dotenv.config();
-
+ 
   var sourceEmail=req.body.email
 
 var params = {
@@ -41,30 +38,30 @@ var params = {
         }
 
        try{
-         let subCategoryfav= await FavoriteModel.findAll( {attributes: ['subcategory_id'],group: ['subcategory_id'], where:{user_id:decoded.user_id,is_selected:1},raw:true })
-         let obj=[]
-         for(let i=0;i<subCategoryfav.length;i++){
-            obj.push(subCategoryfav[i].subcategory_id)
-         }
-         console.log(obj)
-         let categoryData = await CategoryModel.findAll(
+       
+         //let subCategoryfav= await FavoriteModel.findAll( {attributes: ['subcategory_id'],group: ['subcategory_id'], where:{user_id:decoded.user_id},raw:true })
+         //let obj=[]
+        //  for(let i=0;i<subCategoryfav.length;i++){
+        //     obj.push(subCategoryfav[i].subcategory_id)
+        //  }
+        //  console.log(obj)
+         let categoryData = await CategoryModel.findAll({where:{id:req.body.category_id}},
           
         {  include: [
           {
-          model:SubcategoryModel,where:{id:obj},
-         include:[ {model : FavoriteModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
+          model:SubcategoryModel,
+          include:[ {model : FavoriteModel,where:{user_id:decoded.user_id},order: [['id', 'DESC']],attributes: ['value'],limit:1
         }]
          }
         ],
         order: [['id', 'DESC']],
      });
     let pdf = await healthPdf(categoryData)
-     console.log(pdf,"pdf name logg----------")
-
+ 
      if (!sourceEmail==""){
 
       var listIDsPromise = await new AWS.SES({apiVersion: '2010-12-01'}).listIdentities(params).promise();
-     console.log(listIDsPromise,"-----------list")
+    
      let verified =listIDsPromise.Identities
 
      verified.includes(sourceEmail)

@@ -3,6 +3,6 @@ module.exports = (app) => {
      const auth = require("./middleware/auth.middleware");
    
     var router = require('express').Router();
-    router.post('/get-OTP',[auth(), OTPController.getOTP]);
+    router.post('/get-OTP', OTPController.getOTP);
      app.use('/', router);
     };

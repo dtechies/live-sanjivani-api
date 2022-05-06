@@ -8,7 +8,9 @@ const { decode } = require('jsonwebtoken');
 dotenv.config();
 exports.registerUser = async (req, res, next) => {
     try {
-        let usersData={ first_name: req.body.first_name, last_name: req.body.last_name, gender: req.body.gender, email:req.body.email,dob:req.body.dob ,mob_no:req.body.mob_no,language:req.body.language,is_medicine_reminder:req.body.is_medicine_reminder,is_appointment_reminder:req.body.is_appointment_reminder}
+        var random = Math.floor(1000 + Math.random() * 9000)
+        let usersData={ first_name: req.body.first_name, last_name: req.body.last_name, gender: req.body.gender, email:req.body.email,dob:req.body.dob ,mob_no:req.body.mob_no,language:req.body.language,
+            is_medicine_reminder:req.body.is_medicine_reminder,is_appointment_reminder:req.body.is_appointment_reminder,otp:random}
         const addUser = await UsersModel.create(usersData);
         if(addUser){
             const user = await UsersModel.findOne({where:{mob_no:req.body.mob_no}},{raw:true});
@@ -45,7 +47,9 @@ exports.usersLogin = async(req, res, next) => {
         secretKey, {expiresIn: "24h", } );
     user.dataValues.token=token;
     return res.json(constants.responseObj(true, 200, constants.messages.UserLogin,false,{user }))
-    };
+    }else{
+          return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong))
+    }
 };
 
 exports.getReminderOptions = async (req, res, next) => {    
