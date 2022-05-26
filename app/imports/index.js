@@ -37,11 +37,12 @@ const AppointmentReminderModel=db.AppointmentReminderModel;
 const MedicalJournalNoteModel=db.MedicalJournalNoteModel;
 const HelpSupportModel=db.HelpSupportModel;
 const otpModel=db.otpModel;
+const NestedSubcategoryModel=db.NestedSubcategoryModel;
 
 module.exports = {
     constants, jwt, ejs, fs, axios, moment, db, sgMail,UsersModel,DoctorsModel, MedicineFormModel,
     MedicineStrengthModel, ReminderFrequencyModel, ReminderTimeModel, MedicineReminderModel,LanguageModel,
     CategoryModel, SubcategoryModel, FavoriteModel, S3, TipForDayModel,AppointmentReminderModel,
-    MedicalJournalNoteModel,HelpSupportModel,AWS,otpModel
+    MedicalJournalNoteModel,HelpSupportModel,AWS,otpModel,NestedSubcategoryModel,
 }
  

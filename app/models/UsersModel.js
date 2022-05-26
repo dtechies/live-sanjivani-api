@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
             gender	: { type: Sequelize.STRING(10), notNull: true },
             dob	: { type: Sequelize.DATEONLY, notNull: true },
             email	: { type: Sequelize.STRING(50), notNull: true },
-            mob_no	: { type: Sequelize.STRING(13), notNull: true , unique: true},
+            mob_no	: { type: Sequelize.STRING(13), notNull: true },
             language	: { type: Sequelize.STRING(50), notNull: true },
             is_medicine_reminder	: { type: Sequelize.TINYINT(1), notNull: true },
             is_appointment_reminder	: { type: Sequelize.TINYINT(1), notNull: true },

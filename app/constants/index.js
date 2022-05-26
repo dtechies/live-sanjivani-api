@@ -25,6 +25,7 @@ const messages = {
     UpdateStatus:"Status Updated.",
     AddSuccess:"Data Added Successfully.",
     InvalidFile:"Invalid File!",
+    NoNestedSubcategory:"No SubCategory Found.",
 
 }
 

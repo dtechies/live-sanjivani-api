@@ -41,7 +41,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
     try {
      if (req.files == null) 
     {
-        const EditMedicalJournalNote = await MedicalJournalNoteModel.update({name:req.body.name,time: req.body.time,description: req.body.description, image:req.body.image},{where:{id:MedicalJournalNote.id}})  .then((result) => {
+        const EditMedicalJournalNote = await MedicalJournalNoteModel.update({time: req.body.time,description: req.body.description, image:req.body.image},{where:{id:MedicalJournalNote.id}})  .then((result) => {
         return res.json(constants.responseObj(true, 201, constants.messages.AddSuccess)); }); 
     }
     else {
@@ -64,7 +64,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
          try {
         let MedicalJournalNoteData = {
           user_id: decoded.user_id,
-          name: req.body.name,
+          // name: req.body.name,
           time: req.body.time,
           description: req.body.description,
           image: image.image,
@@ -107,7 +107,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
          try {
         let MedicalJournalNoteData = {
           user_id: decoded.user_id,
-          name: req.body.name,
+          // name: req.body.name,
           time: req.body.time,
           description: req.body.description,
           image: image.image,
