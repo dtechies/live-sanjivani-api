@@ -32,6 +32,7 @@ db.TipForDayModel = require('./TipForDayModel')(sequelize, Sequelize);
 db.AppointmentReminderModel=require('./AppointmentReminderModel')(sequelize, Sequelize);
 db.MedicalJournalNoteModel=require('./MedicalJournalNoteModel')(sequelize, Sequelize);
 db.HelpSupportModel=require('./HelpSupportModel')(sequelize, Sequelize);
+db.NestedSubcategoryModel=require('./NestedSubcategoryModel')(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName)=>{
   if('associate' in db[modelName]){

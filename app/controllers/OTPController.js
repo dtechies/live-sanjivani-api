@@ -33,7 +33,7 @@ var PhoneNumber= '+' + '917046892973';
         const EditUserOTP = await UsersModel.update({otp:random},{where:{mob_no:PhoneNumber.replace('+91','')}});
 
         if (EditUserOTP) {
-          return res.json(constants.responseObj(true, 201, constants.messages.Success,false,{otp:random}));
+          return res.json(constants.responseObj(true, 201, constants.messages.Success,false,{otp:random,mob_no:'7046892973'}));
         } else {
           return res.json(constants.responseObj(false,500,constants.messages.SomethingWentWrong));
         }
