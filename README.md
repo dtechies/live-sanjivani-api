@@ -4,7 +4,7 @@ This is the Live-Sanjivani project.
 
 ## Configure website locally
 
-Node version: >= v16.14.2 (LTS)
+Node version: >= v16.15.0 (LTS)
 
 Steps:
 
@@ -13,18 +13,3 @@ Steps:
 3. Create .env file in root(See .env-example for reference)
 4. Run Your mamp/wamp/xamp Server for Database
 5. yarn dev
-
-**.env**
-
-```
-# DB Configurations
-DB = XXXX
-DB_USER = XXXX
-DB_PASSWORD = XXXX
-PORT = 0000
-
-
-# server configs
-PORT = 0000
-SECRET_JWT = supersecret
-```
