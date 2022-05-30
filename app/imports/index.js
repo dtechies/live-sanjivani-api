@@ -9,12 +9,13 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 const AWS = require("aws-sdk");
-const S3 = new AWS.S3();
+
 AWS.config.update({
   accessKeyId: "AKIAWEN5XFEYNIR6VQEM",
   secretAccessKey: "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",
   region: "us-east-1",
 });
+const S3 = new AWS.S3();
 // models
 const UsersModel = db.UsersModel;
 const DoctorsModel = db.DoctorsModel;
