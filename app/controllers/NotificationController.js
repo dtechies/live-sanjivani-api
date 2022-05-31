@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const { constants, AWS } = require("../imports");
-const { Message } = require("@aws-sdk/client-ses");
 
 exports.getNotification = async (req, res, next) => {
   var deviceToken = req.body.deviceToken;
