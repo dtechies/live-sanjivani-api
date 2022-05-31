@@ -1,81 +1,48 @@
+require("dotenv").config();
 
-const constants = require("../imports").constants;
-require('dotenv').config();
-
-
-const { UsersModel } = require('../imports');
-var AWS = require('aws-sdk');
+const { constants, AWS } = require("../imports");
 const { Message } = require("@aws-sdk/client-ses");
- 
- exports.getNotification = async (req, res, next) => {
 
-var deviceToken =req.body.deviceToken; 
-var arn ="arn:aws:sns:us-east-2:421841545520:Testing"
+exports.getNotification = async (req, res, next) => {
+  var deviceToken = req.body.deviceToken;
 
-var AWS = require('aws-sdk');
+  var subject = constants.messages.Subject;
 
-AWS.config.update({
-  AWSAccessKeyId:process.env.AWSAccessKeyId,
-  AWSSecretKey:process.env.AWSSecretKey,
-  region:process.env.region
-});
-var AWSTargetARN=process.env.AWSTargetARN
-var sns = new AWS.SNS();
+  AWS.config.update({
+    AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    AWSSecretKey: process.env.AWS_SECRET_KEY,
+    region: process.env.REGION,
+  });
 
-//var params = {'PlatformApplicationArn':arn,'Token':token};
-
-var message = `{
-  "GCM": "{ \"data\": { \"title\": \"Sample message for Android endpoints\",\"message\": \"Sample message for Android endpoints\" } }"
-}`;
-var subject = 'back end Notification';
-// { \"title\": \"Sample message for Android endpoints\", \"message\":\"Sample message for Android endpoints\"}
-
-// { \“body\“: \“Sample message for Android endpoints\“, \“title\“:\“TitleTest\” },
-// const createSNSEndpoint = (deviceToken) => {
+  var SNS = new AWS.SNS();
   const params = {
-    PlatformApplicationArn:  'arn:aws:sns:ap-south-1:421841545520:app/GCM/demo-notification',
-    Token: deviceToken
+    PlatformApplicationArn: `${process.env.PLATFORM_APPLICATION_ARN}`,
+    Token: deviceToken,
   };
-//    console.log(sns.createPlatformEndpoint(params).promise(),"---------------dacfdta")
-//   return sns.createPlatformEndpoint(params).promise();
-  
-// };
-// createSNSEndpoint(deviceToken).then((result) => {
-//     console.log(result)
-//   });
-//    sns.createPlatformEndpoint({
-//     PlatformApplicationArn: 'arn:aws:sns:us-east-2:421841545520:Testing',
-//     Token: token
-//    }, function (err, data) {
-//     if (err) {
-//      console.log("errorMessag4
-//    console.log(createSNSEndpoint,"---------------data")
 
-sns.createPlatformEndpoint(params,function(err,EndPointResult)
-{
-    console.log(EndPointResult,"EndPointResult")
+  SNS.createPlatformEndpoint(params, function (err, EndPointResult) {
+    console.log(EndPointResult, "Its EndPointResults");
     var client_arn = EndPointResult["EndpointArn"];
 
-    sns.publish({
-    TargetArn: client_arn,
-    MessageStructure: 'json',
-    Message: JSON.stringify({
-  
-  "GCM": "{ \"data\": { \"message\": \"Sample message for Android endpoints\", \"title\": \"Sample message for Android endpoints\" } }"
-
-}),
-    Subject: subject, },
-        function(err,data){
-        if (err)
-        {
-           return res.json(constants.responseObj(false, 500, err));
+    SNS.publish(
+      {
+        TargetArn: client_arn,
+        MessageStructure: "json",
+        Message: JSON.stringify({
+          GCM: `{ \"data\": { \"title\": \"Sample message for Android endpoints\",\"message\": \"Sample message for Android endpoints\" } }`,
+        }),
+        Subject: subject,
+      },
+      function (err, data) {
+        if (err) {
+          return res.json(constants.responseObj(false, 500, err));
+        } else {
+          console.log("Sent message: " + data.MessageId);
+          return res.json(
+            constants.responseObj(true, 201, constants.messages.Success)
+          );
         }
-        else
-        {
-            console.log("Sent message: "+data.MessageId);
-            return res.json(constants.responseObj(true, 201, constants.messages.Success));
-
-        }
-    });
-});
- }
+      }
+    );
+  });
+};

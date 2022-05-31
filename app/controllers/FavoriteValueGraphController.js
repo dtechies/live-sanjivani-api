@@ -5,7 +5,7 @@ const http = require("https");
 let { jwt } = require("../imports/");
 const sequelize = require("sequelize");
 
-exports.userFavorites = async (req, res, next) => {
+exports.userFavoritesGraph = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.replace("Bearer ", "");
   const secretKey = process.env.SECRET_JWT || "theseissecret";
@@ -13,12 +13,13 @@ exports.userFavorites = async (req, res, next) => {
   if (!decoded) {
     constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
   }
-
   try {
     let subCategoryfav = await FavoriteModel.findAll({
-      attributes: ["subcategory_id"],
-      group: ["subcategory_id"],
-      where: { user_id: decoded.user_id, is_selected: 1 },
+      where: {
+        user_id: decoded.user_id,
+        subcategory_id: req.body.subcategory_id,
+        is_selected: 1,
+      },
       raw: true,
     });
     let obj = [];
@@ -32,13 +33,10 @@ exports.userFavorites = async (req, res, next) => {
         {
           model: FavoriteModel,
           where: { user_id: decoded.user_id, is_selected: 1 },
-          order: [["id", "DESC"]],
-          attributes: ["value"],
-          limit: 1,
+          attributes: ["value", "created_at", "updated_at"],
         },
       ],
     });
-
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
         subCategoryData,
@@ -50,24 +48,4 @@ exports.userFavorites = async (req, res, next) => {
       constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
     );
   }
-};
-
-exports.addFavorites = async (req, res, next) => {
-  FavoriteModel.create({
-    user_id: req.body.user_id,
-    subcategory_id: req.body.subcategory_id,
-    value: req.body.value,
-    is_selected: req.body.is_selected,
-  })
-    .then(async (favorites) => {
-      return res.json(
-        constants.responseObj(true, 200, constants.messages.Success)
-      );
-    })
-    .catch((error) => {
-      console.log(error, "------>reult1");
-      return res.json(
-        constants.responseObj(false, 409, constants.messages.SomethingWentWrong)
-      );
-    });
 };
