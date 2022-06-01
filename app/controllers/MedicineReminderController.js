@@ -169,7 +169,7 @@ exports.addMedicineReminder = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error, "error");
-    return res.json(constants.responseObj(false, 500, error.errors[0].message));
+    return res.json(constants.responseObj(false, 500, error));
   }
 };
 
