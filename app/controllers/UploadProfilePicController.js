@@ -36,113 +36,59 @@ exports.addEditUserProfilePic = async (req, res, next) => {
   });
   if (UserProfilePic) {
     try {
-      if (req.files == null) {
-        const EditUserProfilePic = await UsersModel.update(
-          {
-            image: req.body.image,
-          },
-          { where: { id: UserProfilePic.id } }
-        ).then((result) => {
+      var params = {
+        Bucket: "live-sanjivani",
+        Key: `userProfileImages/${UserProfilePic.image}`,
+      };
+      S3.deleteObject(params, function (err, data) {
+        if (err) {
+          console.log(err, "err");
+        } else {
+          console.log("sucessfully deleted images", data);
+        }
+      });
+      imageUpload(req.files.image, req.files.image.name, function (err, image) {
+        if (err) {
           return res.json(
-            constants.responseObj(true, 201, constants.messages.AddSuccess)
+            constants.responseObj(false, 500, error.errors[0].message)
           );
-        });
-      } else {
-        var params = {
-          Bucket: "live-sanjivani",
-          Key: ` userProfilePic/${UserProfilePic.image}`,
-        };
-        S3.deleteObject(params, function (err, data) {
-          if (err) {
-            console.log(err, "err");
-          } else {
-            console.log("sucessfully deleted images", data);
-          }
-        });
-        imageUpload(
-          req.files.image,
-          req.files.image.name,
-          function (err, image) {
-            if (err) {
+        } else {
+          try {
+            let UserProfilePicData = {
+              id: decoded.user_id,
+              image: image.image,
+            };
+            const UserProfilePicUpdate = UsersModel.update(UserProfilePicData, {
+              where: { id: UserProfilePic.id },
+            });
+
+            if (UserProfilePicUpdate) {
               return res.json(
-                constants.responseObj(false, 500, error.errors[0].message)
+                constants.responseObj(true, 201, constants.messages.AddSuccess)
               );
             } else {
-              try {
-                let UserProfilePicData = {
-                  id: decoded.user_id,
-                  image: image.image,
-                };
-                const UserProfilePicUpdate = UsersModel.update(
-                  UserProfilePicData,
-                  { where: { id: UserProfilePic.id } }
-                );
-
-                if (UserProfilePicUpdate) {
-                  return res.json(
-                    constants.responseObj(
-                      true,
-                      201,
-                      constants.messages.AddSuccess
-                    )
-                  );
-                } else {
-                  return res.json(
-                    constants.responseObj(
-                      false,
-                      500,
-                      constants.messages.SomethingWentWrong
-                    )
-                  );
-                }
-              } catch (error) {
-                console.log(error, "error");
-                return res.json(
-                  constants.responseObj(false, 500, error.errors[0].message)
-                );
-              }
+              return res.json(
+                constants.responseObj(
+                  false,
+                  500,
+                  constants.messages.SomethingWentWrong
+                )
+              );
             }
+          } catch (error) {
+            console.log(error, "error");
+            return res.json(
+              constants.responseObj(false, 500, error.errors[0].message)
+            );
           }
-        );
-      }
+        }
+      });
     } catch (error) {
       console.log(error, "error");
       return res.json(
         constants.responseObj(false, 500, error.errors[0].message)
       );
     }
-  } else {
-    imageUpload(req.files.image, req.files.image.name, function (err, image) {
-      if (err) {
-        req.session.error = imports.constants.messages.InvalidFile;
-      } else {
-        try {
-          let UserProfilePicData = {
-            id: decoded.user_id,
-            image: image.image,
-          };
-          const UserProfilePic = UsersModel.create(UserProfilePicData);
-          if (UserProfilePic) {
-            return res.json(
-              constants.responseObj(true, 201, constants.messages.AddSuccess)
-            );
-          } else {
-            return res.json(
-              constants.responseObj(
-                false,
-                500,
-                constants.messages.SomethingWentWrong
-              )
-            );
-          }
-        } catch (error) {
-          console.log(error, "error");
-          return res.json(
-            constants.responseObj(false, 500, error.errors[0].message)
-          );
-        }
-      }
-    });
   }
 };
 function imageUpload(image, imgAttachement, cb) {
