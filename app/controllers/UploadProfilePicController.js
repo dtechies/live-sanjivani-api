@@ -5,23 +5,6 @@ const dotenv = require("dotenv");
 let { jwt } = require("../imports/");
 dotenv.config();
 
-exports.getUserProfileData = async (req, res, next) => {
-  try {
-    const UserProfileData = await UsersModel.findAll();
-
-    return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
-        UserProfileData,
-      })
-    );
-  } catch (error) {
-    console.log(error, "error");
-    return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
-    );
-  }
-};
-
 exports.addEditUserProfilePic = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.replace("Bearer ", "");
