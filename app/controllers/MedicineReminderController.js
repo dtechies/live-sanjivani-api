@@ -40,20 +40,21 @@ exports.addMedicineReminderView = async (req, res, next) => {
 };
 
 exports.getMedicineReminderProfile = async (req, res, next) => {
-    const authHeader = req.headers.authorization;
-        const token = authHeader.replace("Bearer ", "");
-        const secretKey = process.env.SECRET_JWT || "theseissecret";
-        const decoded = jwt.verify(token, secretKey)
-        if(!decoded){
-            constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
-        }
+  const authHeader = req.headers.authorization;
+  const token = authHeader.replace("Bearer ", "");
+  const secretKey = process.env.SECRET_JWT || "theseissecret";
+  const decoded = jwt.verify(token, secretKey);
+  if (!decoded) {
+    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
+  }
   try {
-    const MedicineReminderProfileData = await MedicineReminderModel.findAll({where:{user_id:decoded.user_id}});
-   
+    const MedicineReminderProfileData = await MedicineReminderModel.findAll({
+      where: { user_id: decoded.user_id },
+    });
 
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
-        MedicineReminderProfileData,      
+        MedicineReminderProfileData,
       })
     );
   } catch (error) {
@@ -85,7 +86,7 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 exports.getTipForDay = async (req, res, next) => {
   try {
     const TipForDayData = await TipForDayModel.findAll();
-    
+
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
         TipForDayData,
@@ -100,18 +101,24 @@ exports.getTipForDay = async (req, res, next) => {
 };
 
 exports.addMedicineReminder = async (req, res, next) => {
-
- const DoctorData = await DoctorsModel.findOne({where:{doctor_name:req.body.doctor_name,speciality:req.body.speciality}});
-  if(DoctorData){
-  var Doctor_id=DoctorData.id
-   }else{
-   const DoctorData = await DoctorsModel.create({doctor_name:req.body.doctor_name,speciality:req.body.speciality});
-       if(!DoctorData){
-         return res.json(constants.responseObj(false,500,constants.messages.SomethingWentWrong));
-        }
-        const DoctorId = await DoctorsModel.findOne({where:{doctor_name:req.body.doctor_name,speciality:req.body.speciality}});
-       var Doctor_id = DoctorId.id
-      }
+  const DoctorData = await DoctorsModel.findOne({
+    where: {
+      doctor_name: req.body.doctor_name,
+    },
+  });
+  if (DoctorData) {
+    var Doctor_id = DoctorData.id;
+  } else {
+    const DoctorData = await DoctorsModel.create({
+      doctor_name: req.body.doctor_name,
+    });
+    if (!DoctorData) {
+      return res.json(
+        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      );
+    }
+    var Doctor_id = DoctorData.id;
+  }
 
   try {
     let medicine_image = req.files.medicine_image;

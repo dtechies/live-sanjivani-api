@@ -12,7 +12,6 @@ exports.getOTP = async (req, res, next) => {
     region: process.env.REGION,
   });
 
-  var sns = new AWS.SNS();
   var PhoneNumber = "+" + "917046892973";
 
   var random = Math.floor(1000 + Math.random() * 9000);

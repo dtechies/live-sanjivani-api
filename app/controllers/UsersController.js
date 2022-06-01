@@ -1,6 +1,5 @@
 const { UsersModel } = require("../imports");
 const constants = require("../imports").constants;
-let { successCallback } = require("../constants");
 let { jwt } = require("../imports");
 const dotenv = require("dotenv");
 const { raw } = require("express");
@@ -69,7 +68,6 @@ exports.usersLogin = async (req, res, next) => {
     );
   }
   if (user.otp == Otp) {
-    // user matched!
     const secretKey = process.env.SECRET_JWT || "theseissecret";
     const token = jwt.sign(
       { mob_no: user.mob_no, user_id: user.id },
@@ -83,39 +81,6 @@ exports.usersLogin = async (req, res, next) => {
       })
     );
   } else {
-    return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
-    );
-  }
-};
-
-exports.getReminderOptions = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader.replace("Bearer ", "");
-    const secretKey = process.env.SECRET_JWT || "theseissecret";
-    const decoded = jwt.verify(token, secretKey);
-
-    const userData = await UsersModel.findOne({
-      where: { mob_no: decoded.mob_no },
-    });
-    if (userData) {
-      return res.json(
-        constants.responseObj(
-          true,
-          201,
-          constants.messages.DataFound,
-          false,
-          userData
-        )
-      );
-    } else {
-      return res.json(
-        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
-      );
-    }
-  } catch (error) {
-    console.log(error, "error");
     return res.json(
       constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
     );
