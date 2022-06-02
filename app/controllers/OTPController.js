@@ -6,16 +6,9 @@ const { UsersModel } = require("../imports");
 const { AWS } = require("../imports");
 
 exports.getOTP = async (req, res, next) => {
-  AWS.config.update({
-    AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    AWSSecretKey: process.env.AWS_SECRET_KEY,
-    region: process.env.REGION,
-  });
-
-  var PhoneNumber = "+" + "917046892973";
-
+  var PhoneNumber = "+" + "916355340577";
   var random = Math.floor(1000 + Math.random() * 9000);
-
+  console.log(PhoneNumber, "PhoneNumber loggg");
   var params = {
     Message: "Your verification code is " + `${random}`,
     PhoneNumber: PhoneNumber,

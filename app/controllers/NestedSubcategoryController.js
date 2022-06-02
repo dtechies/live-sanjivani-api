@@ -16,7 +16,7 @@ exports.allnestedsubcategory = async (req, res, next) => {
 
   //  let subCategoryData = await SubcategoryModel.findAll(
   //     {
-  //      include:[ {model : FavoriteModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
+  //      include:[ {model : UserSubcategoriesValueModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
   //     }]
   // })
   let nestedsubcategoryData = await SubcategoryModel.findAll({

@@ -1,4 +1,4 @@
-const { FavoriteModel, SubcategoryModel } = require("../imports");
+const { UserSubcategoriesValueModel, SubcategoryModel } = require("../imports");
 const constants = require("../imports").constants;
 let { successCallback } = require("../constants");
 const http = require("https");
@@ -14,7 +14,7 @@ exports.userFavoritesGraph = async (req, res, next) => {
     constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
   }
   try {
-    let subCategoryfav = await FavoriteModel.findAll({
+    let subCategoryfav = await UserSubcategoriesValueModel.findAll({
       where: {
         user_id: decoded.user_id,
         subcategory_id: req.body.subcategory_id,
@@ -31,7 +31,7 @@ exports.userFavoritesGraph = async (req, res, next) => {
       where: { id: obj },
       include: [
         {
-          model: FavoriteModel,
+          model: UserSubcategoriesValueModel,
           where: { user_id: decoded.user_id, is_selected: 1 },
           attributes: ["value", "created_at", "updated_at"],
         },
