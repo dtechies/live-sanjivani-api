@@ -1,4 +1,4 @@
-const { FavoriteModel, SubcategoryModel } = require("../imports");
+const { UserSubcategoriesValueModel, SubcategoryModel } = require("../imports");
 const constants = require("../imports").constants;
 let { successCallback } = require("../constants");
 const http = require("https");
@@ -9,13 +9,14 @@ exports.userFavorites = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.replace("Bearer ", "");
   const secretKey = process.env.SECRET_JWT || "theseissecret";
+  console.log(token, "token logg");
   const decoded = jwt.verify(token, secretKey);
   if (!decoded) {
     constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
   }
 
   try {
-    let subCategoryfav = await FavoriteModel.findAll({
+    let subCategoryfav = await UserSubcategoriesValueModel.findAll({
       attributes: ["subcategory_id"],
       group: ["subcategory_id"],
       where: { user_id: decoded.user_id, is_selected: 1 },
@@ -30,7 +31,7 @@ exports.userFavorites = async (req, res, next) => {
       where: { id: obj },
       include: [
         {
-          model: FavoriteModel,
+          model: UserSubcategoriesValueModel,
           where: { user_id: decoded.user_id, is_selected: 1 },
           order: [["id", "DESC"]],
           attributes: ["value"],
@@ -53,7 +54,7 @@ exports.userFavorites = async (req, res, next) => {
 };
 
 exports.addFavorites = async (req, res, next) => {
-  FavoriteModel.create({
+  UserSubcategoriesValueModel.create({
     user_id: req.body.user_id,
     subcategory_id: req.body.subcategory_id,
     value: req.body.value,

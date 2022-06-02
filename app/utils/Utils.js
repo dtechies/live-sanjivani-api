@@ -219,7 +219,7 @@ async function sendPdf(email, pdf) {
   const ses = new AWS.SES({
     AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
     AWSSecretKey: process.env.AWS_SECRET_KEY,
-    region: process.env.REGION,
+    region: process.env.PDF_REGION,
   });
   // Create sendEmail params
   var params = {

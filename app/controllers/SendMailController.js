@@ -4,12 +4,6 @@ require("dotenv").config();
 const { AWS } = require("../imports");
 
 exports.sendMail = async (req, res, next) => {
-  AWS.config.update({
-    AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    AWSSecretKey: process.env.AWS_SECRET_KEY,
-    region: process.env.REGION,
-  });
-
   const ses = new AWS.SES({
     AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
     AWSSecretKey: process.env.AWS_SECRET_KEY,

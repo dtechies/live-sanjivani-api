@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: "user_id",
       // sourceKey:'user_id'
     });
-    UsersModel.hasMany(models.FavoriteModel, {
+    UsersModel.hasMany(models.UserSubcategoriesValueModel, {
       foreignKey: "user_id",
       // sourceKey:'user_id'
     });

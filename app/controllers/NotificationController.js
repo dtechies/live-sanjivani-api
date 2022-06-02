@@ -1,18 +1,17 @@
 require("dotenv").config();
 
-const { constants, AWS } = require("../imports");
+const { constants } = require("../imports");
+const AWS = require("aws-sdk");
 
 exports.getNotification = async (req, res, next) => {
   var deviceToken = req.body.deviceToken;
 
   var subject = constants.messages.Subject;
-
   AWS.config.update({
-    AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    AWSSecretKey: process.env.AWS_SECRET_KEY,
-    region: process.env.REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    region: process.env.PDF_REGION,
   });
-
   var SNS = new AWS.SNS();
   const params = {
     PlatformApplicationArn: `${process.env.PLATFORM_APPLICATION_ARN}`,

@@ -1,4 +1,8 @@
-const { SubcategoryModel, FavoriteModel, jwt } = require("../imports");
+const {
+  SubcategoryModel,
+  UserSubcategoriesValueModel,
+  jwt,
+} = require("../imports");
 const constants = require("../imports").constants;
 
 exports.allSubCategory = async (req, res, next) => {
@@ -13,7 +17,7 @@ exports.allSubCategory = async (req, res, next) => {
   let subCategoryData = await SubcategoryModel.findAll({
     include: [
       {
-        model: FavoriteModel,
+        model: UserSubcategoriesValueModel,
         where: { user_id: decoded.user_id, is_selected: 1 },
         order: [["id", "DESC"]],
         attributes: ["value"],
@@ -37,3 +41,5 @@ exports.allSubCategory = async (req, res, next) => {
     );
   }
 };
+
+exports.addSubCategoryValue = async (req, res, next) => {};

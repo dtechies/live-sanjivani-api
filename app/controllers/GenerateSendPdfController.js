@@ -1,21 +1,14 @@
 const {
   CategoryModel,
   SubcategoryModel,
-  FavoriteModel,
+  UserSubcategoriesValueModel,
 } = require("../imports");
 const constants = require("../imports").constants;
 const { AWS } = require("../imports");
-//var AWS = require("aws-sdk");
 let { jwt } = require("../imports/");
 
 const { healthPdf } = require("../utils/Utils");
 const { sendPdf } = require("../utils/Utils");
-
-AWS.config.update({
-  AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  AWSSecretKey: process.env.AWS_SECRET_KEY,
-  region: process.env.REGION,
-});
 
 exports.sendMail = async (req, res, next) => {
   var sourceEmail = req.body.email;
@@ -43,7 +36,7 @@ exports.sendMail = async (req, res, next) => {
             model: SubcategoryModel,
             include: [
               {
-                model: FavoriteModel,
+                model: UserSubcategoriesValueModel,
                 where: { user_id: decoded.user_id },
                 order: [["id", "DESC"]],
                 attributes: ["value"],

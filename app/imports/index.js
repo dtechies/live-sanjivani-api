@@ -11,9 +11,9 @@ require("dotenv").config();
 const AWS = require("aws-sdk");
 
 AWS.config.update({
-  accessKeyId: "AKIAWEN5XFEYNIR6VQEM",
-  secretAccessKey: "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",
-  region: "us-east-1",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.REGION,
 });
 const S3 = new AWS.S3();
 // models
@@ -27,7 +27,7 @@ const MedicineReminderModel = db.MedicineReminderModel;
 const LanguageModel = db.LanguageModel;
 const CategoryModel = db.CategoryModel;
 const SubcategoryModel = db.SubCategoryModel;
-const FavoriteModel = db.FavoriteModel;
+const UserSubcategoriesValueModel = db.UserSubcategoriesValueModel;
 const TipForDayModel = db.TipForDayModel;
 const AppointmentReminderModel = db.AppointmentReminderModel;
 const MedicalJournalNoteModel = db.MedicalJournalNoteModel;
@@ -54,7 +54,7 @@ module.exports = {
   LanguageModel,
   CategoryModel,
   SubcategoryModel,
-  FavoriteModel,
+  UserSubcategoriesValueModel,
   S3,
   TipForDayModel,
   AppointmentReminderModel,

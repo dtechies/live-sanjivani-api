@@ -36,7 +36,10 @@ db.MedicineReminderModel = require("./MedicineReminderModel")(
 db.LanguageModel = require("./LanguageModel")(sequelize, Sequelize);
 db.CategoryModel = require("./CategoryModel")(sequelize, Sequelize);
 db.SubCategoryModel = require("./SubcategoryModel")(sequelize, Sequelize);
-db.FavoriteModel = require("./FavoriteModel")(sequelize, Sequelize);
+db.UserSubcategoriesValueModel = require("./UserSubcategoriesValueModel")(
+  sequelize,
+  Sequelize
+);
 db.TipForDayModel = require("./TipForDayModel")(sequelize, Sequelize);
 db.AppointmentReminderModel = require("./AppointmentReminderModel")(
   sequelize,
