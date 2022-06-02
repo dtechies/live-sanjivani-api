@@ -3,7 +3,7 @@ module.exports = (app) => {
   // const validationController = require('../controllers/ValidationController')
   var router = require("express").Router();
   router.get("/all-subcategory", [subCategoryController.allSubCategory]);
-  router.get("/add-subcategory-value", [
+  router.post("/add-subcategory-value", [
     subCategoryController.addSubCategoryValue,
   ]);
   app.use("/", router);

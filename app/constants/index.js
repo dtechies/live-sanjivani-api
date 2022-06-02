@@ -29,6 +29,7 @@ const messages = {
   Message: "Sample message for Android endpoints",
   Title: "Sample message for Android endpoints",
   Subject: "back end Notification",
+  Unauthorized: "Unauthorized!",
 };
 
 const responseObj = (
