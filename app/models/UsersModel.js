@@ -21,15 +21,15 @@ module.exports = (sequelize, Sequelize) => {
   UsersModel.associate = (models) => {
     UsersModel.hasMany(models.AppointmentReminderModel, {
       foreignKey: "user_id",
-      // sourceKey:'user_id'
     });
     UsersModel.hasMany(models.UserSubcategoriesValueModel, {
       foreignKey: "user_id",
-      // sourceKey:'user_id'
     });
     UsersModel.hasMany(models.MedicalJournalNoteModel, {
       foreignKey: "user_id",
-      //  sourceKey:'user_id'
+    });
+    UsersModel.hasMany(models.TipForDayModel, {
+      foreignKey: "user_id",
     });
   };
   return UsersModel;

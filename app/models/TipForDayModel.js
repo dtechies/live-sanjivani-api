@@ -11,5 +11,10 @@ module.exports = (sequelize, Sequelize) => {
       tableName: "tip_for_day",
     }
   );
+  TipForDayModel.associate = (models) => {
+    TipForDayModel.belongsTo(models.UsersModel, {
+      foreignKey: "user_id",
+    });
+  };
   return TipForDayModel;
 };

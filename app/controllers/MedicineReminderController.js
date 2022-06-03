@@ -84,9 +84,12 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 };
 
 exports.getTipForDay = async (req, res, next) => {
-  try {
-    const TipForDayData = await TipForDayModel.findAll();
+  const user_id = req.user_id;
 
+  try {
+    const TipForDayData = await TipForDayModel.findOne({
+      where: { id: user_id },
+    });
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
         TipForDayData,
