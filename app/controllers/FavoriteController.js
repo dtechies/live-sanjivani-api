@@ -1,9 +1,14 @@
-const { UserSubcategoriesValueModel, SubcategoryModel } = require("../imports");
+const {
+  UserSubcategoriesValueModel,
+  SubcategoryModel,
+  FavoriteModel,
+} = require("../imports");
 const constants = require("../imports").constants;
 let { successCallback } = require("../constants");
 const http = require("https");
 let { jwt } = require("../imports/");
 const sequelize = require("sequelize");
+const { checkUser } = require("../utils/Utils");
 
 exports.userFavorites = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -54,21 +59,35 @@ exports.userFavorites = async (req, res, next) => {
 };
 
 exports.addFavorites = async (req, res, next) => {
-  UserSubcategoriesValueModel.create({
-    user_id: req.body.user_id,
-    subcategory_id: req.body.subcategory_id,
-    value: req.body.value,
-    is_selected: req.body.is_selected,
-  })
-    .then(async (favorites) => {
-      return res.json(
-        constants.responseObj(true, 200, constants.messages.Success)
-      );
-    })
-    .catch((error) => {
-      console.log(error, "------>reult1");
-      return res.json(
-        constants.responseObj(false, 409, constants.messages.SomethingWentWrong)
-      );
+  const user_id = await checkUser(req.headers.authorization);
+  if (!user_id) {
+    return res.json(
+      constants.responseObj(false, 401, constants.messages.Unauthorized)
+    );
+  }
+  console.log(user_id, "user_id logg");
+  let favorite_data = req.body.subcategory_id;
+  let subcategoryValue = [];
+  if (favorite_data) {
+    favorite_data.forEach((subcategory_id) => {
+      subcategoryValue.push({
+        user_id: user_id,
+        subcategory_id: subcategory_id,
+      });
     });
+    console.log(subcategoryValue, "subcategoryValue log");
+    const addFavorite = await FavoriteModel.bulkCreate(subcategoryValue);
+    console.log(addFavorite, "addFavorite log");
+    if (addFavorite) {
+      return res.json(
+        constants.responseObj(true, 201, constants.messages.AddSuccess, false)
+      );
+    } else {
+      return res.json(
+        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      );
+    }
+  } else {
+    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
+  }
 };

@@ -34,6 +34,7 @@ const MedicalJournalNoteModel = db.MedicalJournalNoteModel;
 const HelpSupportModel = db.HelpSupportModel;
 const otpModel = db.otpModel;
 const NestedSubcategoryModel = db.NestedSubcategoryModel;
+const FavoriteModel = db.FavoriteModel;
 
 module.exports = {
   constants,
@@ -63,4 +64,5 @@ module.exports = {
   AWS,
   otpModel,
   NestedSubcategoryModel,
+  FavoriteModel,
 };
