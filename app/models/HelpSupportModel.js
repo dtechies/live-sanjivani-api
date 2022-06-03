@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "help_support",
     {
       name: { type: Sequelize.STRING, notNull: false },
-      description: { type: Sequelize.STRING(500), notNull: false },
+      description: { type: Sequelize.STRING(2000), notNull: false },
       type: { type: Sequelize.STRING, notNull: false },
       icon: { type: Sequelize.STRING, notNull: false },
     },
