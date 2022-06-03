@@ -267,26 +267,6 @@ async function sendPdf(email, pdf) {
     }
   });
 }
-async function checkUser(authorization) {
-  try {
-    const authHeader = authorization;
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const secretKey = process.env.SECRET_JWT || "theseissecret";
-      console.log(token, secretKey, "secretKey log");
-      const decoded = jwt.verify(token, secretKey);
-      if (!decoded) {
-        return;
-      }
-      return decoded.user_id;
-    } else {
-      return;
-    }
-  } catch (err) {
-    console.log("token err:", err);
-    return;
-  }
-}
 
 module.exports = {
   validations,
@@ -304,5 +284,4 @@ module.exports = {
   jwt,
   healthPdf,
   sendPdf,
-  checkUser,
 };
