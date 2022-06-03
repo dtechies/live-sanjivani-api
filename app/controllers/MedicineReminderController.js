@@ -5,6 +5,7 @@ const {
   ReminderFrequencyModel,
   ReminderTimeModel,
   MedicineReminderModel,
+  moment,
 } = require("../imports");
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
@@ -191,3 +192,25 @@ function imageUpload(image, imgAttachement, cb) {
     }
   });
 }
+exports.todaysMedicineReminderList = async (req, res, next) => {
+  let user_id = req.user_id;
+  let todays_date = moment().format("YYYY-MM-DD");
+  console.log(todays_date, "todays_date logg");
+  try {
+    const MedicineReminderData = await MedicineReminderModel.findAll({
+      where: { user_id: user_id, created_at: todays_date },
+    });
+    if (MedicineReminderData.length) {
+    }
+    return res.json(
+      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+        MedicineReminderData,
+      })
+    );
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+};

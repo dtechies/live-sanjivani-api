@@ -30,6 +30,7 @@ const messages = {
   Title: "Sample message for Android endpoints",
   Subject: "back end Notification",
   Unauthorized: "Unauthorized!",
+  NoDataFound: "No Data Found!",
 };
 
 const responseObj = (
