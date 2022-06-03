@@ -9,7 +9,7 @@ const db = require("./app/models");
 
 // To sync changes in database
 // db.sequelize.sync();
-// db.sequelize.sync({ alter: true });
+//db.sequelize.sync({ alter: true });
 //TODO: to sync changes in database
 
 // To upload files
@@ -67,6 +67,8 @@ require("./app/routes/GetNotificationRoutes")(app);
 require("./app/routes/PDFDownloadRoutes")(app);
 require("./app/routes/NestedSubcategoryRoutes")(app);
 require("./app/routes/FavoriteValueGraphRoutes")(app);
+require("./app/routes/UploadProfilePicRoutes")(app);
+require("./app/routes/CareGiverRoutes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 1818;
