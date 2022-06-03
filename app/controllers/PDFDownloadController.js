@@ -1,7 +1,9 @@
 const constants = require("../imports").constants;
 require("dotenv").config();
 
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 
 exports.PDFDownload = async (req, res, next) => {
   const authHeader = req.headers.authorization;

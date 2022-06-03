@@ -1,6 +1,8 @@
 require("dotenv").config();
 
-const { constants } = require("../imports");
+const {
+  constants
+} = require("../imports");
 const AWS = require("aws-sdk");
 
 exports.getNotification = async (req, res, next) => {
@@ -19,11 +21,9 @@ exports.getNotification = async (req, res, next) => {
   };
 
   SNS.createPlatformEndpoint(params, function (err, EndPointResult) {
-    console.log(EndPointResult, "Its EndPointResults");
     var client_arn = EndPointResult["EndpointArn"];
 
-    SNS.publish(
-      {
+    SNS.publish({
         TargetArn: client_arn,
         MessageStructure: "json",
         Message: JSON.stringify({
@@ -35,7 +35,6 @@ exports.getNotification = async (req, res, next) => {
         if (err) {
           return res.json(constants.responseObj(false, 500, err));
         } else {
-          console.log("Sent message: " + data.MessageId);
           return res.json(
             constants.responseObj(true, 201, constants.messages.Success)
           );

@@ -1,7 +1,12 @@
-const { DoctorsModel, AppointmentReminderModel } = require("../imports");
+const {
+  DoctorsModel,
+  AppointmentReminderModel
+} = require("../imports");
 const constants = require("../imports").constants;
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 dotenv.config();
 
 exports.addAppointmentReminderView = async (req, res, next) => {
@@ -22,18 +27,13 @@ exports.addAppointmentReminderView = async (req, res, next) => {
 };
 
 exports.getAppointmentReminderProfile = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  console.log("decoded logg", decoded);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
   try {
     const AppointmentReminderProfileData =
       await AppointmentReminderModel.findAll({
-        where: { user_id: decoded.user_id },
+        where: {
+          user_id: user_id
+        },
       });
 
     return res.json(
@@ -51,10 +51,13 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
 
 exports.editAppointmentReminderStatus = async (req, res, next) => {
   try {
-    let editAppointmentStatus = await AppointmentReminderModel.update(
-      { status: req.body.status },
-      { where: { id: req.body.id } }
-    );
+    let editAppointmentStatus = await AppointmentReminderModel.update({
+      status: req.body.status
+    }, {
+      where: {
+        id: req.body.id
+      }
+    });
 
     return res.json(
       constants.responseObj(true, 201, constants.messages.UpdateStatus, false)
@@ -74,24 +77,20 @@ exports.addAppointmentReminder = async (req, res, next) => {
       speciality: req.body.speciality,
     },
   });
-  console.log("found  DoctorData----", DoctorData);
   if (DoctorData) {
     let Doctor_id = DoctorData.id;
-    console.log("found doc id----", Doctor_id);
   } else {
     const DoctorData = await DoctorsModel.create({
       doctor_name: req.body.doctor_name,
       speciality: req.body.speciality,
       doctor_address: req.body.doctor_address,
     });
-    console.log("created  DoctorData----", DoctorData);
     if (!DoctorData) {
       return res.json(
         constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
       );
     }
     var Doctor_id = DoctorData.id;
-    console.log("found doc id after created----", Doctor_id);
   }
 
   try {

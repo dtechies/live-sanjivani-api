@@ -14,7 +14,7 @@ const messages = {
   NoSubCategory: "No SubCategory Found.",
   NoFavorites: "USer Favorite List Not Found.",
   SomethingWentWrong: "Something Went Wrong!",
-  Success: "Record Found.",
+  Success: "OTP sent Successfully.",
   UserCreated: "User Created Successfully.",
   InvalidCredentials: "Invalid Credentials!",
   UserLogin: "User Login successfully.",
@@ -31,6 +31,7 @@ const messages = {
   Subject: "back end Notification",
   Unauthorized: "Unauthorized!",
   NoDataFound: "No Data Found!",
+  DuplicateNumber: "Mobile number already exists",
 };
 
 const responseObj = (
@@ -40,12 +41,24 @@ const responseObj = (
   isTokenExpired = false,
   data = {}
 ) => {
-  return { status, statusCode, message, isTokenExpired, data };
+  return {
+    status,
+    statusCode,
+    message,
+    isTokenExpired,
+    data,
+  };
 };
 
-const successCallback = { status: statusTrue, statusCode: successStatusCode };
+const successCallback = {
+  status: statusTrue,
+  statusCode: successStatusCode,
+};
 const resultCallbacks = {
-  existsCallBack: { status: statusFalse, statusCode: existsStatusCode },
+  existsCallBack: {
+    status: statusFalse,
+    statusCode: existsStatusCode,
+  },
   systemErrorCallback: {
     status: statusFalse,
     statusCode: errorStatusCode,

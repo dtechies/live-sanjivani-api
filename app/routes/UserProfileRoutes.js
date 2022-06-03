@@ -1,12 +1,12 @@
 module.exports = (app) => {
-  const UploadProfilePicController = require("../controllers/UploadProfilePicController");
+  const UserProfileController = require("../controllers/UserProfileController");
   const auth = require("./middleware/auth.middleware");
 
   var router = require("express").Router();
   router.post(
-    "/add-edit-user-profile-pic",
+    "/edit-user-profile",
     auth(),
-    UploadProfilePicController.addEditUserProfilePic
+    UserProfileController.editUserProfile
   );
 
   app.use("/", router);

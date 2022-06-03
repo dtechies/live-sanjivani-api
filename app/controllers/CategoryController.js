@@ -4,12 +4,13 @@ const {
   UserSubcategoriesValueModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-let { successCallback } = require("../constants");
+let {
+  successCallback
+} = require("../constants");
 const http = require("https");
 
 exports.allCategory = async (req, res, next) => {
   let category = await CategoryModel.findAll();
-  console.log(category);
   if (category.length) {
     return res.json(
       constants.responseObj(
@@ -30,20 +31,20 @@ exports.allCategory = async (req, res, next) => {
 exports.allCatSubCategory = async (req, res, next) => {
   try {
     let categoryData = await CategoryModel.findAll({
-      include: [
-        {
-          model: SubcategoryModel,
-          include: [
-            {
-              model: UserSubcategoriesValueModel,
-              order: [["id", "DESC"]],
-              attributes: ["value"],
-              limit: 1,
-            },
+      include: [{
+        model: SubcategoryModel,
+        include: [{
+          model: UserSubcategoriesValueModel,
+          order: [
+            ["id", "DESC"]
           ],
-        },
+          attributes: ["value"],
+          limit: 1,
+        }, ],
+      }, ],
+      order: [
+        ["id", "DESC"]
       ],
-      order: [["id", "DESC"]],
     });
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
@@ -59,12 +60,18 @@ exports.allCatSubCategory = async (req, res, next) => {
 };
 
 exports.generatePdf = async (req, res, next) => {
-  let category = await CategoryModel.findAll({ raw: true });
+  let category = await CategoryModel.findAll({
+    raw: true
+  });
   if (category.length) {
-    let subcategory = await SubcategoryModel.findAll({ raw: true });
+    let subcategory = await SubcategoryModel.findAll({
+      raw: true
+    });
     if (subcategory.length) {
       let favorites = await UserSubcategoriesValueModel.findAll({
-        where: { user_id: req.body.user_id },
+        where: {
+          user_id: req.body.user_id
+        },
         raw: true,
       });
       for (let i = 0; i < category.length; i++) {

@@ -70,7 +70,11 @@ exports.userFavorites = async (req, res, next) => {
 
 exports.addFavorites = async (req, res, next) => {
   const user_id = req.user_id;
-  FavoriteModel.destroy({ where: { user_id: user_id } })
+  FavoriteModel.destroy({
+    where: {
+      user_id: user_id,
+    },
+  })
     .then(async (result) => {
       let favorite_data = req.body.subcategory_id;
       let subcategoryValue = [];
