@@ -25,7 +25,8 @@ exports.getOTP = async (req, res, next) => {
       try {
         const EditUserOTP = await UsersModel.update(
           { otp: random },
-          { where: { mob_no: PhoneNumber.replace("+91", "") } }
+          // { where: { mob_no: PhoneNumber.replace("+91", "") } }
+          { where: { mob_no: req.body.mob_no } }
         );
 
         if (EditUserOTP) {
@@ -35,7 +36,7 @@ exports.getOTP = async (req, res, next) => {
               201,
               constants.messages.Success,
               false,
-              { otp: random, mob_no: "7046892973" }
+              { otp: random, mob_no: req.body.mob_no }
             )
           );
         } else {
