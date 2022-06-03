@@ -19,7 +19,7 @@ db.sequelize = sequelize;
 
 db.UsersModel = require("./UsersModel")(sequelize, Sequelize);
 db.DoctorsModel = require("./DoctorsModel")(sequelize, Sequelize);
-db.MedicineFormModel = require("./MedicineFormModel")(sequelize, Sequelize);
+db.MedicineDataModel = require("./MedicineDataModel")(sequelize, Sequelize);
 db.MedicineStrengthModel = require("./MedicineStrengthModel")(
   sequelize,
   Sequelize
