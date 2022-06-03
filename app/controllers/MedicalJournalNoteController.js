@@ -60,9 +60,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
         S3.deleteObject(params, function (err, data) {
           if (err) {
             console.log(err, "err");
-          } else {
-            console.log("sucessfully deleted images", data);
-          }
+          } else {}
         });
         imageUpload(req.files.image, req.files.image.name, function (err, image) {
           if (err) {

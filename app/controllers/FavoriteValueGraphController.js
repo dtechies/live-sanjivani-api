@@ -27,7 +27,6 @@ exports.userFavoritesGraph = async (req, res, next) => {
     for (let i = 0; i < subCategoryfav.length; i++) {
       obj.push(subCategoryfav[i].subcategory_id);
     }
-    console.log(obj);
     let subCategoryData = await SubcategoryModel.findAll({
       where: {
         id: obj

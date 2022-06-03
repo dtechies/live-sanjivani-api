@@ -119,7 +119,6 @@ validateHeaders = (requestData, schema, cb) => {
     )
       temp_array.push(schema[i].toUpperCase().replace(/_/g, " "));
   }
-  console.log(temp_array, "temp_array");
   if (temp_array.length > 0) {
     let adverb = temp_array.length > 1 ? " are" : " is";
     let message = temp_array + adverb + " missing";
@@ -142,7 +141,6 @@ arrayValidatior = (requestData, schema, cb) => {
       }
     }
     if (temp_array.length > 0) {
-      console.log(temp_array);
       let adverb = temp_array.length > 1 ? " are" : " is";
       let message = temp_array + adverb + " missing";
       cb(message);
@@ -170,7 +168,6 @@ function generateReferralString(length) {
 }
 
 function healthPdf(CategoryData) {
-  console.log(__dirname.slice(0, -5));
   let compiled = ejs.compile(
     fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
   );

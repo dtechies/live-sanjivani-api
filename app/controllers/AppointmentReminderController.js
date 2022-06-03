@@ -77,24 +77,20 @@ exports.addAppointmentReminder = async (req, res, next) => {
       speciality: req.body.speciality,
     },
   });
-  console.log("found  DoctorData----", DoctorData);
   if (DoctorData) {
     let Doctor_id = DoctorData.id;
-    console.log("found doc id----", Doctor_id);
   } else {
     const DoctorData = await DoctorsModel.create({
       doctor_name: req.body.doctor_name,
       speciality: req.body.speciality,
       doctor_address: req.body.doctor_address,
     });
-    console.log("created  DoctorData----", DoctorData);
     if (!DoctorData) {
       return res.json(
         constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
       );
     }
     var Doctor_id = DoctorData.id;
-    console.log("found doc id after created----", Doctor_id);
   }
 
   try {

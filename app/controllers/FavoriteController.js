@@ -30,7 +30,6 @@ exports.userFavorites = async (req, res, next) => {
     for (let i = 0; i < subCategoryfav.length; i++) {
       obj.push(subCategoryfav[i].subcategory_id);
     }
-    console.log(obj);
     let subCategoryData = await SubcategoryModel.findAll({
       where: {
         id: obj
@@ -70,7 +69,6 @@ exports.addFavorites = async (req, res, next) => {
       }
     })
     .then(async (result) => {
-      console.log(result, "result log");
       let favorite_data = req.body.subcategory_id;
       let subcategoryValue = [];
       if (favorite_data) {

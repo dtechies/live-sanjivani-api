@@ -25,7 +25,6 @@ exports.getOTP = async (req, res, next) => {
 
   publishTextPromise
     .then(async function (data) {
-      console.log("Success ==> ", data);
 
       try {
         const EditUserOTP = await UsersModel.update({
