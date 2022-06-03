@@ -89,9 +89,14 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 };
 
 exports.getTipForDay = async (req, res, next) => {
-  try {
-    const TipForDayData = await TipForDayModel.findAll();
+  const user_id = req.user_id;
 
+  try {
+    const TipForDayData = await TipForDayModel.findOne({
+      where: {
+        id: user_id
+      },
+    });
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
         TipForDayData,
@@ -129,7 +134,6 @@ exports.addMedicineReminder = async (req, res, next) => {
     let medicine_image = req.files.medicine_image;
     let filename = medicine_image.name;
     let imgAttachement = Date.now() + "_" + filename;
-    console.log(imgAttachement, "imgAttachement loggg");
     imageUpload(medicine_image, imgAttachement, async function (err, images) {
       if (err) {
         console.log(err, "err logg");
@@ -156,7 +160,6 @@ exports.addMedicineReminder = async (req, res, next) => {
         const medicineReminder = await MedicineReminderModel.create(
           medicineReminderData
         );
-        console.log(medicineReminder, "medicineReminder log");
         if (medicineReminder) {
           return res.json(
             constants.responseObj(true, 201, constants.messages.AddSuccess)

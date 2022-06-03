@@ -13,17 +13,11 @@ let {
 const sequelize = require("sequelize");
 
 exports.userFavoritesGraph = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
   try {
     let subCategoryfav = await UserSubcategoriesValueModel.findAll({
       where: {
-        user_id: decoded.user_id,
+        user_id: user_id,
         subcategory_id: req.body.subcategory_id,
         is_selected: 1,
       },
@@ -41,7 +35,7 @@ exports.userFavoritesGraph = async (req, res, next) => {
       include: [{
         model: UserSubcategoriesValueModel,
         where: {
-          user_id: decoded.user_id,
+          user_id: user_id,
           is_selected: 1
         },
         attributes: ["value", "created_at", "updated_at"],

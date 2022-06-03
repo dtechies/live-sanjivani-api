@@ -55,6 +55,7 @@ db.NestedSubcategoryModel = require("./NestedSubcategoryModel")(
   Sequelize
 );
 db.FavoriteModel = require("./FavoriteModel")(sequelize, Sequelize);
+db.CareGiverModel = require("./CareGiverModel")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if ("associate" in db[modelName]) {

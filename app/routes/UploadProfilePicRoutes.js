@@ -3,10 +3,11 @@ module.exports = (app) => {
   const auth = require("./middleware/auth.middleware");
 
   var router = require("express").Router();
-  router.post("/add-edit-user-profile-pic", [
+  router.post(
+    "/add-edit-user-profile-pic",
     auth(),
-    UploadProfilePicController.addEditUserProfilePic,
-  ]);
+    UploadProfilePicController.addEditUserProfilePic
+  );
 
   app.use("/", router);
 };

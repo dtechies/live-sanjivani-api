@@ -21,61 +21,132 @@ exports.addEditUserProfilePic = async (req, res, next) => {
   });
   if (UserProfilePic) {
     try {
-      var params = {
-        Bucket: "live-sanjivani",
-        Key: `userProfileImages/${UserProfilePic.image}`,
-      };
-      S3.deleteObject(params, function (err, data) {
-        if (err) {
-          console.log(err, "err");
-        } else {
-          console.log("sucessfully deleted images", data);
-        }
-      });
-      imageUpload(req.files.image, req.files.image.name, function (err, image) {
-        if (err) {
+      if (req.files == null) {
+        const EditUserProfileData = await UsersModel.update({
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+          gender: req.body.gender,
+          dob: req.body.dob,
+          email: req.body.email,
+          mob_no: req.body.mob_no,
+          language: req.body.language,
+          otp: req.body.otp,
+        }, {
+          where: {
+            id: UserProfilePic.id
+          }
+        }).then((result) => {
           return res.json(
-            constants.responseObj(false, 500, error.errors[0].message)
+            constants.responseObj(true, 201, constants.messages.AddSuccess)
           );
-        } else {
-          try {
-            let UserProfilePicData = {
-              id: user_id,
-              image: image.image,
-            };
-            const UserProfilePicUpdate = UsersModel.update(UserProfilePicData, {
-              where: {
-                id: UserProfilePic.id
-              },
-            });
-
-            if (UserProfilePicUpdate) {
+        });
+      } else {
+        var params = {
+          Bucket: "live-sanjivani",
+          Key: `userProfileImages/${UserProfilePic.image}`,
+        };
+        S3.deleteObject(params, function (err, data) {
+          if (err) {
+            console.log(err, "err");
+          } else {}
+        });
+        imageUpload(
+          req.files.image,
+          req.files.image.name,
+          function (err, image) {
+            if (err) {
               return res.json(
-                constants.responseObj(true, 201, constants.messages.AddSuccess)
+                constants.responseObj(false, 500, error)
               );
             } else {
-              return res.json(
-                constants.responseObj(
-                  false,
-                  500,
-                  constants.messages.SomethingWentWrong
-                )
-              );
+              try {
+                let UserProfilePicData = {
+                  user_id: user_id,
+                  first_name: req.body.first_name,
+                  last_name: req.body.last_name,
+                  gender: req.body.gender,
+                  dob: req.body.dob,
+                  email: req.body.email,
+                  mob_no: req.body.mob_no,
+                  language: req.body.language,
+                  image: image.image,
+                  otp: req.body.otp,
+                };
+                const UserProfilePicUpdate = UsersModel.update(
+                  UserProfilePicData, {
+                    where: {
+                      id: UserProfilePic.id
+                    },
+                  }
+                );
+
+                if (UserProfilePicUpdate) {
+                  return res.json(
+                    constants.responseObj(
+                      true,
+                      201,
+                      constants.messages.AddSuccess
+                    )
+                  );
+                } else {
+                  return res.json(
+                    constants.responseObj(
+                      false,
+                      500,
+                      constants.messages.SomethingWentWrong
+                    )
+                  );
+                }
+              } catch (error) {
+                console.log(error, "error");
+                return res.json(constants.responseObj(false, 500, error));
+              }
             }
-          } catch (error) {
-            console.log(error, "error");
-            return res.json(
-              constants.responseObj(false, 500, error.errors[0].message)
-            );
           }
-        }
-      });
+        );
+      }
     } catch (error) {
       console.log(error, "error");
-      return res.json(
-        constants.responseObj(false, 500, error.errors[0].message)
-      );
+      return res.json(constants.responseObj(false, 500, error));
     }
+  } else {
+    imageUpload(req.files.image, req.files.image.name, function (err, image) {
+      if (err) {
+        req.session.error = imports.constants.messages.InvalidFile;
+      } else {
+        try {
+          let UserProfileData = {
+            user_id: user_id,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            gender: req.body.gender,
+            dob: req.body.dob,
+            email: req.body.email,
+            mob_no: req.body.mob_no,
+            language: req.body.language,
+            otp: req.body.otp,
+            image: image.image,
+          };
+          const UserProfile = UsersModel.create(UserProfileData);
+          if (UserProfile) {
+            return res.json(
+              constants.responseObj(true, 201, constants.messages.AddSuccess)
+            );
+          } else {
+            return res.json(
+              constants.responseObj(
+                false,
+                500,
+                constants.messages.SomethingWentWrong
+              )
+            );
+          }
+        } catch (error) {
+          console.log(error, "error");
+          return res.json(constants.responseObj(false, 500, error));
+        }
+      }
+    });
   }
 };
 

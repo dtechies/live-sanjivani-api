@@ -32,17 +32,10 @@ exports.getMedicalJournalNoteList = async (req, res, next) => {
 
 exports.addEditMedicalJournalNote = async (req, res, next) => {
 
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey)
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
-  }
 
   const MedicalJournalNote = await MedicalJournalNoteModel.findOne({
     where: {
-      user_id: decoded.user_id
+      user_id: user_id
     }
   });
   if (MedicalJournalNote) {
@@ -73,12 +66,12 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
         });
         imageUpload(req.files.image, req.files.image.name, function (err, image) {
           if (err) {
-            return res.json(constants.responseObj(false, 500, error.errors[0].message));
+            return res.json(constants.responseObj(false, 500, error));
           } else {
 
             try {
               let MedicalJournalNoteData = {
-                user_id: decoded.user_id,
+                user_id: user_id,
                 // name: req.body.name,
                 time: req.body.time,
                 description: req.body.description,
@@ -105,7 +98,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
               }
             } catch (error) {
               console.log(error, "error");
-              return res.json(constants.responseObj(false, 500, error.errors[0].message));
+              return res.json(constants.responseObj(false, 500, error));
             }
           }
 
@@ -114,7 +107,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
       }
     } catch (error) {
       console.log(error, "error");
-      return res.json(constants.responseObj(false, 500, error.errors[0].message));
+      return res.json(constants.responseObj(false, 500, error));
     }
   } else {
 
@@ -125,7 +118,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
 
         try {
           let MedicalJournalNoteData = {
-            user_id: decoded.user_id,
+            user_iduser_id,
             // name: req.body.name,
             time: req.body.time,
             description: req.body.description,
@@ -150,7 +143,7 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
           }
         } catch (error) {
           console.log(error, "error");
-          return res.json(constants.responseObj(false, 500, error.errors[0].message));
+          return res.json(constants.responseObj(false, 500, error));
         }
       }
 

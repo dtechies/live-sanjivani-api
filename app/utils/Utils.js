@@ -1,14 +1,21 @@
 const jwt = require("jsonwebtoken");
-const options = { expiresIn: "60d", issuer: "" };
+const options = {
+  expiresIn: "60d",
+  issuer: ""
+};
 const Cryptr = require("cryptr");
 const algorithm = new Cryptr("sanjivani#$&&codentic@$$");
 const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
 var pdf = require("html-pdf");
-const { S3 } = require("../imports");
+const {
+  S3
+} = require("../imports");
 var AWS = require("aws-sdk");
-const { constants } = require("../imports");
+const {
+  constants
+} = require("../imports");
 
 var bcrypt;
 try {
@@ -26,18 +33,22 @@ hashPassword = (password, cb) => {
   bcrypt.genSalt(10, function (err, salt) {
     if (err) cb(err);
     bcrypt.hash(password, salt, function (err, hash) {
-      if (err) cb(err, { message: "error occured", password: "" });
-      else cb(null, { message: "successful", password: hash });
+      if (err) cb(err, {
+        message: "error occured",
+        password: ""
+      });
+      else cb(null, {
+        message: "successful",
+        password: hash
+      });
     });
   });
 };
 const comparePassword = async (plainPassword, hash) => {
-  console.log(plainPassword, hash);
 
   try {
     let result = await bcrypt.compare(plainPassword, hash);
     result = JSON.parse(JSON.stringify(result));
-    console.log(result);
 
     return result;
   } catch (error) {
@@ -65,12 +76,9 @@ validations = (requestData, schema, cb) => {
     cb(message);
   } else cb(null, true);
 };
+
 function verifyToken(token, callback) {
-  console.log(token, process.env.JWT_SECRET);
-  console.log(token, "token");
-  console.log(process.env.JWT_SECRET, "process.env.JWT_SECRET");
   jwt.verify(token, process.env.JWT_SECRET, options, function (err, res) {
-    console.log(res, "res");
     callback(err, res);
   });
 }
@@ -79,7 +87,14 @@ const token = (payload) => {
 };
 
 response = (status, statusCode, is_token_expired, message) => {
-  return { result: { status, statusCode, is_token_expired, message } };
+  return {
+    result: {
+      status,
+      statusCode,
+      is_token_expired,
+      message
+    }
+  };
 };
 systemError = () => {
   return {
@@ -143,6 +158,7 @@ const encryptData = (text) => {
 const decryptData = (text) => {
   return algorithm.decrypt(text);
 };
+
 function generateReferralString(length) {
   let result = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -158,7 +174,10 @@ function healthPdf(CategoryData) {
   let compiled = ejs.compile(
     fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
   );
-  let html = compiled({ title: "EJS", CategoryData: CategoryData });
+  let html = compiled({
+    title: "EJS",
+    CategoryData: CategoryData
+  });
   var options = {
     format: "A4",
     header: {
@@ -230,7 +249,7 @@ async function sendPdf(email, pdf) {
         "codentic.users@gmail.com",
         /* more items */
       ],
-      ToAddresses: [email] /* more items */,
+      ToAddresses: [email] /* more items */ ,
     },
     Message: {
       /* required */
@@ -251,7 +270,7 @@ async function sendPdf(email, pdf) {
         Data: "Test email",
       },
     },
-    Source: "codentic.users@gmail.com" /* required */,
+    Source: "codentic.users@gmail.com" /* required */ ,
     ReplyToAddresses: [
       email,
       /* more items */

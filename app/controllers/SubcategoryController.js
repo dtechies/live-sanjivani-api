@@ -43,14 +43,12 @@ exports.allSubCategory = async (req, res, next) => {
 };
 
 exports.addSubCategoryValue = async (req, res, next) => {
-  console.log(req.headers.authorization, "authorization");
   const user_id = await checkUser(req.headers.authorization);
   if (!user_id) {
     return res.json(
       constants.responseObj(false, 401, constants.messages.Unauthorized)
     );
   }
-  console.log(user_id, "user_id logg");
   let subcategory_value_data = req.body.subcategory_data;
   let subcategoryValue = [];
   if (subcategory_value_data) {
@@ -62,11 +60,9 @@ exports.addSubCategoryValue = async (req, res, next) => {
         is_selected: 0,
       });
     });
-    console.log(subcategoryValue, "subcategoryValue log");
     const addSubcategoryValue = await UserSubcategoriesValueModel.bulkCreate(
       subcategoryValue
     );
-    console.log(addSubcategoryValue, "addSubcategoryValue log");
     if (addSubcategoryValue) {
       return res.json(
         constants.responseObj(true, 201, constants.messages.AddSuccess, false)

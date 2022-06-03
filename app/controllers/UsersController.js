@@ -1,9 +1,14 @@
-const { UsersModel } = require("../imports");
+const {
+  UsersModel
+} = require("../imports");
 const constants = require("../imports").constants;
-let { jwt } = require("../imports");
+let {
+  jwt
+} = require("../imports");
 const dotenv = require("dotenv");
-const { raw } = require("express");
-const { decode } = require("jsonwebtoken");
+const {
+  raw
+} = require("express");
 dotenv.config();
 exports.registerUser = async (req, res, next) => {
   try {
@@ -20,16 +25,20 @@ exports.registerUser = async (req, res, next) => {
     };
     const addUser = await UsersModel.create(usersData);
     if (addUser) {
-      const user = await UsersModel.findOne(
-        { where: { mob_no: req.body.mob_no } },
-        { raw: true }
-      );
+      const user = await UsersModel.findOne({
+        where: {
+          mob_no: req.body.mob_no
+        }
+      }, {
+        raw: true
+      });
 
       const secretKey = process.env.SECRET_JWT || "theseissecret";
-      const token = jwt.sign(
-        { mob_no: user.mob_no, user_id: user.id },
-        secretKey,
-        {
+      const token = jwt.sign({
+          mob_no: user.mob_no,
+          user_id: user.id
+        },
+        secretKey, {
           expiresIn: "24h",
         }
       );
@@ -50,18 +59,20 @@ exports.registerUser = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error, "error");
-    return res.json(constants.responseObj(false, 500, error.errors[0].message));
+    return res.json(constants.responseObj(false, 500, error));
   }
 };
 
 exports.usersLogin = async (req, res, next) => {
   const mob_no = req.body.mob_no;
   const Otp = req.body.otp;
-  console.log(mob_no);
-  let user = await UsersModel.findOne(
-    { where: { mob_no: mob_no } },
-    { raw: true }
-  );
+  let user = await UsersModel.findOne({
+    where: {
+      mob_no: mob_no
+    }
+  }, {
+    raw: true
+  });
   if (!user) {
     return res.json(
       constants.responseObj(false, 401, constants.messages.InvalidCredentials)
@@ -69,10 +80,13 @@ exports.usersLogin = async (req, res, next) => {
   }
   if (user.otp == Otp) {
     const secretKey = process.env.SECRET_JWT || "theseissecret";
-    const token = jwt.sign(
-      { mob_no: user.mob_no, user_id: user.id },
-      secretKey,
-      { expiresIn: "24h" }
+    const token = jwt.sign({
+        mob_no: user.mob_no,
+        user_id: user.id
+      },
+      secretKey, {
+        expiresIn: "24h"
+      }
     );
     user.dataValues.token = token;
     return res.json(
