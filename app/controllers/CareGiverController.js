@@ -4,9 +4,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 exports.addCareGiver = async (req, res, next) => {
+  const user_id = req.user_id;
   try {
     let CareGiverData = {
-      user_id: req.body.user_id,
+      user_id: user_id,
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       contact_no: req.body.contact_no,
