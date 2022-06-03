@@ -65,7 +65,6 @@ require("./app/routes/HelpSupportRoutes")(app);
 require("./app/routes/GetOTPRoutes")(app);
 require("./app/routes/GetNotificationRoutes")(app);
 require("./app/routes/PDFDownloadRoutes")(app);
-require("./app/routes/SendmailRoutes")(app);
 require("./app/routes/NestedSubcategoryRoutes")(app);
 require("./app/routes/FavoriteValueGraphRoutes")(app);
 
