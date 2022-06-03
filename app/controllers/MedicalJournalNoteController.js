@@ -1,18 +1,22 @@
 const {
-    MedicalJournalNoteModel,
-  
+  MedicalJournalNoteModel,
+
 } = require("../imports");
 const constants = require("../imports").constants;
-const { S3 } = require("../imports");
+const {
+  S3
+} = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 dotenv.config();
 
 exports.getMedicalJournalNoteList = async (req, res, next) => {
   try {
-    
+
     const MedicalJournalNoteData = await MedicalJournalNoteModel.findAll();
-    
+
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
         MedicalJournalNoteData,
@@ -28,119 +32,134 @@ exports.getMedicalJournalNoteList = async (req, res, next) => {
 
 exports.addEditMedicalJournalNote = async (req, res, next) => {
 
-        const authHeader = req.headers.authorization;
-        const token = authHeader.replace("Bearer ", "");
-        const secretKey = process.env.SECRET_JWT || "theseissecret";
-        const decoded = jwt.verify(token, secretKey)
-        if(!decoded){
-            constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
-        }
+  const authHeader = req.headers.authorization;
+  const token = authHeader.replace("Bearer ", "");
+  const secretKey = process.env.SECRET_JWT || "theseissecret";
+  const decoded = jwt.verify(token, secretKey)
+  if (!decoded) {
+    constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+  }
 
-    const MedicalJournalNote = await MedicalJournalNoteModel.findOne({where:{user_id:decoded.user_id}});
-    if(MedicalJournalNote){
-    try {
-     if (req.files == null) 
-    {
-        const EditMedicalJournalNote = await MedicalJournalNoteModel.update({time: req.body.time,description: req.body.description, image:req.body.image},{where:{id:MedicalJournalNote.id}})  .then((result) => {
-        return res.json(constants.responseObj(true, 201, constants.messages.AddSuccess)); }); 
+  const MedicalJournalNote = await MedicalJournalNoteModel.findOne({
+    where: {
+      user_id: decoded.user_id
     }
-    else {
-    var params = {
-      Bucket: "live-sanjivani",
-      Key: `medicalJournalNoteImages/${MedicalJournalNote.image}`,
-    };
-   S3.deleteObject(params, function (err, data) {
-      if (err) {
-        console.log(err, "err");
-      } else {
-        console.log("sucessfully deleted images", data);
-      }
-    });
-    imageUpload(req.files.image,req.files.image.name, function (err, image) {
-      if (err) {
-         return res.json(constants.responseObj(false, 500, error.errors[0].message));} 
-        else {
-
-         try {
-        let MedicalJournalNoteData = {
-          user_id: decoded.user_id,
-          // name: req.body.name,
+  });
+  if (MedicalJournalNote) {
+    try {
+      if (req.files == null) {
+        const EditMedicalJournalNote = await MedicalJournalNoteModel.update({
           time: req.body.time,
           description: req.body.description,
-          image: image.image,
+          image: req.body.image
+        }, {
+          where: {
+            id: MedicalJournalNote.id
+          }
+        }).then((result) => {
+          return res.json(constants.responseObj(true, 201, constants.messages.AddSuccess));
+        });
+      } else {
+        var params = {
+          Bucket: "live-sanjivani",
+          Key: `medicalJournalNoteImages/${MedicalJournalNote.image}`,
+        };
+        S3.deleteObject(params, function (err, data) {
+          if (err) {
+            console.log(err, "err");
+          } else {
+            console.log("sucessfully deleted images", data);
+          }
+        });
+        imageUpload(req.files.image, req.files.image.name, function (err, image) {
+          if (err) {
+            return res.json(constants.responseObj(false, 500, error.errors[0].message));
+          } else {
 
-         };
-        const medicalJournalNoteUpdate =  MedicalJournalNoteModel.update(MedicalJournalNoteData,{where:{id:MedicalJournalNote.id}});
-         if (medicalJournalNoteUpdate) {
-          return res.json(
-            constants.responseObj(true, 201, constants.messages.AddSuccess)
-          );
-        } else {
-          return res.json(
-            constants.responseObj(
-              false,
-              500,
-              constants.messages.SomethingWentWrong
-            )
-          );
-        }
+            try {
+              let MedicalJournalNoteData = {
+                user_id: decoded.user_id,
+                // name: req.body.name,
+                time: req.body.time,
+                description: req.body.description,
+                image: image.image,
+
+              };
+              const medicalJournalNoteUpdate = MedicalJournalNoteModel.update(MedicalJournalNoteData, {
+                where: {
+                  id: MedicalJournalNote.id
+                }
+              });
+              if (medicalJournalNoteUpdate) {
+                return res.json(
+                  constants.responseObj(true, 201, constants.messages.AddSuccess)
+                );
+              } else {
+                return res.json(
+                  constants.responseObj(
+                    false,
+                    500,
+                    constants.messages.SomethingWentWrong
+                  )
+                );
+              }
+            } catch (error) {
+              console.log(error, "error");
+              return res.json(constants.responseObj(false, 500, error.errors[0].message));
+            }
+          }
+
+        });
+
       }
-    catch (error) {
-    console.log(error, "error");
-    return res.json(constants.responseObj(false, 500, error.errors[0].message));
-  }
+    } catch (error) {
+      console.log(error, "error");
+      return res.json(constants.responseObj(false, 500, error.errors[0].message));
     }
- 
-  });
+  } else {
 
-    }
-    }catch (error) {
-    console.log(error, "error");
-    return res.json(constants.responseObj(false, 500, error.errors[0].message));}
-    }else {
-    
-    imageUpload(req.files.image,req.files.image.name, function (err, image) {
+    imageUpload(req.files.image, req.files.image.name, function (err, image) {
       if (err) {
         req.session.error = imports.constants.messages.InvalidFile;
-       } else {
+      } else {
 
-         try {
-        let MedicalJournalNoteData = {
-          user_id: decoded.user_id,
-          // name: req.body.name,
-          time: req.body.time,
-          description: req.body.description,
-          image: image.image,
+        try {
+          let MedicalJournalNoteData = {
+            user_id: decoded.user_id,
+            // name: req.body.name,
+            time: req.body.time,
+            description: req.body.description,
+            image: image.image,
 
-         };
-        const MedicalJournalNote =  MedicalJournalNoteModel.create(
-          MedicalJournalNoteData
-        );
-         if (MedicalJournalNote) {
-          return res.json(
-            constants.responseObj(true, 201, constants.messages.AddSuccess)
+          };
+          const MedicalJournalNote = MedicalJournalNoteModel.create(
+            MedicalJournalNoteData
           );
-        } else {
-          return res.json(
-            constants.responseObj(
-              false,
-              500,
-              constants.messages.SomethingWentWrong
-            )
-          );
+          if (MedicalJournalNote) {
+            return res.json(
+              constants.responseObj(true, 201, constants.messages.AddSuccess)
+            );
+          } else {
+            return res.json(
+              constants.responseObj(
+                false,
+                500,
+                constants.messages.SomethingWentWrong
+              )
+            );
+          }
+        } catch (error) {
+          console.log(error, "error");
+          return res.json(constants.responseObj(false, 500, error.errors[0].message));
         }
       }
-    catch (error) {
-    console.log(error, "error");
-    return res.json(constants.responseObj(false, 500, error.errors[0].message));
-  }
-    }
- 
-  });
 
-    }
+    });
+
+  }
 
 };
+
 function imageUpload(image, imgAttachement, cb) {
   var params = {
     Bucket: "live-sanjivani",
@@ -155,7 +174,9 @@ function imageUpload(image, imgAttachement, cb) {
       console.log(err);
       cb(true, null);
     } else {
-      cb(null, { image: data.Location.split("/").pop() });
+      cb(null, {
+        image: data.Location.split("/").pop()
+      });
     }
   });
 }

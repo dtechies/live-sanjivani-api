@@ -1,7 +1,12 @@
-const { DoctorsModel, AppointmentReminderModel } = require("../imports");
+const {
+  DoctorsModel,
+  AppointmentReminderModel
+} = require("../imports");
 const constants = require("../imports").constants;
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 dotenv.config();
 
 exports.addAppointmentReminderView = async (req, res, next) => {
@@ -22,18 +27,13 @@ exports.addAppointmentReminderView = async (req, res, next) => {
 };
 
 exports.getAppointmentReminderProfile = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  console.log("decoded logg", decoded);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
   try {
     const AppointmentReminderProfileData =
       await AppointmentReminderModel.findAll({
-        where: { user_id: decoded.user_id },
+        where: {
+          user_id: user_id
+        },
       });
 
     return res.json(
@@ -51,10 +51,13 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
 
 exports.editAppointmentReminderStatus = async (req, res, next) => {
   try {
-    let editAppointmentStatus = await AppointmentReminderModel.update(
-      { status: req.body.status },
-      { where: { id: req.body.id } }
-    );
+    let editAppointmentStatus = await AppointmentReminderModel.update({
+      status: req.body.status
+    }, {
+      where: {
+        id: req.body.id
+      }
+    });
 
     return res.json(
       constants.responseObj(true, 201, constants.messages.UpdateStatus, false)

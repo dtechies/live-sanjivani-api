@@ -4,27 +4,26 @@ const {
   jwt,
 } = require("../imports");
 const constants = require("../imports").constants;
-const { checkUser } = require("../utils/Utils");
+const {
+  checkUser
+} = require("../utils/Utils");
 
 exports.allSubCategory = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
 
   let subCategoryData = await SubcategoryModel.findAll({
-    include: [
-      {
-        model: UserSubcategoriesValueModel,
-        where: { user_id: decoded.user_id, is_selected: 1 },
-        order: [["id", "DESC"]],
-        attributes: ["value"],
-        limit: 1,
+    include: [{
+      model: UserSubcategoriesValueModel,
+      where: {
+        user_id: user_id,
+        is_selected: 1
       },
-    ],
+      order: [
+        ["id", "DESC"]
+      ],
+      attributes: ["value"],
+      limit: 1,
+    }, ],
   });
   if (subCategoryData) {
     return res.json(

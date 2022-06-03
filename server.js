@@ -13,13 +13,17 @@ const db = require("./app/models");
 //TODO: to sync changes in database
 
 // To upload files
-app.use(fileUpload({ createParentPath: true }));
+app.use(fileUpload({
+  createParentPath: true
+}));
 
 // parse requests of content-type - application/json
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+  extended: true
+}));
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -48,7 +52,9 @@ app.use(cors());
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome To Live Sanjivani" });
+  res.json({
+    message: "Welcome To Live Sanjivani"
+  });
 });
 
 // Include All Routes
@@ -70,7 +76,7 @@ require("./app/routes/NestedSubcategoryRoutes")(app);
 require("./app/routes/FavoriteValueGraphRoutes")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 1818;
+const PORT = process.env.PORT || 1819;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

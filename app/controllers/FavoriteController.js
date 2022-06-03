@@ -4,9 +4,13 @@ const {
   FavoriteModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-let { successCallback } = require("../constants");
+let {
+  successCallback
+} = require("../constants");
 const http = require("https");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 const sequelize = require("sequelize");
 
 exports.userFavorites = async (req, res, next) => {
@@ -23,7 +27,10 @@ exports.userFavorites = async (req, res, next) => {
     let subCategoryfav = await UserSubcategoriesValueModel.findAll({
       attributes: ["subcategory_id"],
       group: ["subcategory_id"],
-      where: { user_id: decoded.user_id, is_selected: 1 },
+      where: {
+        user_id: decoded.user_id,
+        is_selected: 1
+      },
       raw: true,
     });
     let obj = [];
@@ -32,16 +39,21 @@ exports.userFavorites = async (req, res, next) => {
     }
     console.log(obj);
     let subCategoryData = await SubcategoryModel.findAll({
-      where: { id: obj },
-      include: [
-        {
-          model: UserSubcategoriesValueModel,
-          where: { user_id: decoded.user_id, is_selected: 1 },
-          order: [["id", "DESC"]],
-          attributes: ["value"],
-          limit: 1,
+      where: {
+        id: obj
+      },
+      include: [{
+        model: UserSubcategoriesValueModel,
+        where: {
+          user_id: decoded.user_id,
+          is_selected: 1
         },
-      ],
+        order: [
+          ["id", "DESC"]
+        ],
+        attributes: ["value"],
+        limit: 1,
+      }, ],
     });
 
     return res.json(
@@ -59,7 +71,11 @@ exports.userFavorites = async (req, res, next) => {
 
 exports.addFavorites = async (req, res, next) => {
   const user_id = req.user_id;
-  FavoriteModel.destroy({ where: { user_id: user_id } })
+  FavoriteModel.destroy({
+      where: {
+        user_id: user_id
+      }
+    })
     .then(async (result) => {
       console.log(result, "result log");
       let favorite_data = req.body.subcategory_id;

@@ -7,10 +7,16 @@ const {
   MedicineReminderModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-const { S3 } = require("../imports");
+const {
+  S3
+} = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports");
-const { TipForDayModel } = require("../models");
+let {
+  jwt
+} = require("../imports");
+const {
+  TipForDayModel
+} = require("../models");
 dotenv.config();
 
 exports.addMedicineReminderView = async (req, res, next) => {
@@ -40,16 +46,12 @@ exports.addMedicineReminderView = async (req, res, next) => {
 };
 
 exports.getMedicineReminderProfile = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
   try {
     const MedicineReminderProfileData = await MedicineReminderModel.findAll({
-      where: { user_id: decoded.user_id },
+      where: {
+        user_id: user_id
+      },
     });
 
     return res.json(
@@ -67,10 +69,13 @@ exports.getMedicineReminderProfile = async (req, res, next) => {
 
 exports.editMedicineReminderStatus = async (req, res, next) => {
   try {
-    let editMedicineStatus = await MedicineReminderModel.update(
-      { status: req.body.status },
-      { where: { id: req.body.id } }
-    );
+    let editMedicineStatus = await MedicineReminderModel.update({
+      status: req.body.status
+    }, {
+      where: {
+        id: req.body.id
+      }
+    });
 
     return res.json(
       constants.responseObj(true, 201, constants.messages.UpdateStatus, false)
@@ -187,7 +192,9 @@ function imageUpload(image, imgAttachement, cb) {
       console.log(err);
       cb(true, null);
     } else {
-      cb(null, { image: data.Location.split("/").pop() });
+      cb(null, {
+        image: data.Location.split("/").pop()
+      });
     }
   });
 }

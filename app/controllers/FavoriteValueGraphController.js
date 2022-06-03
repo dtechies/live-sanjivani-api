@@ -1,8 +1,15 @@
-const { UserSubcategoriesValueModel, SubcategoryModel } = require("../imports");
+const {
+  UserSubcategoriesValueModel,
+  SubcategoryModel
+} = require("../imports");
 const constants = require("../imports").constants;
-let { successCallback } = require("../constants");
+let {
+  successCallback
+} = require("../constants");
 const http = require("https");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 const sequelize = require("sequelize");
 
 exports.userFavoritesGraph = async (req, res, next) => {
@@ -28,14 +35,17 @@ exports.userFavoritesGraph = async (req, res, next) => {
     }
     console.log(obj);
     let subCategoryData = await SubcategoryModel.findAll({
-      where: { id: obj },
-      include: [
-        {
-          model: UserSubcategoriesValueModel,
-          where: { user_id: decoded.user_id, is_selected: 1 },
-          attributes: ["value", "created_at", "updated_at"],
+      where: {
+        id: obj
+      },
+      include: [{
+        model: UserSubcategoriesValueModel,
+        where: {
+          user_id: decoded.user_id,
+          is_selected: 1
         },
-      ],
+        attributes: ["value", "created_at", "updated_at"],
+      }, ],
     });
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {

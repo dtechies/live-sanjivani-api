@@ -1,21 +1,23 @@
-const { UsersModel } = require("../imports");
+const {
+  UsersModel
+} = require("../imports");
 const constants = require("../imports").constants;
-const { S3 } = require("../imports");
+const {
+  S3
+} = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 dotenv.config();
 
 exports.addEditUserProfilePic = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
 
   const UserProfilePic = await UsersModel.findOne({
-    where: { id: decoded.user_id },
+    where: {
+      id: user_id
+    },
   });
   if (UserProfilePic) {
     try {
@@ -38,11 +40,13 @@ exports.addEditUserProfilePic = async (req, res, next) => {
         } else {
           try {
             let UserProfilePicData = {
-              id: decoded.user_id,
+              id: user_id,
               image: image.image,
             };
             const UserProfilePicUpdate = UsersModel.update(UserProfilePicData, {
-              where: { id: UserProfilePic.id },
+              where: {
+                id: UserProfilePic.id
+              },
             });
 
             if (UserProfilePicUpdate) {
@@ -74,6 +78,7 @@ exports.addEditUserProfilePic = async (req, res, next) => {
     }
   }
 };
+
 function imageUpload(image, imgAttachement, cb) {
   var params = {
     Bucket: "live-sanjivani",
@@ -88,7 +93,9 @@ function imageUpload(image, imgAttachement, cb) {
       console.log(err);
       cb(true, null);
     } else {
-      cb(null, { image: data.Location.split("/").pop() });
+      cb(null, {
+        image: data.Location.split("/").pop()
+      });
     }
   });
 }
