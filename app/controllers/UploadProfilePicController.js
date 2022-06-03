@@ -1,32 +1,41 @@
-const { UsersModel } = require("../imports");
+const {
+  UsersModel
+} = require("../imports");
 const constants = require("../imports").constants;
-const { S3 } = require("../imports");
+const {
+  S3
+} = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
+let {
+  jwt
+} = require("../imports/");
 dotenv.config();
 
 exports.addEditUserProfilePic = async (req, res, next) => {
   const user_id = req.user_id;
 
   const UserProfilePic = await UsersModel.findOne({
-    where: { id: user_id },
+    where: {
+      id: user_id
+    },
   });
   if (UserProfilePic) {
     try {
       if (req.files == null) {
-        const EditUserProfileData = await UsersModel.update(
-          {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            gender: req.body.gender,
-            dob: req.body.dob,
-            email: req.body.email,
-            mob_no: req.body.mob_no,
-            language: req.body.language,
-            otp: req.body.otp,
-          },
-          { where: { id: UserProfilePic.id } }
-        ).then((result) => {
+        const EditUserProfileData = await UsersModel.update({
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+          gender: req.body.gender,
+          dob: req.body.dob,
+          email: req.body.email,
+          mob_no: req.body.mob_no,
+          language: req.body.language,
+          otp: req.body.otp,
+        }, {
+          where: {
+            id: UserProfilePic.id
+          }
+        }).then((result) => {
           return res.json(
             constants.responseObj(true, 201, constants.messages.AddSuccess)
           );
@@ -39,9 +48,7 @@ exports.addEditUserProfilePic = async (req, res, next) => {
         S3.deleteObject(params, function (err, data) {
           if (err) {
             console.log(err, "err");
-          } else {
-            console.log("sucessfully deleted images", data);
-          }
+          } else {}
         });
         imageUpload(
           req.files.image,
@@ -49,7 +56,7 @@ exports.addEditUserProfilePic = async (req, res, next) => {
           function (err, image) {
             if (err) {
               return res.json(
-                constants.responseObj(false, 500, error.errors[0].message)
+                constants.responseObj(false, 500, error)
               );
             } else {
               try {
@@ -66,9 +73,10 @@ exports.addEditUserProfilePic = async (req, res, next) => {
                   otp: req.body.otp,
                 };
                 const UserProfilePicUpdate = UsersModel.update(
-                  UserProfilePicData,
-                  {
-                    where: { id: UserProfilePic.id },
+                  UserProfilePicData, {
+                    where: {
+                      id: UserProfilePic.id
+                    },
                   }
                 );
 
@@ -156,7 +164,9 @@ function imageUpload(image, imgAttachement, cb) {
       console.log(err);
       cb(true, null);
     } else {
-      cb(null, { image: data.Location.split("/").pop() });
+      cb(null, {
+        image: data.Location.split("/").pop()
+      });
     }
   });
 }

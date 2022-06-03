@@ -4,27 +4,26 @@ const {
   jwt,
 } = require("../imports");
 const constants = require("../imports").constants;
-const { checkUser } = require("../utils/Utils");
+const {
+  checkUser
+} = require("../utils/Utils");
 
 exports.allSubCategory = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
 
   let subCategoryData = await SubcategoryModel.findAll({
-    include: [
-      {
-        model: UserSubcategoriesValueModel,
-        where: { user_id: decoded.user_id, is_selected: 1 },
-        order: [["id", "DESC"]],
-        attributes: ["value"],
-        limit: 1,
+    include: [{
+      model: UserSubcategoriesValueModel,
+      where: {
+        user_id: user_id,
+        is_selected: 1
       },
-    ],
+      order: [
+        ["id", "DESC"]
+      ],
+      attributes: ["value"],
+      limit: 1,
+    }, ],
   });
   if (subCategoryData) {
     return res.json(
@@ -44,14 +43,12 @@ exports.allSubCategory = async (req, res, next) => {
 };
 
 exports.addSubCategoryValue = async (req, res, next) => {
-  console.log(req.headers.authorization, "authorization");
   const user_id = await checkUser(req.headers.authorization);
   if (!user_id) {
     return res.json(
       constants.responseObj(false, 401, constants.messages.Unauthorized)
     );
   }
-  console.log(user_id, "user_id logg");
   let subcategory_value_data = req.body.subcategory_data;
   let subcategoryValue = [];
   if (subcategory_value_data) {
@@ -63,11 +60,9 @@ exports.addSubCategoryValue = async (req, res, next) => {
         is_selected: 0,
       });
     });
-    console.log(subcategoryValue, "subcategoryValue log");
     const addSubcategoryValue = await UserSubcategoriesValueModel.bulkCreate(
       subcategoryValue
     );
-    console.log(addSubcategoryValue, "addSubcategoryValue log");
     if (addSubcategoryValue) {
       return res.json(
         constants.responseObj(true, 201, constants.messages.AddSuccess, false)
