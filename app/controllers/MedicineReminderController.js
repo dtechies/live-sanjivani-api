@@ -9,7 +9,7 @@ const {
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports");
+
 const { TipForDayModel } = require("../models");
 dotenv.config();
 
@@ -40,16 +40,10 @@ exports.addMedicineReminderView = async (req, res, next) => {
 };
 
 exports.getMedicineReminderProfile = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.replace("Bearer ", "");
-  const secretKey = process.env.SECRET_JWT || "theseissecret";
-  const decoded = jwt.verify(token, secretKey);
-  if (!decoded) {
-    constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
-  }
+  const user_id = req.user_id;
   try {
     const MedicineReminderProfileData = await MedicineReminderModel.findAll({
-      where: { user_id: decoded.user_id },
+      where: { user_id: user_id },
     });
 
     return res.json(
@@ -127,7 +121,6 @@ exports.addMedicineReminder = async (req, res, next) => {
     let medicine_image = req.files.medicine_image;
     let filename = medicine_image.name;
     let imgAttachement = Date.now() + "_" + filename;
-    console.log(imgAttachement, "imgAttachement loggg");
     imageUpload(medicine_image, imgAttachement, async function (err, images) {
       if (err) {
         console.log(err, "err logg");
@@ -154,7 +147,6 @@ exports.addMedicineReminder = async (req, res, next) => {
         const medicineReminder = await MedicineReminderModel.create(
           medicineReminderData
         );
-        console.log(medicineReminder, "medicineReminder log");
         if (medicineReminder) {
           return res.json(
             constants.responseObj(true, 201, constants.messages.AddSuccess)
