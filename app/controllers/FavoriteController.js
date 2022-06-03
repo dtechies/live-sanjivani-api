@@ -8,7 +8,6 @@ let { successCallback } = require("../constants");
 const http = require("https");
 let { jwt } = require("../imports/");
 const sequelize = require("sequelize");
-const { checkUser } = require("../utils/Utils");
 
 exports.userFavorites = async (req, res, next) => {
   const authHeader = req.headers.authorization;
