@@ -11,6 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       language: { type: Sequelize.STRING(50), notNull: true },
       image: { type: Sequelize.STRING(200), notNull: false },
       otp: { type: Sequelize.STRING },
+      player_id: { type: Sequelize.STRING },
     },
     {
       timestamps: true,
@@ -28,9 +29,7 @@ module.exports = (sequelize, Sequelize) => {
     UsersModel.hasMany(models.MedicalJournalNoteModel, {
       foreignKey: "user_id",
     });
-    UsersModel.hasMany(models.TipForDayModel, {
-      foreignKey: "user_id",
-    });
+
     UsersModel.hasMany(models.CareGiverModel, {
       foreignKey: "user_id",
     });
