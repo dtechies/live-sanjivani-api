@@ -144,6 +144,7 @@ exports.addMedicineReminder = async (req, res, next) => {
         let medicineReminderData = {
           user_id: req.body.user_id,
           doctor_id: Doctor_id,
+          reminder_name: req.body.reminder_name,
           medicine_name: req.body.medicine_name,
           medicine_image: images.image,
           medicine_form: req.body.medicine_form,

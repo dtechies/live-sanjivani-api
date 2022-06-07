@@ -6,6 +6,8 @@ require("dotenv").config();
 const app = express();
 const fileUpload = require("express-fileupload");
 const db = require("./app/models");
+const today = require("moment");
+
 
 // To sync changes in database
 // db.sequelize.sync();
@@ -75,6 +77,8 @@ require("./app/routes/NestedSubcategoryRoutes")(app);
 require("./app/routes/FavoriteValueGraphRoutes")(app);
 require("./app/routes/UploadProfilePicRoutes")(app);
 require("./app/routes/CareGiverRoutes")(app);
+require("./app/routes/MedicationListRoutes")(app);
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 1819;
