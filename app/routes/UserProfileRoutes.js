@@ -8,6 +8,10 @@ module.exports = (app) => {
     auth(),
     UserProfileController.editUserProfile
   );
+  router.get("/get-user-profile-data", [
+    auth(),
+    UserProfileController.getUserProfileData,
+  ]);
 
   app.use("/", router);
 };
