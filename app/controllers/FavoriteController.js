@@ -23,10 +23,24 @@ exports.userFavorites = async (req, res, next) => {
       for (let i = 0; i < subCategoryfav.length; i++) {
         obj.push(subCategoryfav[i].subcategory_id);
       }
-      let subCategoryData = await SubcategoryModel.findAll({
-        where: { id: obj },
+      // let subCategoryData = await SubcategoryModel.findAll({
+      //   where: { id: obj },
+      // });
+      let subCategoryData = await UserSubcategoriesValueModel.findAll({
+        raw: true,
+        where: { user_id: user_id },
+        order: [["created_at", "DESC"]],
+        attributes: ["subcategory_id", "value"],
+        include: [
+          {
+            model: SubcategoryModel,
+            where: { id: obj },
+          },
+        ],
       });
       let subCategoryDataN = [];
+      let subcategoryValueData = [];
+
       let subCategoryFavData = await FavoriteModel.findAll({
         attributes: ["subcategory_id"],
         group: ["subcategory_id"],
@@ -35,21 +49,30 @@ exports.userFavorites = async (req, res, next) => {
       });
       subCategoryData.forEach((subcategorydata) => {
         let isFavorite = false;
-        subCategoryFavData.forEach((subcategoryfavdata) => {
-          if (subcategorydata.id == subcategoryfavdata.subcategory_id) {
-            isFavorite = true;
-          }
-        });
-        subCategoryDataN.push({
-          id: subcategorydata.id,
-          name: subcategorydata.name,
-          icon: subcategorydata.icon,
-          unit: subcategorydata.unit,
-          type: subcategorydata.type,
-          category_id: subcategorydata.category_id,
-          is_favorite: isFavorite,
-        });
+        if (subcategoryValueData.includes(subcategorydata.subcategory_id)) {
+        } else {
+          subCategoryFavData.forEach((subcategoryfavdata) => {
+            if (
+              subcategorydata["subcategory.id"] ==
+              subcategoryfavdata.subcategory_id
+            ) {
+              isFavorite = true;
+            }
+          });
+          subcategoryValueData.push(subcategorydata.subcategory_id);
+          subCategoryDataN.push({
+            id: subcategorydata["subcategory.id"],
+            name: subcategorydata["subcategory.name"],
+            value: subcategorydata["value"],
+            icon: subcategorydata["subcategory.icon"],
+            unit: subcategorydata["subcategory.unit"],
+            type: subcategorydata["subcategory.type"],
+            category_id: subcategorydata["subcategory.category_id"],
+            is_favorite: isFavorite,
+          });
+        }
       });
+      subCategoryDataN.sort(compare);
       return res.json(
         constants.responseObj(true, 201, constants.messages.DataFound, false, {
           subCategoryDataN,
@@ -117,3 +140,13 @@ exports.addFavorites = async (req, res, next) => {
       constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
     });
 };
+
+function compare(a, b) {
+  if (Number(a.id) < Number(b.id)) {
+    return -1;
+  }
+  if (Number(a.id) > Number(b.id)) {
+    return 1;
+  }
+  return 0;
+}

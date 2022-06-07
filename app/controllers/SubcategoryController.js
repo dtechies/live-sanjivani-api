@@ -21,13 +21,11 @@ exports.allSubCategory = async (req, res, next) => {
   });
   let subcategoryValueData = [];
   let dataN = [];
-  console.log(subCategoryData, "subCategoryData loggg");
   if (subCategoryData) {
     subCategoryData.forEach((data) => {
       if (subcategoryValueData.includes(data.subcategory_id)) {
       } else {
         subcategoryValueData.push(data.subcategory_id);
-        console.log(data, "datalogg");
         dataN.push({
           subcategory_id: data.subcategory_id,
           value: data.value,
@@ -39,7 +37,6 @@ exports.allSubCategory = async (req, res, next) => {
         });
       }
     });
-
     let result = dataN.sort(compare);
     return res.json(
       constants.responseObj(
