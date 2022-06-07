@@ -75,7 +75,7 @@ require("./app/routes/GetNotificationRoutes")(app);
 require("./app/routes/PDFDownloadRoutes")(app);
 require("./app/routes/NestedSubcategoryRoutes")(app);
 require("./app/routes/FavoriteValueGraphRoutes")(app);
-require("./app/routes/UploadProfilePicRoutes")(app);
+require("./app/routes/UserProfileRoutes")(app);
 require("./app/routes/CareGiverRoutes")(app);
 require("./app/routes/MedicationListRoutes")(app);
 
