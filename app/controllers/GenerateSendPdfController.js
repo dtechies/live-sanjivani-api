@@ -16,9 +16,7 @@ exports.sendMail = async (req, res, next) => {
     IdentityType: "EmailAddress",
     MaxItems: 20,
   };
-
   const user_id = req.user_id;
-
   try {
     let categoryData = await CategoryModel.findAll({
       where: { id: req.body.category_id },
