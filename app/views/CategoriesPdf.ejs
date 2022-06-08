@@ -17,25 +17,25 @@
       <thead>
         <tr>
           <th scope="col">Sr.</th>
-          <th scope="col">Category</th>
-          <th scope="col">Sub Category</th>
+          <th scope="col">Field</th>
+
           <th scope="col">Value</th>
         </tr>
       </thead>
       <tbody>
         <% for(var i=0; i < CategoryData.length; i++) { %>
-        <% for(var j=0; j < CategoryData[i].subcategories.length; j++) { %>
+
         <tr>
-          <td><%= j+1 %></td>
-          <td> <%= CategoryData[i].name %> </td>
-          <td> <%= CategoryData[i].subcategories[j].name %></td>
+          <td><%= i+1 %></td>
+
+          <td> <%= CategoryData[i]. name %></td>
           <td>
-            <%= CategoryData[i].subcategories[j].user_subcategories_values.length?CategoryData[i].subcategories[j].user_subcategories_values[0].value:0 %>
+            <%= CategoryData[i] .user_subcategories_values.length?CategoryData[i].user_subcategories_values[0].value:0 %>
           </td>
         </tr>
 
         <% } %>
-        <% } %>
+
       </tbody>
     </table>
   </div>
