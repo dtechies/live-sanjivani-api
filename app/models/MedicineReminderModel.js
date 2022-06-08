@@ -14,6 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       user_selected_time: { type: Sequelize.STRING(50), notNull: true },
       pills_remaining: { type: Sequelize.INTEGER, notNull: true },
       status: { type: Sequelize.BOOLEAN, notNull: true },
+      is_done: { type: Sequelize.STRING(50), notNull: false },
       reminder_name: { type: Sequelize.STRING(100), notNull: true },
     },
     {
