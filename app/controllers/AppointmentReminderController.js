@@ -23,6 +23,7 @@ exports.addAppointmentReminderView = async (req, res, next) => {
 
 exports.getAppointmentReminderProfile = async (req, res, next) => {
   const user_id = req.user_id;
+
   try {
     const AppointmentReminderProfileData =
       await AppointmentReminderModel.findAll({
@@ -36,7 +37,6 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
           },
         ],
       });
-
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
         AppointmentReminderProfileData,
@@ -49,6 +49,7 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
     );
   }
 };
+
 
 exports.editAppointmentReminderStatus = async (req, res, next) => {
   try {
