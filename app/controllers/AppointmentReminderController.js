@@ -33,7 +33,7 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
         include: [
           {
             model: DoctorsModel,
-            attributes: ["doctor_name", "doctor_address"],
+            attributes: ["id", "doctor_name", "doctor_address"],
           },
         ],
       });
@@ -49,7 +49,6 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
     );
   }
 };
-
 
 exports.editAppointmentReminderStatus = async (req, res, next) => {
   try {

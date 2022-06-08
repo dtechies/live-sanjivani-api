@@ -1,6 +1,13 @@
 require("dotenv").config();
 
-const { constants } = require("../imports");
+const {
+  constants,
+  MedicineReminderModel,
+  AppointmentReminderModel,
+  moment,
+  UsersModel,
+  DoctorsModel,
+} = require("../imports");
 const AWS = require("aws-sdk");
 var https = require("https");
 
@@ -45,6 +52,110 @@ exports.getNotification = async (req, res, next) => {
 };
 
 exports.sendNotification = async (req, res, next) => {
+  const MedicineReminderProfileData = await MedicineReminderModel.findAll({
+    raw: true,
+    logging: false,
+    where: { status: true },
+    include: [
+      {
+        model: UsersModel,
+        attributes: ["player_id"],
+      },
+    ],
+  });
+
+  MedicineReminderProfileData.forEach((medicine_data) => {
+    // console.log(medicine_data);
+    // console.log(medicine_data, "medicine_data logg");
+    let current_date = moment().format("YYYY-MM-DD");
+    let current_time = moment().format("HH:mm:ss");
+    if (medicine_data.reminder_frequency == "EveryDay") {
+      if (medicine_data.user_selected_time == current_time) {
+        if (medicine_data["user.player_id"]) {
+          sendNotifications(medicine_data);
+        }
+      }
+    } else if (medicine_data.reminder_frequency == "Fixed Date") {
+      if (current_date == medicine_data.frequency_value) {
+        if (medicine_data.user_selected_time == current_time) {
+          if (medicine_data["user.player_id"]) {
+            sendNotifications(medicine_data);
+          }
+        }
+      }
+    } else if (medicine_data.reminder_frequency == "Alternate Day") {
+      if (current_date == medicine_data.frequency_value) {
+        if (medicine_data.user_selected_time == current_time) {
+          var new_date = moment(medicine_data.frequency_value, "YYYY-MM-DD")
+            .add(2, "days")
+            .format("YYYY-MM-DD");
+          MedicineReminderModel.update(
+            {
+              frequency_value: new_date,
+            },
+            {
+              where: {
+                id: medicine_data.id,
+              },
+            }
+          );
+          if (medicine_data["user.player_id"]) {
+            sendNotifications(medicine_data);
+          }
+        }
+      }
+    } else if (medicine_data.reminder_frequency == "Once A Week") {
+      if (current_date == medicine_data.frequency_value) {
+        if (medicine_data.user_selected_time == current_time) {
+          var new_date = moment(medicine_data.frequency_value, "YYYY-MM-DD")
+            .add(7, "days")
+            .format("YYYY-MM-DD");
+          MedicineReminderModel.update(
+            {
+              frequency_value: new_date,
+            },
+            {
+              where: {
+                id: medicine_data.id,
+              },
+            }
+          );
+          if (medicine_data["user.player_id"]) {
+            sendNotifications(medicine_data);
+          }
+        }
+      }
+    }
+  });
+};
+
+exports.sendNotificationForAppointmentReminder = async (req, res, next) => {
+  const AppointmentReminderModelData = await AppointmentReminderModel.findAll({
+    raw: true,
+    logging: false,
+    include: [
+      {
+        model: UsersModel,
+        attributes: ["player_id"],
+      },
+    ],
+  });
+
+  AppointmentReminderModelData.forEach((appointment_data) => {
+    let current_date = moment().format("YYYY-MM-DD");
+    if (current_date == medicine_data.date) {
+      let current_time = moment().format("HH:mm:ss");
+      if (appointment_data.user_selected_time == current_time) {
+        if (appointment_data["user.player_id"]) {
+          console.log(appointment_data["user.player_id"], "player_id logg");
+          sendNotifications(appointment_data);
+        }
+      }
+    }
+  });
+};
+async function sendNotifications(medicine_data) {
+  console.log(medicine_data, "medicine_data loggg");
   let title = "Medicine Reminder";
   var sendNotification = function (data) {
     var headers = {
@@ -59,7 +170,6 @@ exports.sendNotification = async (req, res, next) => {
       headers: headers,
     };
     var newReq = https.request(options, function (newRes) {
-      console.log(newRes, "newRes logg");
       newRes.on("data", function (data) {
         console.log("Response:");
         console.log(JSON.parse(data));
@@ -75,42 +185,21 @@ exports.sendNotification = async (req, res, next) => {
       en: "You have Medicine Reminder",
     },
     data: {
-      medicine_name: "paracetamol",
-      medicine_strength: 5,
-      medicine_strength_unit: "dk",
-      reminder_frequency: "After Meal",
-      frequency_value: "18:40 AM",
+      medicine_name: medicine_data.medicine_name,
+      medicine_strength: medicine_data.medicine_strength,
+      medicine_strength_unit: medicine_data.medicine_strength_unit,
+      reminder_frequency: medicine_data.reminder_frequency,
+      frequency_value: medicine_data.frequency_value,
       type: "reminder",
-      reminder_time: "Everyday",
-      reminder_name: "medicine",
-      dose: 1,
-      medicine_form: "dk",
+      reminder_time: medicine_data.reminder_time,
+      reminder_name: medicine_data.reminder_name,
+      user_selected_time: medicine_data.user_selected_time,
+      dose: medicine_data.dose,
+      medicine_form: medicine_data.medicine_form,
     },
     headings: { en: title },
     // included_segments: ["Subscribed Users"],
-    include_player_ids: ["d83f85df-a6f5-4846-a3af-52451f7a7826"],
+    include_player_ids: [medicine_data["user.player_id"]],
   };
   sendNotification(message);
-  // const sdk = require("api")("@onesignal/v9.0#vkskhql3uu3ucg");
-  // sdk["create-notification"](
-  //   {
-  //     app_id: "3b7300ff-2be3-46f8-ad6a-5473e664b134",
-  //     included_segments: ["d83f85df-a6f5-4846-a3af-52451f7a7826"],
-  //     external_id: "d83f85df-a6f5-4846-a3af-52451f7a7826",
-  //     contents: {
-  //       en: "English or Any Language Message",
-  //       es: "Spanish Message",
-  //     },
-  //     name: "INTERNAL_CAMPAIGN_NAME",
-  //     send_after: "string",
-  //     delayed_option: "string",
-  //     delivery_time_of_day: "string",
-  //     throttle_rate_per_minute: 0,
-  //   },
-  //   {
-  //     Authorization: "Basic YzlmNzkxZmMtNWIwMi00NzJjLWI0NWMtOGY3NzZhNDdmYzM0",
-  //   }
-  // )
-  //   .then((res) => console.log(res))
-  //   .catch((err) => console.error(err));
-};
+}
