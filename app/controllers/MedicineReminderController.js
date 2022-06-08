@@ -7,16 +7,10 @@ const {
   MedicineReminderModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-const {
-  S3
-} = require("../imports");
+const { S3 } = require("../imports");
 const dotenv = require("dotenv");
-let {
-  jwt
-} = require("../imports");
-const {
-  TipForDayModel
-} = require("../models");
+let { jwt } = require("../imports");
+const { TipForDayModel } = require("../models");
 dotenv.config();
 
 exports.addMedicineReminderView = async (req, res, next) => {
@@ -50,7 +44,7 @@ exports.getMedicineReminderProfile = async (req, res, next) => {
   try {
     const MedicineReminderProfileData = await MedicineReminderModel.findAll({
       where: {
-        user_id: user_id
+        user_id: user_id,
       },
     });
 
@@ -69,13 +63,16 @@ exports.getMedicineReminderProfile = async (req, res, next) => {
 
 exports.editMedicineReminderStatus = async (req, res, next) => {
   try {
-    let editMedicineStatus = await MedicineReminderModel.update({
-      status: req.body.status
-    }, {
-      where: {
-        id: req.body.id
+    let editMedicineStatus = await MedicineReminderModel.update(
+      {
+        status: req.body.status,
+      },
+      {
+        where: {
+          id: req.body.id,
+        },
       }
-    });
+    );
 
     return res.json(
       constants.responseObj(true, 201, constants.messages.UpdateStatus, false)
@@ -94,7 +91,7 @@ exports.getTipForDay = async (req, res, next) => {
   try {
     const TipForDayData = await TipForDayModel.findOne({
       where: {
-        id: user_id
+        id: user_id,
       },
     });
     return res.json(
@@ -197,7 +194,7 @@ function imageUpload(image, imgAttachement, cb) {
       cb(true, null);
     } else {
       cb(null, {
-        image: data.Location.split("/").pop()
+        image: data.Location.split("/").pop(),
       });
     }
   });

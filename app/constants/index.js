@@ -18,6 +18,7 @@ const messages = {
   UserCreated: "User Created Successfully.",
   InvalidCredentials: "Invalid Credentials!",
   UserLogin: "User Login successfully.",
+  UserLogout: "User Login successfully.",
   AccessDenied: "Access denied. No credentials sent!",
   Authorization: "Authentication failed!",
   InvalidToken: "Invalid Token!",
@@ -30,7 +31,7 @@ const messages = {
   Title: "Sample message for Android endpoints",
   Subject: "back end Notification",
   Unauthorized: "Unauthorized!",
-  DuplicateNumber: "Mobile number already exists"
+  DuplicateNumber: "Mobile number already exists",
 };
 
 const responseObj = (
@@ -45,18 +46,18 @@ const responseObj = (
     statusCode,
     message,
     isTokenExpired,
-    data
+    data,
   };
 };
 
 const successCallback = {
   status: statusTrue,
-  statusCode: successStatusCode
+  statusCode: successStatusCode,
 };
 const resultCallbacks = {
   existsCallBack: {
     status: statusFalse,
-    statusCode: existsStatusCode
+    statusCode: existsStatusCode,
   },
   systemErrorCallback: {
     status: statusFalse,
