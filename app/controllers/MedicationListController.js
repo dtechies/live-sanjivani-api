@@ -3,6 +3,7 @@ const {
     MedicineReminderModel,
     jwt,
     moment,
+    Op,
 } = require("../imports");
 const constants = require("../imports").constants;
 const {
@@ -15,19 +16,18 @@ exports.medicationList = async (req, res, next) => {
     // let todays_date = moment().calendar()
 
     let today = moment().format('YYYY-MM-DD');
-
-    // let tdate = created_at.toDate();
-    // console.log(tdate)
-    // let todays_date = moment().date
-    // let todays_date = (moment.format('YYYY-MM-DD'));
-    // todays_date.toDate();
-    console.log("date", today);
+    let startDate = today + ' 00:00:00'
+    let endDate = today + ' 23:59:59'
+    console.log(startDate, endDate)
+    console.log("date****", today);
     try {
         const MedicineData = await MedicineReminderModel.findAll({
             attributes: ["reminder_name", "id", "user_selected_time", "dose", "medicine_name", "medicine_strength_unit", "reminder_frequency", "reminder_time", "status"],
             where: {
                 user_id: user_id,
-                // created_at: today
+                created_at: {
+                    [Op.between]: [startDate, endDate],
+                }
             },
         });
 
