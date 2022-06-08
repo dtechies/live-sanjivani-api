@@ -4,19 +4,10 @@ const {
   UserSubcategoriesValueModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-const {
-  AWS
-} = require("../imports");
-let {
-  jwt
-} = require("../imports/");
+const { AWS } = require("../imports");
 
-const {
-  healthPdf
-} = require("../utils/Utils");
-const {
-  sendPdf
-} = require("../utils/Utils");
+const { healthPdf } = require("../utils/Utils");
+const { sendPdf } = require("../utils/Utils");
 
 exports.sendMail = async (req, res, next) => {
   var sourceEmail = req.body.email;
@@ -30,37 +21,30 @@ exports.sendMail = async (req, res, next) => {
 
   try {
     let categoryData = await CategoryModel.findAll({
-        where: {
-          id: req.body.category_id
-        }
-      },
-
-      {
-        include: [{
+      where: { id: req.body.category_id },
+      include: [
+        {
           model: SubcategoryModel,
-          include: [{
-            model: UserSubcategoriesValueModel,
-            where: {
-              user_id: user_id
+          include: [
+            {
+              model: UserSubcategoriesValueModel,
+              where: { user_id: user_id },
+              order: [["id", "DESC"]],
+              attributes: ["value"],
+              limit: 1,
             },
-            order: [
-              ["id", "DESC"]
-            ],
-            attributes: ["value"],
-            limit: 1,
-          }, ],
-        }, ],
-        order: [
-          ["id", "DESC"]
-        ],
-      }
-    );
+          ],
+        },
+      ],
+      order: [["id", "DESC"]],
+    });
+
     let pdf = await healthPdf(categoryData);
 
     if (!sourceEmail == "") {
       var listIDsPromise = await new AWS.SES({
-          apiVersion: "2010-12-01"
-        })
+        apiVersion: "2010-12-01",
+      })
         .listIdentities(params)
         .promise();
 
@@ -73,10 +57,10 @@ exports.sendMail = async (req, res, next) => {
       } else {
         // Create promise and SES service object
         var verifyEmailPromise = await new AWS.SES({
-            apiVersion: "2010-12-01"
-          })
+          apiVersion: "2010-12-01",
+        })
           .verifyEmailIdentity({
-            EmailAddress: sourceEmail
+            EmailAddress: sourceEmail,
           })
           .promise();
       }
