@@ -230,6 +230,7 @@ function healthPdf(CategoryData) {
   return pdfAttachement;
 }
 async function sendPdf(email, pdf) {
+  console.log("pdf**", pdf);
   const ses = new AWS.SES({
     AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
     AWSSecretKey: process.env.AWS_SECRET_KEY,
@@ -252,7 +253,7 @@ async function sendPdf(email, pdf) {
         Html: {
           Charset: "UTF-8",
           Data: `<h3>Health report</h3>
-              <p>Download ypu pdf <a href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}" download>here</a></p>`,
+              <p>Download pdf <a href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}">here</a></p>`,
         },
         Text: {
           Charset: "UTF-8",
