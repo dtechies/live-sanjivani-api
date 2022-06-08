@@ -6,6 +6,7 @@ const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
+const Op = require("Sequelize").Op;
 
 require("dotenv").config();
 const AWS = require("aws-sdk");
@@ -67,4 +68,5 @@ module.exports = {
   NestedSubcategoryModel,
   FavoriteModel,
   CareGiverModel,
+  Op,
 };
