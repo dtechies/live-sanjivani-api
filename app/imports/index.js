@@ -20,7 +20,7 @@ const S3 = new AWS.S3();
 // models
 const UsersModel = db.UsersModel;
 const DoctorsModel = db.DoctorsModel;
-const MedicineFormModel = db.MedicineFormModel;
+const MedicineDataModel = db.MedicineDataModel;
 const MedicineStrengthModel = db.MedicineStrengthModel;
 const ReminderFrequencyModel = db.ReminderFrequencyModel;
 const ReminderTimeModel = db.ReminderTimeModel;
@@ -49,7 +49,7 @@ module.exports = {
   sgMail,
   UsersModel,
   DoctorsModel,
-  MedicineFormModel,
+  MedicineDataModel,
   MedicineStrengthModel,
   ReminderFrequencyModel,
   ReminderTimeModel,

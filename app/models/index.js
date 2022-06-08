@@ -3,11 +3,12 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
   process.env.DB,
   process.env.DB_USER,
-  process.env.DB_PASSWORD, {
+  process.env.DB_PASSWORD,
+  {
     dialect: "mysql",
     host: "localhost",
     dialectOptions: {
-      // socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
+      socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
       // socketPath: ""
     },
   }
@@ -19,7 +20,7 @@ db.sequelize = sequelize;
 
 db.UsersModel = require("./UsersModel")(sequelize, Sequelize);
 db.DoctorsModel = require("./DoctorsModel")(sequelize, Sequelize);
-db.MedicineFormModel = require("./MedicineFormModel")(sequelize, Sequelize);
+db.MedicineDataModel = require("./MedicineDataModel")(sequelize, Sequelize);
 db.MedicineStrengthModel = require("./MedicineStrengthModel")(
   sequelize,
   Sequelize
