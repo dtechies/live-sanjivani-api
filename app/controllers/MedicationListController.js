@@ -13,7 +13,6 @@ const {
 exports.medicationList = async (req, res, next) => {
     const user_id = req.user_id;
     const created_at = req.body.created_at;
-    // let todays_date = moment().calendar()
 
     let today = moment().format('YYYY-MM-DD');
     let startDate = today + ' 00:00:00'
@@ -22,7 +21,9 @@ exports.medicationList = async (req, res, next) => {
     console.log("date****", today);
     try {
         const MedicineData = await MedicineReminderModel.findAll({
-            attributes: ["reminder_name", "id", "user_selected_time", "dose", "medicine_name", "medicine_strength_unit", "reminder_frequency", "reminder_time", "status"],
+            attributes: ["reminder_name", "id", "user_selected_time", "dose", "medicine_name", "medicine_strength",
+                "medicine_strength_unit", "reminder_frequency", "reminder_time", "status", "is_done"
+            ],
             where: {
                 user_id: user_id,
                 created_at: {
