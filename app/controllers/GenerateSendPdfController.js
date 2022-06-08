@@ -81,3 +81,53 @@ exports.sendMail = async (req, res, next) => {
     );
   }
 };
+
+// exports.addFavorites = async (req, res, next) => {
+//   const user_id = req.user_id;
+//   FavoriteModel.destroy({
+//     where: {
+//       user_id: user_id,
+//     },
+//   })
+//     .then(async (result) => {
+//       let category_data = req.body.category_id;
+//       let categoryValue = [];
+//       if (category_data) {
+//         category_data.forEach((categoryy_id) => {
+//           categoryValue.push({
+//             user_id: user_id,
+//             category_id: category_id,
+//           });
+//         });
+//         const addFavorite = await FavoriteModel.bulkCreate(subcategoryValue);
+//         if (addFavorite) {
+//           return res.json(
+//             constants.responseObj(
+//               true,
+//               201,
+//               constants.messages.AddSuccess,
+//               false
+//             )
+//           );
+//         } else {
+//           return res.json(
+//             constants.responseObj(
+//               false,
+//               500,
+//               constants.messages.SomethingWentWrong
+//             )
+//           );
+//         }
+//       } else {
+//         constants.responseObj(
+//           false,
+//           500,
+//           constants.messages.SomethingWentWrong
+//         );
+//       }
+//     })
+//     .catch((err) => {
+//       console.log("err:", err);
+//       constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
+//     });
+// };

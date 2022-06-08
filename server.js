@@ -11,7 +11,7 @@ const today = require("moment");
 
 // To sync changes in database
 // db.sequelize.sync();
-//db.sequelize.sync({ alter: true });
+// db.sequelize.sync({ alter: true });
 //TODO: to sync changes in database
 
 // To upload files

@@ -1,10 +1,11 @@
 const {
   DoctorsModel,
-  MedicineFormModel,
+  MedicineDataModel,
   MedicineStrengthModel,
   ReminderFrequencyModel,
   ReminderTimeModel,
   MedicineReminderModel,
+  moment,
 } = require("../imports");
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
@@ -16,7 +17,7 @@ dotenv.config();
 exports.addMedicineReminderView = async (req, res, next) => {
   try {
     const DoctorsData = await DoctorsModel.findAll();
-    const MedicineData = await MedicineFormModel.findAll();
+    const MedicineData = await MedicineDataModel.findAll();
     const MedicineStrengthData = await MedicineStrengthModel.findAll();
     const ReminderFrequencyData = await ReminderFrequencyModel.findAll();
     const ReminderTimeData = await ReminderTimeModel.findAll();
@@ -108,23 +109,47 @@ exports.getTipForDay = async (req, res, next) => {
 };
 
 exports.addMedicineReminder = async (req, res, next) => {
-  const DoctorData = await DoctorsModel.findOne({
+  // const DoctorData = await DoctorsModel.findOne({
+  //   where: {
+  //     doctor_name: req.body.doctor_name,
+  //   },
+  // });
+  // if (DoctorData) {
+  //   var Doctor_id = DoctorData.id;
+  // } else {
+  // }
+  const DoctorData = await DoctorsModel.create({
+    doctor_name: req.body.doctor_name,
+  });
+  if (!DoctorData) {
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+  var Doctor_id = DoctorData.id;
+
+  //
+  const MedicineData = await MedicineDataModel.findOne({
     where: {
-      doctor_name: req.body.doctor_name,
+      name: req.body.medicine_name,
     },
   });
-  if (DoctorData) {
-    var Doctor_id = DoctorData.id;
+  var medicine_id;
+  var medicine_name;
+  if (MedicineData) {
+    medicine_id = MedicineData.id;
+    medicine_name = MedicineData.name;
   } else {
-    const DoctorData = await DoctorsModel.create({
-      doctor_name: req.body.doctor_name,
+    const MedicineData = await MedicineDataModel.create({
+      name: req.body.medicine_name,
     });
-    if (!DoctorData) {
+    if (!MedicineData) {
       return res.json(
         constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
       );
     }
-    var Doctor_id = DoctorData.id;
+    medicine_id = MedicineData.id;
+    medicine_name = MedicineData.name;
   }
 
   try {
@@ -141,8 +166,9 @@ exports.addMedicineReminder = async (req, res, next) => {
         let medicineReminderData = {
           user_id: req.body.user_id,
           doctor_id: Doctor_id,
+          medicine_id: medicine_id,
+          medicine_name: medicine_name,
           reminder_name: req.body.reminder_name,
-          medicine_name: req.body.medicine_name,
           medicine_image: images.image,
           medicine_form: req.body.medicine_form,
           dose: req.body.dose,
@@ -152,9 +178,12 @@ exports.addMedicineReminder = async (req, res, next) => {
           frequency_value: req.body.frequency_value,
           reminder_time: req.body.reminder_time,
           user_selected_time: req.body.user_selected_time,
-          pills_remaining: req.body.pills_remaining,
           status: true,
         };
+        req.body.pills_remaining
+          ? (medicineReminderData["pills_remaining"] = req.body.pills_remaining)
+          : "";
+        console.log(medicineReminderData, "medicineReminderData logg");
         const medicineReminder = await MedicineReminderModel.create(
           medicineReminderData
         );
@@ -199,3 +228,30 @@ function imageUpload(image, imgAttachement, cb) {
     }
   });
 }
+exports.todaysMedicineReminderList = async (req, res, next) => {
+  let user_id = req.user_id;
+  console.log(user_id, "user_id logg");
+  let todays_date = moment().format("YYYY-MM-DD");
+  console.log(todays_date, "todays_date logg");
+  try {
+    const MedicineReminderData = await MedicineReminderModel.findAll({
+      where: { user_id: user_id, created_at: todays_date },
+    });
+    if (MedicineReminderData.length) {
+      return res.json(
+        constants.responseObj(true, 201, constants.messages.DataFound, false, {
+          MedicineReminderData,
+        })
+      );
+    } else {
+      return res.json(
+        constants.responseObj(false, 404, constants.messages.NoDataFound, false)
+      );
+    }
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+};
