@@ -18,6 +18,7 @@ const messages = {
   UserCreated: "User Created Successfully.",
   InvalidCredentials: "Invalid Credentials!",
   UserLogin: "User Login successfully.",
+  UserLogout: "User Login successfully.",
   AccessDenied: "Access denied. No credentials sent!",
   Authorization: "Authentication failed!",
   InvalidToken: "Invalid Token!",

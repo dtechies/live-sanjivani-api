@@ -5,8 +5,6 @@ const {
 } = require("../imports");
 const constants = require("../imports").constants;
 const { AWS } = require("../imports");
-let { jwt } = require("../imports/");
-const Op = require("Sequelize").Op;
 
 const { healthPdf } = require("../utils/Utils");
 const { sendPdf } = require("../utils/Utils");
@@ -22,32 +20,25 @@ exports.sendMail = async (req, res, next) => {
   const user_id = req.user_id;
 
   try {
-    let categoryData = await CategoryModel.findAll(
-      {
-        where: {
-          id: req.body.category_id,
+    let categoryData = await CategoryModel.findAll({
+      where: { id: req.body.category_id },
+      include: [
+        {
+          model: SubcategoryModel,
+          include: [
+            {
+              model: UserSubcategoriesValueModel,
+              where: { user_id: user_id },
+              order: [["id", "DESC"]],
+              attributes: ["value"],
+              limit: 1,
+            },
+          ],
         },
-      },
-      {
-        include: [
-          {
-            model: SubcategoryModel,
-            include: [
-              {
-                model: UserSubcategoriesValueModel,
-                where: {
-                  user_id: user_id,
-                },
-                order: [["id", "DESC"]],
-                attributes: ["value"],
-                limit: 1,
-              },
-            ],
-          },
-        ],
-        order: [["id", "DESC"]],
-      }
-    );
+      ],
+      order: [["id", "DESC"]],
+    });
+
     let pdf = await healthPdf(categoryData);
 
     if (!sourceEmail == "") {
