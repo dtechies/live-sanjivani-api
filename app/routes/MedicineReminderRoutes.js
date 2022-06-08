@@ -18,6 +18,11 @@ module.exports = (app) => {
     auth(),
     medicineReminderController.editMedicineReminderStatus
   );
+  router.post(
+    "/edit-reminder-status",
+    auth(),
+    medicineReminderController.editReminderStatus
+  );
   router.get(
     "/get-medicine-reminder-profile",
     auth(),

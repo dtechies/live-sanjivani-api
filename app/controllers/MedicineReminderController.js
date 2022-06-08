@@ -66,7 +66,6 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
     let editMedicineStatus = await MedicineReminderModel.update(
       {
         status: req.body.status,
-        is_done: req.body.is_done,
       },
       {
         where: {
@@ -92,6 +91,37 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
   }
 };
 
+exports.editReminderStatus = async (req, res, next) => {
+  try {
+    const user_id = req.user_id;
+    let editMedicineStatus = await MedicineReminderModel.update(
+      {
+        reminder_status: req.body.reminder_status,
+        is_done: true,
+      },
+      {
+        where: {
+          id: user_id,
+        },
+      }
+    );
+
+    return res.json(
+      constants.responseObj(
+        true,
+        201,
+        constants.messages.UpdateStatus,
+        false,
+        editMedicineStatus
+      )
+    );
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+};
 exports.getTipForDay = async (req, res, next) => {
   const user_id = req.user_id;
 
@@ -185,6 +215,7 @@ exports.addMedicineReminder = async (req, res, next) => {
           reminder_time: req.body.reminder_time,
           user_selected_time: req.body.user_selected_time,
           status: true,
+          is_done: false,
         };
         req.body.pills_remaining
           ? (medicineReminderData["pills_remaining"] = req.body.pills_remaining)

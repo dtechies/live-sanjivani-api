@@ -8,24 +8,30 @@ const fileUpload = require("express-fileupload");
 const db = require("./app/models");
 const today = require("moment");
 
-
 // To sync changes in database
 // db.sequelize.sync();
 // db.sequelize.sync({ alter: true });
 //TODO: to sync changes in database
 
+var cronJobs = require("./app/CronJobs");
+cronJobs.sendNotification();
+
 // To upload files
-app.use(fileUpload({
-  createParentPath: true
-}));
+app.use(
+  fileUpload({
+    createParentPath: true,
+  })
+);
 
 // parse requests of content-type - application/json
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -55,7 +61,7 @@ app.use(cors());
 // simple route
 app.get("/", (req, res) => {
   res.json({
-    message: "Welcome To Live Sanjivani"
+    message: "Welcome To Live Sanjivani",
   });
 });
 
@@ -78,7 +84,6 @@ require("./app/routes/FavoriteValueGraphRoutes")(app);
 require("./app/routes/UserProfileRoutes")(app);
 require("./app/routes/CareGiverRoutes")(app);
 require("./app/routes/MedicationListRoutes")(app);
-
 
 // set port, listen for requests
 const PORT = process.env.PORT || 1819;

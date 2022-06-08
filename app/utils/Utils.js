@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const options = {
   expiresIn: "60d",
-  issuer: ""
+  issuer: "",
 };
 const Cryptr = require("cryptr");
 const algorithm = new Cryptr("sanjivani#$&&codentic@$$");
@@ -9,13 +9,9 @@ const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
 var pdf = require("html-pdf");
-const {
-  S3
-} = require("../imports");
+const { S3 } = require("../imports");
 var AWS = require("aws-sdk");
-const {
-  constants
-} = require("../imports");
+const { constants } = require("../imports");
 
 var bcrypt;
 try {
@@ -33,19 +29,20 @@ hashPassword = (password, cb) => {
   bcrypt.genSalt(10, function (err, salt) {
     if (err) cb(err);
     bcrypt.hash(password, salt, function (err, hash) {
-      if (err) cb(err, {
-        message: "error occured",
-        password: ""
-      });
-      else cb(null, {
-        message: "successful",
-        password: hash
-      });
+      if (err)
+        cb(err, {
+          message: "error occured",
+          password: "",
+        });
+      else
+        cb(null, {
+          message: "successful",
+          password: hash,
+        });
     });
   });
 };
 const comparePassword = async (plainPassword, hash) => {
-
   try {
     let result = await bcrypt.compare(plainPassword, hash);
     result = JSON.parse(JSON.stringify(result));
@@ -92,8 +89,8 @@ response = (status, statusCode, is_token_expired, message) => {
       status,
       statusCode,
       is_token_expired,
-      message
-    }
+      message,
+    },
   };
 };
 systemError = () => {
@@ -173,7 +170,7 @@ function healthPdf(CategoryData) {
   );
   let html = compiled({
     title: "EJS",
-    CategoryData: CategoryData
+    CategoryData: CategoryData,
   });
   var options = {
     format: "A4",
@@ -246,7 +243,7 @@ async function sendPdf(email, pdf) {
         "codentic.users@gmail.com",
         /* more items */
       ],
-      ToAddresses: [email] /* more items */ ,
+      ToAddresses: [email] /* more items */,
     },
     Message: {
       /* required */
@@ -255,7 +252,7 @@ async function sendPdf(email, pdf) {
         Html: {
           Charset: "UTF-8",
           Data: `<h3>Health report</h3>
-              <p>Download ypu pdf <a href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}">here</a></p>`,
+              <p>Download ypu pdf <a href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}" download>here</a></p>`,
         },
         Text: {
           Charset: "UTF-8",
@@ -267,7 +264,7 @@ async function sendPdf(email, pdf) {
         Data: "Test email",
       },
     },
-    Source: "codentic.users@gmail.com" /* required */ ,
+    Source: "codentic.users@gmail.com" /* required */,
     ReplyToAddresses: [
       email,
       /* more items */

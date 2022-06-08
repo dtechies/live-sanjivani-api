@@ -61,6 +61,13 @@ exports.sendMail = async (req, res, next) => {
           categoryData,
         })
       );
+    } else {
+      return res.json(
+        constants.responseObj(true, 201, constants.messages.DataFound, false, {
+          link: `https: //live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
+          categoryData,
+        })
+      );
     }
   } catch (error) {
     console.log(error, "error");
