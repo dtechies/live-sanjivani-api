@@ -10,7 +10,6 @@ const {
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports");
 const { TipForDayModel } = require("../models");
 dotenv.config();
 
@@ -67,6 +66,7 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
     let editMedicineStatus = await MedicineReminderModel.update(
       {
         status: req.body.status,
+        is_done: req.body.is_done,
       },
       {
         where: {
@@ -76,7 +76,13 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
     );
 
     return res.json(
-      constants.responseObj(true, 201, constants.messages.UpdateStatus, false)
+      constants.responseObj(
+        true,
+        201,
+        constants.messages.UpdateStatus,
+        false,
+        editMedicineStatus
+      )
     );
   } catch (error) {
     console.log(error, "error");
