@@ -21,7 +21,7 @@ exports.medicationList = async (req, res, next) => {
     console.log("date****", today);
     try {
         const MedicineData = await MedicineReminderModel.findAll({
-            attributes: ["reminder_name", "id", "user_selected_time", "dose", "medicine_name", "medicine_strength",
+            attributes: ["reminder_name", "id", "user_selected_time", "dose", "medicine_name", "medicine_form", "medicine_strength",
                 "medicine_strength_unit", "reminder_frequency", "reminder_time", "status", "is_done"
             ],
             where: {
