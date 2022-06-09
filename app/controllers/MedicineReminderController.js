@@ -101,7 +101,7 @@ exports.editReminderStatus = async (req, res, next) => {
       },
       {
         where: {
-          id: user_id,
+          id: req.body.id,
         },
       }
     );
