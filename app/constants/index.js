@@ -32,6 +32,7 @@ const messages = {
   Subject: "back end Notification",
   Unauthorized: "Unauthorized!",
   NoDataFound: "No Data Found!",
+  UserNotFound: "User Not Found!",
   DuplicateNumber: "Mobile number already exists",
 };
 
