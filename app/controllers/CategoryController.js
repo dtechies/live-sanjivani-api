@@ -3,6 +3,7 @@ const {
   SubcategoryModel,
   UserSubcategoriesValueModel,
   NestedSubcategoryModel,
+  OtherSubcategoryModel,
 } = require("../imports");
 const constants = require("../imports").constants;
 
@@ -46,6 +47,10 @@ exports.allCatSubCategory = async (req, res, next) => {
               attributes: ["value"],
               where: { user_id: user_id },
               limit: 1,
+            },
+            {
+              model: OtherSubcategoryModel,
+              attributes: ["name", "unit"],
             },
           ],
         },

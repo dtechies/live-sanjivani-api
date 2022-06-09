@@ -189,56 +189,98 @@ exports.addMedicineReminder = async (req, res, next) => {
   }
 
   try {
-    let medicine_image = req.files.medicine_image;
-    let filename = medicine_image.name;
-    let imgAttachement = Date.now() + "_" + filename;
-    imageUpload(medicine_image, imgAttachement, async function (err, images) {
-      if (err) {
-        console.log(err, "err logg");
-        return res.json(
-          constants.responseObj(false, 422, constants.messages.InvalidFile)
-        );
-      } else {
-        let medicineReminderData = {
-          user_id: req.body.user_id,
-          doctor_id: Doctor_id,
-          medicine_id: medicine_id,
-          medicine_name: medicine_name,
-          reminder_name: req.body.reminder_name,
-          medicine_image: images.image,
-          medicine_form: req.body.medicine_form,
-          dose: req.body.dose,
-          medicine_strength: req.body.medicine_strength,
-          medicine_strength_unit: req.body.medicine_strength_unit,
-          reminder_frequency: req.body.reminder_frequency,
-          frequency_value: req.body.frequency_value,
-          reminder_time: req.body.reminder_time,
-          user_selected_time: req.body.user_selected_time,
-          status: true,
-          is_done: false,
-        };
-        req.body.pills_remaining
-          ? (medicineReminderData["pills_remaining"] = req.body.pills_remaining)
-          : "";
-        console.log(medicineReminderData, "medicineReminderData logg");
-        const medicineReminder = await MedicineReminderModel.create(
-          medicineReminderData
-        );
-        if (medicineReminder) {
+    if (req.files) {
+      let medicine_image = req.files.medicine_image;
+      let filename = medicine_image.name;
+      let imgAttachement = Date.now() + "_" + filename;
+      imageUpload(medicine_image, imgAttachement, async function (err, images) {
+        if (err) {
+          console.log(err, "err logg");
           return res.json(
-            constants.responseObj(true, 201, constants.messages.AddSuccess)
+            constants.responseObj(false, 422, constants.messages.InvalidFile)
           );
         } else {
-          return res.json(
-            constants.responseObj(
-              false,
-              500,
-              constants.messages.SomethingWentWrong
-            )
+          let medicineReminderData = {
+            user_id: req.body.user_id,
+            doctor_id: Doctor_id,
+            medicine_id: medicine_id,
+            medicine_name: medicine_name,
+            reminder_name: req.body.reminder_name,
+            medicine_image: images.image,
+            medicine_form: req.body.medicine_form,
+            dose: req.body.dose,
+            medicine_strength: req.body.medicine_strength,
+            medicine_strength_unit: req.body.medicine_strength_unit,
+            reminder_frequency: req.body.reminder_frequency,
+            frequency_value: req.body.frequency_value,
+            reminder_time: req.body.reminder_time,
+            user_selected_time: req.body.user_selected_time,
+            status: true,
+            is_done: false,
+          };
+          req.body.pills_remaining
+            ? (medicineReminderData["pills_remaining"] =
+                req.body.pills_remaining)
+            : "";
+          console.log(medicineReminderData, "medicineReminderData logg");
+          const medicineReminder = await MedicineReminderModel.create(
+            medicineReminderData
           );
+          if (medicineReminder) {
+            return res.json(
+              constants.responseObj(true, 201, constants.messages.AddSuccess)
+            );
+          } else {
+            return res.json(
+              constants.responseObj(
+                false,
+                500,
+                constants.messages.SomethingWentWrong
+              )
+            );
+          }
         }
+      });
+    } else {
+      let medicineReminderData = {
+        user_id: req.body.user_id,
+        doctor_id: Doctor_id,
+        medicine_id: medicine_id,
+        medicine_name: medicine_name,
+        reminder_name: req.body.reminder_name,
+        medicine_image: images.image,
+        medicine_form: req.body.medicine_form,
+        dose: req.body.dose,
+        medicine_strength: req.body.medicine_strength,
+        medicine_strength_unit: req.body.medicine_strength_unit,
+        reminder_frequency: req.body.reminder_frequency,
+        frequency_value: req.body.frequency_value,
+        reminder_time: req.body.reminder_time,
+        user_selected_time: req.body.user_selected_time,
+        status: true,
+        is_done: false,
+      };
+      req.body.pills_remaining
+        ? (medicineReminderData["pills_remaining"] = req.body.pills_remaining)
+        : "";
+      console.log(medicineReminderData, "medicineReminderData logg");
+      const medicineReminder = await MedicineReminderModel.create(
+        medicineReminderData
+      );
+      if (medicineReminder) {
+        return res.json(
+          constants.responseObj(true, 201, constants.messages.AddSuccess)
+        );
+      } else {
+        return res.json(
+          constants.responseObj(
+            false,
+            500,
+            constants.messages.SomethingWentWrong
+          )
+        );
       }
-    });
+    }
   } catch (error) {
     console.log(error, "error");
     return res.json(constants.responseObj(false, 500, error));
