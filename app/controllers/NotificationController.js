@@ -133,6 +133,7 @@ exports.sendNotificationForAppointmentReminder = async (req, res, next) => {
   const AppointmentReminderModelData = await AppointmentReminderModel.findAll({
     raw: true,
     logging: false,
+    where: { status: 1 },
     include: [
       {
         model: UsersModel,
