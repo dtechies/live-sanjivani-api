@@ -206,7 +206,10 @@ exports.getSubCategoryGraph = async (req, res, next) => {
   let month_dates = getCurrentMonthDateRange();
   for (let month = 0; month < month_dates.length; month++) {
     let startDate = month_dates[month].startDate + " 00:00:00";
-    let endDate = month_dates[month].endDate + " 23:59:59";
+    let endDate =
+      moment(month_dates[month].endDate)
+        .subtract(1, "days")
+        .format("YYYY-MM-DD") + " 23:59:59";
     let subCategoryData = await UserSubcategoriesValueModel.findAll({
       raw: true,
       where: {
