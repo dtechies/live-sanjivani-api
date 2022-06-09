@@ -4,15 +4,7 @@ module.exports = (sequelize, Sequelize) => {
   const NestedSubcategoryModel = sequelize.define(
     "nested_subcategory",
     {
-      name: {
-        type: Sequelize.STRING,
-        notNull: true,
-      },
-      unit: {
-        type: Sequelize.STRING,
-        notNull: true,
-      },
-      type: {
+      value: {
         type: Sequelize.STRING,
         notNull: false,
       },
@@ -27,6 +19,9 @@ module.exports = (sequelize, Sequelize) => {
   NestedSubcategoryModel.associate = (models) => {
     NestedSubcategoryModel.belongsTo(models.SubCategoryModel, {
       foreignKey: "subcategory_id",
+    });
+    NestedSubcategoryModel.belongsTo(models.UsersModel, {
+      foreignKey: "user_id",
     });
   };
 
