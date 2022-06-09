@@ -1,18 +1,9 @@
-const {
-  SubcategoryModel,
-  UserSubcategoriesValueModel
-} = require("../imports");
+const { SubcategoryModel, UserSubcategoriesValueModel } = require("../imports");
 const constants = require("../imports").constants;
-const {
-  AWS
-} = require("../imports");
+const { AWS } = require("../imports");
 
-const {
-  healthPdf
-} = require("../utils/Utils");
-const {
-  sendPdf
-} = require("../utils/Utils");
+const { healthPdf } = require("../utils/Utils");
+const { sendPdf } = require("../utils/Utils");
 
 exports.sendMail = async (req, res, next) => {
   var sourceEmail = req.body.email;
@@ -25,27 +16,27 @@ exports.sendMail = async (req, res, next) => {
   try {
     let categoryData = await SubcategoryModel.findAll({
       where: {
-        id: req.body.subcategory_id
+        id: req.body.subcategory_id,
       },
-      include: [{
-        model: UserSubcategoriesValueModel,
-        where: {
-          user_id: user_id
+      include: [
+        {
+          model: UserSubcategoriesValueModel,
+          where: {
+            user_id: user_id,
+          },
+          order: [["id", "DESC"]],
+          attributes: ["value"],
+          limit: 1,
         },
-        order: [
-          ["id", "DESC"]
-        ],
-        attributes: ["value"],
-        limit: 1,
-      }, ],
+      ],
     });
 
     let pdf = await healthPdf(categoryData);
 
     if (!sourceEmail == "") {
       var listIDsPromise = await new AWS.SES({
-          apiVersion: "2010-12-01",
-        })
+        apiVersion: "2010-12-01",
+      })
         .listIdentities(params)
         .promise();
 
@@ -58,8 +49,8 @@ exports.sendMail = async (req, res, next) => {
       } else {
         // Create promise and SES service object
         var verifyEmailPromise = await new AWS.SES({
-            apiVersion: "2010-12-01",
-          })
+          apiVersion: "2010-12-01",
+        })
           .verifyEmailIdentity({
             EmailAddress: sourceEmail,
           })
@@ -78,7 +69,7 @@ exports.sendMail = async (req, res, next) => {
     } else {
       return res.json(
         constants.responseObj(true, 201, constants.messages.DataFound, false, {
-          link: `https: //live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
+          link: `https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
           categoryData,
         })
       );

@@ -4,6 +4,14 @@ module.exports = (sequelize, Sequelize) => {
     {
       value: { type: Sequelize.STRING, notNull: true },
       is_selected: { type: Sequelize.BOOLEAN, notNull: true },
+      value_added_time: {
+        type: Sequelize.STRING,
+        notNull: false,
+      },
+      value_added_month: {
+        type: Sequelize.STRING,
+        notNull: false,
+      },
     },
     {
       timestamps: true,
