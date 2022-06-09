@@ -38,6 +38,9 @@ module.exports = (sequelize, Sequelize) => {
     SubcategoryModel.hasMany(models.NestedSubcategoryModel, {
       foreignKey: "subcategory_id",
     });
+    SubcategoryModel.hasMany(models.OtherSubcategoryModel, {
+      foreignKey: "subcategory_id",
+    });
   };
 
   return SubcategoryModel;
