@@ -2,12 +2,10 @@ const {
   CategoryModel,
   SubcategoryModel,
   UserSubcategoriesValueModel,
+  NestedSubcategoryModel,
+  OtherSubcategoryModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-let {
-  successCallback
-} = require("../constants");
-const http = require("https");
 
 exports.allCategory = async (req, res, next) => {
   let category = await CategoryModel.findAll();
@@ -29,22 +27,35 @@ exports.allCategory = async (req, res, next) => {
 };
 
 exports.allCatSubCategory = async (req, res, next) => {
+  const user_id = req.user_id;
   try {
     let categoryData = await CategoryModel.findAll({
-      include: [{
-        model: SubcategoryModel,
-        include: [{
-          model: UserSubcategoriesValueModel,
-          order: [
-            ["id", "DESC"]
+      include: [
+        {
+          model: SubcategoryModel,
+          include: [
+            {
+              model: UserSubcategoriesValueModel,
+              order: [["id", "DESC"]],
+              attributes: ["value"],
+              where: { user_id: user_id },
+              limit: 1,
+            },
+            {
+              model: NestedSubcategoryModel,
+              order: [["id", "DESC"]],
+              attributes: ["value"],
+              where: { user_id: user_id },
+              limit: 1,
+            },
+            {
+              model: OtherSubcategoryModel,
+              attributes: ["name", "unit"],
+            },
           ],
-          attributes: ["value"],
-          limit: 1,
-        }, ],
-      }, ],
-      order: [
-        ["id", "DESC"]
+        },
       ],
+      order: [["id", "DESC"]],
     });
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {
@@ -61,16 +72,16 @@ exports.allCatSubCategory = async (req, res, next) => {
 
 exports.generatePdf = async (req, res, next) => {
   let category = await CategoryModel.findAll({
-    raw: true
+    raw: true,
   });
   if (category.length) {
     let subcategory = await SubcategoryModel.findAll({
-      raw: true
+      raw: true,
     });
     if (subcategory.length) {
       let favorites = await UserSubcategoriesValueModel.findAll({
         where: {
-          user_id: req.body.user_id
+          user_id: req.body.user_id,
         },
         raw: true,
       });
@@ -108,6 +119,23 @@ exports.generatePdf = async (req, res, next) => {
   } else {
     return res.json(
       constants.responseObj(false, 202, constants.messages.NoCategory)
+    );
+  }
+};
+
+exports.addOtherScreenValues = async (req, res, next) => {
+  try {
+    const addSubcategoryValue = await NestedSubcategoryModel.bulkCreate(
+      req.body
+    ).then(async (value) => {
+      return res.json(
+        constants.responseObj(true, 201, constants.messages.AddSuccess)
+      );
+    });
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
     );
   }
 };
