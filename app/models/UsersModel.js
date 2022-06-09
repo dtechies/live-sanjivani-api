@@ -29,6 +29,9 @@ module.exports = (sequelize, Sequelize) => {
     UsersModel.hasMany(models.MedicalJournalNoteModel, {
       foreignKey: "user_id",
     });
+    UsersModel.hasMany(models.NestedSubcategoryModel, {
+      foreignKey: "user_id",
+    });
 
     UsersModel.hasMany(models.CareGiverModel, {
       foreignKey: "user_id",
