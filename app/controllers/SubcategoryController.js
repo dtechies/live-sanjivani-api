@@ -230,8 +230,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       });
     } else {
       monthly_data.push({
-        date_range:
-          month_dates[month].startDate + "-" + month_dates[month].endDate,
+        date: month_dates[month].startDate + "-" + month_dates[month].endDate,
         data: null,
       });
     }
