@@ -10,5 +10,10 @@ module.exports = (app) => {
     auth(),
     subCategoryController.addSubCategoryValue
   );
+  router.post(
+    "/subcategory-graph",
+    auth(),
+    subCategoryController.getSubCategoryGraph
+  );
   app.use("/", router);
 };

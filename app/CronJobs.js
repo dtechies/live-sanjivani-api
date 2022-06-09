@@ -4,7 +4,7 @@ exports.sendNotification = function (req, res, cb) {
     "* * * * * *",
     () => {
       require("../app/controllers/NotificationController").sendNotification();
-      //   require("../app/controllers/NotificationController").sendNotificationForAppointmentReminder();
+      require("../app/controllers/NotificationController").sendNotificationForAppointmentReminder();
     },
     {
       scheduled: true,

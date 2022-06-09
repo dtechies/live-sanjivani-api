@@ -138,24 +138,26 @@ exports.sendNotificationForAppointmentReminder = async (req, res, next) => {
         model: UsersModel,
         attributes: ["player_id"],
       },
+      {
+        model: DoctorsModel,
+        attributes: ["doctor_name", "doctor_address"],
+      },
     ],
   });
 
   AppointmentReminderModelData.forEach((appointment_data) => {
     let current_date = moment().format("YYYY-MM-DD");
-    if (current_date == medicine_data.date) {
+    if (current_date == appointment_data.date) {
       let current_time = moment().format("HH:mm:ss");
       if (appointment_data.user_selected_time == current_time) {
         if (appointment_data["user.player_id"]) {
-          console.log(appointment_data["user.player_id"], "player_id logg");
-          sendNotifications(appointment_data);
+          sendNotificationsForAppointment(appointment_data);
         }
       }
     }
   });
 };
 async function sendNotifications(medicine_data) {
-  console.log(medicine_data, "medicine_data loggg");
   let title = "Medicine Reminder";
   var sendNotification = function (data) {
     var headers = {
@@ -185,6 +187,7 @@ async function sendNotifications(medicine_data) {
       en: "You have Medicine Reminder",
     },
     data: {
+      id: medicine_data.id,
       medicine_name: medicine_data.medicine_name,
       medicine_strength: medicine_data.medicine_strength,
       medicine_strength_unit: medicine_data.medicine_strength_unit,
@@ -200,6 +203,48 @@ async function sendNotifications(medicine_data) {
     headings: { en: title },
     // included_segments: ["Subscribed Users"],
     include_player_ids: [medicine_data["user.player_id"]],
+  };
+  sendNotification(message);
+}
+async function sendNotificationsForAppointment(appointment_data) {
+  let title = "Appointment Reminder";
+  var sendNotification = function (data) {
+    var headers = {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: "Basic YzlmNzkxZmMtNWIwMi00NzJjLWI0NWMtOGY3NzZhNDdmYzM0",
+    };
+    var options = {
+      host: "onesignal.com",
+      port: 443,
+      path: "/api/v1/notifications",
+      method: "POST",
+      headers: headers,
+    };
+    var newReq = https.request(options, function (newRes) {
+      newRes.on("data", function (data) {
+        console.log("Response:");
+        console.log(JSON.parse(data));
+        data = JSON.parse(data);
+      });
+    });
+    newReq.write(JSON.stringify(data));
+    newReq.end();
+  };
+  var message = {
+    app_id: "3b7300ff-2be3-46f8-ad6a-5473e664b134",
+    contents: {
+      en: "You have Appointment Reminder",
+    },
+    data: {
+      id: appointment_data.id,
+      type: "appointment_reminder",
+      doctor_name: appointment_data["doctor.doctor_name"],
+      doctor_address: appointment_data["doctor.doctor_address"],
+      user_selected_time: appointment_data.user_selected_time,
+    },
+    headings: { en: title },
+    // included_segments: ["Subscribed Users"],
+    include_player_ids: [appointment_data["user.player_id"]],
   };
   sendNotification(message);
 }

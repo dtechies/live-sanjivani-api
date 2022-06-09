@@ -93,7 +93,6 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 
 exports.editReminderStatus = async (req, res, next) => {
   try {
-    const user_id = req.user_id;
     let editMedicineStatus = await MedicineReminderModel.update(
       {
         reminder_status: req.body.reminder_status,
@@ -101,7 +100,7 @@ exports.editReminderStatus = async (req, res, next) => {
       },
       {
         where: {
-          id: user_id,
+          id: req.body.id,
         },
       }
     );

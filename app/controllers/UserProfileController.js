@@ -113,7 +113,7 @@ exports.editUserProfile = async (req, res, next) => {
             }
           } catch (error) {
             console.log(error, "error");
-            return res.json(constants.responseObj(false, 500, error));
+            return res.json(constants.responseObj(false, 500, error.parent));
           }
         }
       }
