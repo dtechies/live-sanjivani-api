@@ -11,8 +11,9 @@ exports.getOTP = async (req, res, next) => {
       mob_no: req.body.mob_no,
     },
   });
+
   if (userData) {
-    var PhoneNumber = "+" + "916355340577";
+    var PhoneNumber = userData.country_code + userData.mob_no;
     var random = Math.floor(1000 + Math.random() * 9000);
     var params = {
       Message: "Your verification code is " + `${random}`,
@@ -49,7 +50,8 @@ exports.getOTP = async (req, res, next) => {
                 false,
                 {
                   otp: random,
-                  mob_no: req.body.mob_no,
+                  country_code: userData.country_code,
+                  mob_no: userData.mob_no,
                 }
               )
             );
