@@ -29,3 +29,47 @@ exports.addCareGiver = async (req, res, next) => {
     return res.json(constants.responseObj(false, 500, error.parent));
   }
 };
+
+exports.caregiverData = async (req, res, next) => {
+  const user_id = req.user_id;
+  let caregiverData = await CareGiverModel.findAll({
+    where: { user_id: user_id },
+  });
+  if (caregiverData.length) {
+    return res.json(
+      constants.responseObj(
+        true,
+        200,
+        constants.messages.DataFound,
+        false,
+        caregiverData
+      )
+    );
+  } else {
+    return res.json(
+      constants.responseObj(false, 202, constants.messages.NoCareGiverData)
+    );
+  }
+};
+
+exports.deleteCareGiver = async (req, res, next) => {
+  const user_id = req.user_id;
+  let caregiverData = await CareGiverModel.destroy({
+    where: { id: req.body.id },
+  });
+  if (caregiverData) {
+    return res.json(
+      constants.responseObj(
+        true,
+        200,
+        constants.messages.CareGiverDelete,
+        false,
+        {}
+      )
+    );
+  } else {
+    return res.json(
+      constants.responseObj(false, 202, constants.messages.NoCareGiverData)
+    );
+  }
+};

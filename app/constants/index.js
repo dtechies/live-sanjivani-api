@@ -34,6 +34,8 @@ const messages = {
   NoDataFound: "No Data Found!",
   UserNotFound: "User Not Found!",
   DuplicateNumber: "Mobile number already exists",
+  NoCareGiverData: "No CareGiver Data Found!",
+  CareGiverDelete: "Data Deleted Successfully!",
 };
 
 const responseObj = (
