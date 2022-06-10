@@ -12,6 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       image: { type: Sequelize.STRING(200), notNull: false },
       otp: { type: Sequelize.STRING },
       player_id: { type: Sequelize.STRING },
+      country_code: { type: Sequelize.STRING },
     },
     {
       timestamps: true,
