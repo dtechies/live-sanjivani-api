@@ -209,17 +209,17 @@ function healthPdf(CategoryData) {
                 if (err) {
                   return console.error(err);
                 }
-                fs.unlink(
-                  __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
-                  function (err) {
-                    if (err) {
-                      return console.log(err);
-                    } else {
-                      console.log("Pdf File deleted successfully");
-                      //return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong));
-                    }
-                  }
-                );
+                // fs.unlink(
+                //   __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+                //   function (err) {
+                //     if (err) {
+                //       return console.log(err);
+                //     } else {
+                //       console.log("Pdf File deleted successfully");
+                //       //return res.json(constants.responseObj(false, 500, constants.messages.SomethingWentWrong));
+                //     }
+                //   }
+                // );
               }
             );
           }

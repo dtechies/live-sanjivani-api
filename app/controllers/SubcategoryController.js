@@ -44,7 +44,7 @@ exports.allSubCategory = async (req, res, next) => {
       constants.responseObj(
         true,
         200,
-        constants.messages.Success,
+        constants.messages.DataFound,
         false,
         result
       )
