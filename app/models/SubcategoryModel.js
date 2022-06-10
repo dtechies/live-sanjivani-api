@@ -18,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         notNull: false,
       },
+      is_graph: {
+        type: Sequelize.BOOLEAN,
+        notNull: false,
+      },
     },
     {
       timestamps: true,

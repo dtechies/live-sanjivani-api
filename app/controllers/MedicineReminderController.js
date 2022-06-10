@@ -122,18 +122,22 @@ exports.editReminderStatus = async (req, res, next) => {
   }
 };
 exports.getTipForDay = async (req, res, next) => {
-  const user_id = req.user_id;
+  // const user_id = req.user_id;
 
   try {
     const TipForDayData = await TipForDayModel.findOne({
-      where: {
-        id: user_id,
-      },
+      // where: {
+      //   id: user_id,
+      // },
     });
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
-        TipForDayData,
-      })
+      constants.responseObj(
+        true,
+        201,
+        constants.messages.DataFound,
+        false,
+        TipForDayData
+      )
     );
   } catch (error) {
     console.log(error, "error");
@@ -281,7 +285,7 @@ exports.addMedicineReminder = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error, "error");
-    return res.json(constants.responseObj(false, 500, error));
+    return res.json(constants.responseObj(false, 500, error.parent));
   }
 };
 

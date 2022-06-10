@@ -13,6 +13,7 @@ exports.sendMail = async (req, res, next) => {
     MaxItems: 20,
   };
   const user_id = req.user_id;
+  console.log(user_id, "user_id logg");
   try {
     let categoryData = await SubcategoryModel.findAll({
       where: {
@@ -26,7 +27,7 @@ exports.sendMail = async (req, res, next) => {
           },
           order: [["id", "DESC"]],
           attributes: ["value"],
-          limit: 1,
+          limit: 5,
         },
       ],
     });
