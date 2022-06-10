@@ -16,6 +16,7 @@ exports.registerUser = async (req, res, next) => {
       mob_no: req.body.mob_no,
       language: req.body.language,
       otp: random,
+      country_code: req.body.country_code,
     };
     const addUser = await UsersModel.create(usersData);
     if (addUser) {
