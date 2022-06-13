@@ -36,6 +36,7 @@ const messages = {
   DuplicateNumber: "Mobile number already exists",
   NoCareGiverData: "No CareGiver Data Found!",
   CareGiverDelete: "Data Deleted Successfully!",
+  NoSymptom: "No Symptom Found!",
 };
 
 const responseObj = (

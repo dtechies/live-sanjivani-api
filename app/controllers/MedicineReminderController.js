@@ -20,6 +20,7 @@ exports.addMedicineReminderView = async (req, res, next) => {
     const MedicineStrengthData = await MedicineStrengthModel.findAll();
     const ReminderFrequencyData = await ReminderFrequencyModel.findAll();
     const ReminderTimeData = await ReminderTimeModel.findAll();
+    const MedicineFormData = await ReminderTimeModel.findAll();
 
     return res.json(
       constants.responseObj(true, 201, constants.messages.DataFound, false, {

@@ -38,6 +38,7 @@ const NestedSubcategoryModel = db.NestedSubcategoryModel;
 const FavoriteModel = db.FavoriteModel;
 const CareGiverModel = db.CareGiverModel;
 const OtherSubcategoryModel = db.OtherSubcategoryModel;
+const SymptomModel = db.SymptomModel;
 
 module.exports = {
   constants,
@@ -71,4 +72,5 @@ module.exports = {
   CareGiverModel,
   Op,
   OtherSubcategoryModel,
+  SymptomModel,
 };
