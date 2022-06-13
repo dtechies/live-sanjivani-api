@@ -2,7 +2,6 @@ const { MedicalJournalNoteModel } = require("../imports");
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
 dotenv.config();
 
 exports.getMedicalJournalNoteList = async (req, res, next) => {
@@ -21,8 +20,28 @@ exports.getMedicalJournalNoteList = async (req, res, next) => {
     );
   }
 };
+exports.getMedicalJournalNote = async (req, res, next) => {
+  try {
+    const user_id = req.user_id;
+    const MedicalJournalNoteData = await MedicalJournalNoteModel.findAll({
+      where: { user_id: user_id },
+    });
+
+    return res.json(
+      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+        MedicalJournalNoteData,
+      })
+    );
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+};
 
 exports.addEditMedicalJournalNote = async (req, res, next) => {
+  const user_id = req.user_id;
   const MedicalJournalNote = await MedicalJournalNoteModel.findOne({
     where: {
       user_id: user_id,
@@ -34,8 +53,8 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
         const EditMedicalJournalNote = await MedicalJournalNoteModel.update(
           {
             time: req.body.time,
+            date: req.body.date,
             description: req.body.description,
-            image: req.body.image,
           },
           {
             where: {
@@ -68,8 +87,9 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
               try {
                 let MedicalJournalNoteData = {
                   user_id: user_id,
-                  // name: req.body.name,
+
                   time: req.body.time,
+                  date: req.body.date,
                   description: req.body.description,
                   image: image.image,
                 };
@@ -113,44 +133,49 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
       return res.json(constants.responseObj(false, 500, error.parent));
     }
   } else {
-    imageUpload(req.files.image, req.files.image.name, function (err, image) {
-      if (err) {
-        req.session.error = imports.constants.messages.InvalidFile;
-      } else {
-        try {
-          let MedicalJournalNoteData = {
-            user_iduser_id,
-            // name: req.body.name,
-            time: req.body.time,
-            description: req.body.description,
-            image: image.image,
-          };
-          const MedicalJournalNote = MedicalJournalNoteModel.create(
-            MedicalJournalNoteData
-          );
-          if (MedicalJournalNote) {
-            return res.json(
-              constants.responseObj(true, 201, constants.messages.AddSuccess)
+    await imageUpload(
+      req.files.image,
+      req.files.image.name,
+      async function (err, image) {
+        if (err) {
+          req.session.error = imports.constants.messages.InvalidFile;
+        } else {
+          try {
+            let MedicalJournalNoteData = {
+              user_id: user_id,
+
+              time: req.body.time,
+              date: req.body.date,
+              description: req.body.description,
+              image: image.image,
+            };
+            const MedicalJournalNote = MedicalJournalNoteModel.create(
+              MedicalJournalNoteData
             );
-          } else {
-            return res.json(
-              constants.responseObj(
-                false,
-                500,
-                constants.messages.SomethingWentWrong
-              )
-            );
+            if (MedicalJournalNote) {
+              return res.json(
+                constants.responseObj(true, 201, constants.messages.AddSuccess)
+              );
+            } else {
+              return res.json(
+                constants.responseObj(
+                  false,
+                  500,
+                  constants.messages.SomethingWentWrong
+                )
+              );
+            }
+          } catch (error) {
+            console.log(error, "error");
+            return res.json(constants.responseObj(false, 500, error.parent));
           }
-        } catch (error) {
-          console.log(error, "error");
-          return res.json(constants.responseObj(false, 500, error.parent));
         }
       }
-    });
+    );
   }
 };
 
-function imageUpload(image, imgAttachement, cb) {
+async function imageUpload(image, imgAttachement, cb) {
   var params = {
     Bucket: "live-sanjivani",
     ContentEncoding: image.encoding,
@@ -159,13 +184,13 @@ function imageUpload(image, imgAttachement, cb) {
     ContentType: image.mimetype,
     ACL: "public-read",
   };
-  S3.upload(params, function (err, data) {
+  await S3.upload(params, function (err, data) {
     if (err) {
       console.log(err);
       cb(true, null);
     } else {
       cb(null, {
-        image: data.Location.split("/").pop(),
+        image: data.Location,
       });
     }
   });
