@@ -19,5 +19,10 @@ module.exports = (app) => {
     auth(),
     medicalJournalNoteController.getMedicalJournalNote
   );
+  router.get(
+    "/delete-medical-journal-note",
+    auth(),
+    medicalJournalNoteController.deleteMedicalJournalNote
+  );
   app.use("/", router);
 };
