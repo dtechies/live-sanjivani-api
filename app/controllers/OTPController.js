@@ -16,6 +16,7 @@ exports.getOTP = async (req, res, next) => {
   if (userData) {
     var PhoneNumber = userData.country_code + userData.mob_no;
     var random = Math.floor(1000 + Math.random() * 9000);
+
     var params = {
       Message: "Your verification code is " + `${random}`,
       PhoneNumber: PhoneNumber,
@@ -30,6 +31,7 @@ exports.getOTP = async (req, res, next) => {
     publishTextPromise
       .then(async function (data) {
         try {
+          console.log("otppp", otp);
           const EditUserOTP = await UsersModel.update(
             {
               otp: random,
