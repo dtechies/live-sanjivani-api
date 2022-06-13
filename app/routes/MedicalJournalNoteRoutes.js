@@ -19,7 +19,7 @@ module.exports = (app) => {
     auth(),
     medicalJournalNoteController.getMedicalJournalNote
   );
-  router.get(
+  router.delete(
     "/delete-medical-journal-note",
     auth(),
     medicalJournalNoteController.deleteMedicalJournalNote

@@ -14,7 +14,6 @@ exports.editUserProfile = async (req, res, next) => {
   if (UserProfileData) {
     try {
       if (req.body.otp) {
-        console.log(req.body.otp, UserProfileData.otp, "2123");
         if (`${req.body.otp}` == `${UserProfileData.otp}`) {
           if (req.files == null) {
             await updateUserProfile(user_id, req.body, UserProfileData).then(

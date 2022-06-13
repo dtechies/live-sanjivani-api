@@ -117,15 +117,17 @@ function imageUpload(image, imgAttachement, cb) {
     }
   });
 }
-exports.deleteMedicalJournalNote = (req, res, next) => {
-  MedicalJournalNoteModel.destroy({ where: { id: req.body.id } })
-    .then((deleted) => {
-      return res.json(
-        constants.responseObj(true, 201, constants.messages.DeleteSuccess)
-      );
-    })
-    .catch((error) => {
-      console.log(error, "error");
-      return res.json(constants.responseObj(false, 500, error.parent));
-    });
+exports.deleteMedicalJournalNote = async (req, res, next) => {
+  const MedicalJournalNoteData = await MedicalJournalNoteModel.destroy({
+    where: { id: req.body.id },
+  });
+  if (MedicalJournalNoteData) {
+    return res.json(
+      constants.responseObj(true, 201, constants.messages.DeleteSuccess)
+    );
+  } else {
+    return res.json(
+      constants.responseObj(true, 201, constants.messages.NoDataFound)
+    );
+  }
 };
