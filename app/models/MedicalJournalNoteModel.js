@@ -5,8 +5,8 @@ module.exports = (sequelize, Sequelize) => {
       // user_id: { type: Sequelize.INTEGER,references: {model: 'user',key: 'id'} },
       date: { type: Sequelize.STRING(50), notNull: false },
       time: { type: Sequelize.STRING(50), notNull: false },
-      description: { type: Sequelize.STRING(50), notNull: false },
-      image: { type: Sequelize.STRING(200), notNull: false },
+      description: { type: Sequelize.STRING(800), notNull: false },
+      image: { type: Sequelize.STRING(300), notNull: false },
     },
     {
       timestamps: true,
