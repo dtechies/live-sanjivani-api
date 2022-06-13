@@ -6,6 +6,7 @@ let { jwt } = require("../imports");
 dotenv.config();
 
 exports.editUserProfile = async (req, res, next) => {
+  const user_id = req.user_id;
   const UserProfileData = await UsersModel.findOne({
     where: { id: user_id },
   });
@@ -214,7 +215,7 @@ async function updateUserProfileData(
       return false;
     }
   });
-  console.log(name, "namelog");
+
   try {
     let UserProfilePicData = {
       user_id: user_id,
@@ -258,7 +259,7 @@ function imageUpload(image, imgAttachement, cb) {
       console.log(err);
       cb(true, null);
     } else {
-      cb(null, { image: data.Location.split("/").pop() });
+      cb(null, { image: data.Location });
     }
   });
 }

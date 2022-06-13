@@ -40,119 +40,38 @@ exports.getMedicalJournalNote = async (req, res, next) => {
   }
 };
 
-exports.addEditMedicalJournalNote = async (req, res, next) => {
+exports.addMedicalJournalNote = async (req, res, next) => {
   const user_id = req.user_id;
-  const MedicalJournalNote = await MedicalJournalNoteModel.findOne({
-    where: {
-      user_id: user_id,
-    },
-  });
-  if (MedicalJournalNote) {
-    try {
-      if (req.files == null) {
-        const EditMedicalJournalNote = await MedicalJournalNoteModel.update(
-          {
-            time: req.body.time,
-            date: req.body.date,
-            description: req.body.description,
-          },
-          {
-            where: {
-              id: MedicalJournalNote.id,
-            },
-          }
-        ).then((result) => {
-          return res.json(
-            constants.responseObj(true, 201, constants.messages.AddSuccess)
-          );
-        });
-      } else {
-        var params = {
-          Bucket: "live-sanjivani",
-          Key: `medicalJournalNoteImages/${MedicalJournalNote.image}`,
-        };
-        S3.deleteObject(params, function (err, data) {
-          if (err) {
-            console.log(err, "err");
-          } else {
-          }
-        });
-        imageUpload(
-          req.files.image,
-          req.files.image.name,
-          function (err, image) {
-            if (err) {
-              return res.json(constants.responseObj(false, 500, error.parent));
-            } else {
-              try {
-                let MedicalJournalNoteData = {
-                  user_id: user_id,
 
-                  time: req.body.time,
-                  date: req.body.date,
-                  description: req.body.description,
-                  image: image.image,
-                };
-                const medicalJournalNoteUpdate = MedicalJournalNoteModel.update(
-                  MedicalJournalNoteData,
-                  {
-                    where: {
-                      id: MedicalJournalNote.id,
-                    },
-                  }
-                );
-                if (medicalJournalNoteUpdate) {
-                  return res.json(
-                    constants.responseObj(
-                      true,
-                      201,
-                      constants.messages.AddSuccess
-                    )
-                  );
-                } else {
-                  return res.json(
-                    constants.responseObj(
-                      false,
-                      500,
-                      constants.messages.SomethingWentWrong
-                    )
-                  );
-                }
-              } catch (error) {
-                console.log(error, "error");
-                return res.json(
-                  constants.responseObj(false, 500, error.parent)
-                );
-              }
-            }
-          }
+  try {
+    if (req.files == null) {
+      await MedicalJournalNoteModel.create({
+        time: req.body.time,
+        date: req.body.date,
+        description: req.body.description,
+        user_id: user_id,
+      }).then((result) => {
+        return res.json(
+          constants.responseObj(true, 201, constants.messages.AddSuccess)
         );
-      }
-    } catch (error) {
-      console.log(error, "error");
-      return res.json(constants.responseObj(false, 500, error.parent));
-    }
-  } else {
-    await imageUpload(
-      req.files.image,
-      req.files.image.name,
-      async function (err, image) {
+      });
+    } else {
+      imageUpload(req.files.image, req.files.image.name, function (err, image) {
         if (err) {
-          req.session.error = imports.constants.messages.InvalidFile;
+          return res.json(constants.responseObj(false, 500, error.parent));
         } else {
           try {
             let MedicalJournalNoteData = {
               user_id: user_id,
-
               time: req.body.time,
               date: req.body.date,
               description: req.body.description,
               image: image.image,
             };
-            const MedicalJournalNote = MedicalJournalNoteModel.create(
+            const medicalJournalNoteUpdate = MedicalJournalNoteModel.create(
               MedicalJournalNoteData
             );
-            if (MedicalJournalNote) {
+            if (medicalJournalNoteUpdate) {
               return res.json(
                 constants.responseObj(true, 201, constants.messages.AddSuccess)
               );
@@ -170,12 +89,15 @@ exports.addEditMedicalJournalNote = async (req, res, next) => {
             return res.json(constants.responseObj(false, 500, error.parent));
           }
         }
-      }
-    );
+      });
+    }
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(constants.responseObj(false, 500, error.parent));
   }
 };
 
-async function imageUpload(image, imgAttachement, cb) {
+function imageUpload(image, imgAttachement, cb) {
   var params = {
     Bucket: "live-sanjivani",
     ContentEncoding: image.encoding,
@@ -184,7 +106,7 @@ async function imageUpload(image, imgAttachement, cb) {
     ContentType: image.mimetype,
     ACL: "public-read",
   };
-  await S3.upload(params, function (err, data) {
+  S3.upload(params, function (err, data) {
     if (err) {
       console.log(err);
       cb(true, null);

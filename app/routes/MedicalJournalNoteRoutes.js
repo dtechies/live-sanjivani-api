@@ -11,7 +11,7 @@ module.exports = (app) => {
   router.post(
     "/add-edit-medical-journal-note",
     auth(),
-    medicalJournalNoteController.addEditMedicalJournalNote
+    medicalJournalNoteController.addMedicalJournalNote
   );
 
   router.get(
