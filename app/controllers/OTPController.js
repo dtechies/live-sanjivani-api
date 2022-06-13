@@ -31,7 +31,6 @@ exports.getOTP = async (req, res, next) => {
     publishTextPromise
       .then(async function (data) {
         try {
-          console.log("otppp", otp);
           const EditUserOTP = await UsersModel.update(
             {
               otp: random,
