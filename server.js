@@ -84,6 +84,7 @@ require("./app/routes/FavoriteValueGraphRoutes")(app);
 require("./app/routes/UserProfileRoutes")(app);
 require("./app/routes/CareGiverRoutes")(app);
 require("./app/routes/MedicationListRoutes")(app);
+require("./app/routes/SymptomRoutes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 1819;
