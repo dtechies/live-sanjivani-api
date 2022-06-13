@@ -9,7 +9,7 @@ module.exports = (app) => {
     medicalJournalNoteController.getMedicalJournalNoteList
   );
   router.post(
-    "/add-edit-medical-journal-note",
+    "/add-medical-journal-note",
     auth(),
     medicalJournalNoteController.addMedicalJournalNote
   );
