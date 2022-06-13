@@ -37,6 +37,7 @@ const messages = {
   NoCareGiverData: "No CareGiver Data Found!",
   CareGiverDelete: "Data Deleted Successfully!",
   NoSymptom: "No Symptom Found!",
+  DeleteSuccess: "Deleted Successfully",
 };
 
 const responseObj = (
