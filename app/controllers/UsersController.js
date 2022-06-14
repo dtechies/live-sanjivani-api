@@ -69,10 +69,12 @@ exports.registerUser = async (req, res, next) => {
 exports.usersLogin = async (req, res, next) => {
   const mob_no = req.body.mob_no;
   const Otp = req.body.otp;
+  const country_code = req.body.country_code;
   let user = await UsersModel.findOne(
     {
       where: {
         mob_no: mob_no,
+        country_code: country_code,
       },
     },
     {

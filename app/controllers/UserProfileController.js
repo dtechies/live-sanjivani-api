@@ -119,7 +119,7 @@ exports.editUserProfile = async (req, res, next) => {
                       constants.responseObj(
                         true,
                         201,
-                        constants.messages.UserCreated,
+                        constants.messages.UpdateStatus,
                         false,
                         profile_data
                       )
@@ -166,7 +166,7 @@ exports.editUserProfile = async (req, res, next) => {
                     constants.responseObj(
                       true,
                       201,
-                      constants.messages.UserCreated,
+                      constants.messages.UpdateStatus,
                       false,
                       user_data
                     )

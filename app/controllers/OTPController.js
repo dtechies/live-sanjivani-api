@@ -10,6 +10,7 @@ exports.getOTP = async (req, res, next) => {
   const userData = await UsersModel.findOne({
     where: {
       mob_no: req.body.mob_no,
+      country_code: req.body.country_code,
     },
   });
 
