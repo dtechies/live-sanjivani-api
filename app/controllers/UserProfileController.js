@@ -47,7 +47,9 @@ exports.editUserProfile = async (req, res, next) => {
           } else {
             var params = {
               Bucket: "live-sanjivani",
-              Key: `userProfileImages/${UserProfileData.image}`,
+              Key: `userProfileImages/${UserProfileData.image
+                .split("/")
+                .pop()}`,
             };
             S3.deleteObject(params, function (err, data) {
               if (err) {
@@ -128,7 +130,9 @@ exports.editUserProfile = async (req, res, next) => {
             } else {
               var params = {
                 Bucket: "live-sanjivani",
-                Key: `userProfileImages/${UserProfileData.image}`,
+                Key: `userProfileImages/${UserProfileData.image
+                  .split("/")
+                  .pop()}`,
               };
               S3.deleteObject(params, function (err, data) {
                 if (err) {
