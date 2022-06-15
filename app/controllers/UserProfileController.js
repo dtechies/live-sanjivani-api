@@ -6,25 +6,11 @@ let { jwt } = require("../imports");
 dotenv.config();
 
 exports.editUserProfile = async (req, res, next) => {
-  console.log("editUserProfile==========");
   const user_id = req.user_id;
   const UserProfileData = await UsersModel.findOne({
     where: { id: user_id },
   });
-  console.log("UserProfileData.mob_no === req.body.mob_no");
   if (UserProfileData) {
-    console.log(
-      UserProfileData.mob_no === req.body.mob_no,
-      "UserProfileData.mob_no === req.body.mob_no"
-    );
-    console.log(
-      UserProfileData.mob_no == req.body.mob_no,
-      "UserProfileData.mob_no ==req.body.mob_no"
-    );
-    console.log(UserProfileData.mob_no, "UserProfileData.mob_no ===");
-
-    console.log(req.body.mob_no, "mob_no ==req.body.mob_no");
-
     try {
       if (req.body.mob_no) {
         if (UserProfileData.mob_no == req.body.mob_no) {
