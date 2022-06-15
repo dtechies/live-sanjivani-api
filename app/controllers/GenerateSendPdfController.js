@@ -1,7 +1,7 @@
 const { SubcategoryModel, UserSubcategoriesValueModel } = require("../imports");
-const constants = require("../imports").constants;
-const { AWS } = require("../imports");
 
+const { AWS } = require("../imports");
+const { constants, moment } = require("../imports");
 const { healthPdf } = require("../utils/Utils");
 const { sendPdf } = require("../utils/Utils");
 
@@ -19,6 +19,7 @@ exports.sendMail = async (req, res, next) => {
       where: {
         id: req.body.subcategory_id,
       },
+
       include: [
         {
           model: UserSubcategoriesValueModel,
@@ -26,13 +27,13 @@ exports.sendMail = async (req, res, next) => {
             user_id: user_id,
           },
           order: [["id", "DESC"]],
-          attributes: ["value"],
+          attributes: ["value", "createdAt"],
           limit: 5,
         },
       ],
     });
 
-    let pdf = await healthPdf(categoryData);
+    let pdf = await healthPdf(categoryData, moment);
 
     if (!sourceEmail == "") {
       var listIDsPromise = await new AWS.SES({
