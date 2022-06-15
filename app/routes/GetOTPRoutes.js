@@ -3,5 +3,6 @@ module.exports = (app) => {
 
   var router = require("express").Router();
   router.post("/get-OTP", OTPController.getOTP);
+  router.post("/store-OTP", OTPController.storeOTP);
   app.use("/", router);
 };
