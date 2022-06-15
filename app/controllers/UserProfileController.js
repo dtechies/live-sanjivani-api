@@ -6,13 +6,37 @@ let { jwt } = require("../imports");
 dotenv.config();
 
 exports.editUserProfile = async (req, res, next) => {
+  console.log("editUserProfile==========");
   const user_id = req.user_id;
   const UserProfileData = await UsersModel.findOne({
     where: { id: user_id },
   });
-
+  console.log("UserProfileData.mob_no === req.body.mob_no");
   if (UserProfileData) {
+    console.log(
+      UserProfileData.mob_no === req.body.mob_no,
+      "UserProfileData.mob_no === req.body.mob_no"
+    );
+    console.log(
+      UserProfileData.mob_no == req.body.mob_no,
+      "UserProfileData.mob_no ==req.body.mob_no"
+    );
+    console.log(UserProfileData.mob_no, "UserProfileData.mob_no ===");
+
+    console.log(req.body.mob_no, "mob_no ==req.body.mob_no");
+
     try {
+      if (req.body.mob_no) {
+        if (UserProfileData.mob_no == req.body.mob_no) {
+          return res.json(
+            constants.responseObj(
+              false,
+              409,
+              constants.messages.DuplicateNumber
+            )
+          );
+        }
+      }
       if (req.body.otp) {
         if (`${req.body.otp}` == `${UserProfileData.otp}`) {
           if (req.files == null) {
@@ -119,7 +143,7 @@ exports.editUserProfile = async (req, res, next) => {
                       constants.responseObj(
                         true,
                         201,
-                        constants.messages.UpdateStatus,
+                        constants.messages.UpdateSuccess,
                         false,
                         profile_data
                       )
@@ -166,7 +190,7 @@ exports.editUserProfile = async (req, res, next) => {
                     constants.responseObj(
                       true,
                       201,
-                      constants.messages.UpdateStatus,
+                      constants.messages.UpdateSuccess,
                       false,
                       user_data
                     )
@@ -182,7 +206,9 @@ exports.editUserProfile = async (req, res, next) => {
       }
     } catch (error) {
       console.log(error, "error");
-      return res.json(constants.responseObj(false, 500, error.parent));
+      return res.json(
+        constants.responseObj(false, 409, constants.messages.DuplicateNumber)
+      );
     }
   } else {
     return res.json(constants.responseObj(false, 404, "User Not Found"));
