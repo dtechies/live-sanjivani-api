@@ -39,6 +39,7 @@ const messages = {
   NoSymptom: "No Symptom Found!",
   DeleteSuccess: "Deleted Successfully",
   UpdateSuccess: "Data Updated Successfully",
+  UserAlreadyExist: "User Already Exists!",
 };
 
 const responseObj = (

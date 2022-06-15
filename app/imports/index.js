@@ -39,6 +39,7 @@ const FavoriteModel = db.FavoriteModel;
 const CareGiverModel = db.CareGiverModel;
 const OtherSubcategoryModel = db.OtherSubcategoryModel;
 const SymptomModel = db.SymptomModel;
+const OTPModel = db.OTPModel;
 
 module.exports = {
   constants,
@@ -73,4 +74,5 @@ module.exports = {
   Op,
   OtherSubcategoryModel,
   SymptomModel,
+  OTPModel,
 };

@@ -68,6 +68,7 @@ exports.userFavorites = async (req, res, next) => {
             unit: subcategorydata["subcategory.unit"],
             type: subcategorydata["subcategory.type"],
             category_id: subcategorydata["subcategory.category_id"],
+            is_graph: subcategorydata["subcategory.is_graph"],
             is_favorite: isFavorite,
           });
         }
