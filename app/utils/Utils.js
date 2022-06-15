@@ -11,7 +11,7 @@ const fs = require("fs");
 var pdf = require("html-pdf");
 const { S3 } = require("../imports");
 var AWS = require("aws-sdk");
-const { constants } = require("../imports");
+const { moment } = require("../imports");
 
 var bcrypt;
 try {
@@ -164,13 +164,14 @@ function generateReferralString(length) {
   return result;
 }
 
-function healthPdf(CategoryData) {
+function healthPdf(CategoryData, moment) {
   let compiled = ejs.compile(
     fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
   );
   let html = compiled({
     title: "EJS",
     CategoryData: CategoryData,
+    moment: moment,
   });
   var options = {
     format: "A4",

@@ -5,33 +5,84 @@
   <title>Category PDF</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+  <script src="public/assets/plugins/jquery-steps/jquery.steps.min.js"></script>
+  <script src="public/assets/plugins/parsleyjs/parsley.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
   <div>
-    <table class="table table-bordered" style="width:90%; border: groove;margin-left: 30px;">
+    <table class="table table-bordered" style="width:90%; border: 1px solid groove;margin-left: 30px;">
       <thead>
         <tr>
           <th scope="col">Sr.</th>
           <th scope="col">Field</th>
-
           <th scope="col">Value</th>
+          <th scope="col">Date And Time</th>
+
         </tr>
       </thead>
       <tbody>
         <% for(var i=0; i < CategoryData.length; i++) { %>
-
         <tr>
-          <td><%= i+1 %></td>
-
-          <td> <%= CategoryData[i]. name %></td>
+          <td rowspan="<%= CategoryData[i].user_subcategories_values.length%>">
+            <%= i+1 %></td>
+          <td rowspan="<%= CategoryData[i].user_subcategories_values.length%>">
+            <%= CategoryData[i].name %></td>
+          <% for(var j=0; j < CategoryData[i].user_subcategories_values.length; j++) { %>
+          <% if(j==0){%>
           <td>
-            <%= CategoryData[i] .user_subcategories_values.length?CategoryData[i].user_subcategories_values[0].value:0 %>
+            <%= CategoryData[i].user_subcategories_values[j].value?CategoryData[i].user_subcategories_values[j].value:0 %>
           </td>
+          <td>
+
+            <%=  moment(CategoryData[i].user_subcategories_values[j].createdAt)
+          .utc()
+          .format("YYYY-MM-DD HH:mm:ss")%>
+          </td>
+        </tr>
+        <% }else if(j==1){%>
+        <tr>
+          <td>
+            <%= CategoryData[i].user_subcategories_values[j].value?CategoryData[i].user_subcategories_values[j].value:0 %>
+          </td>
+          <td>
+            <%=  moment(CategoryData[i].user_subcategories_values[j].createdAt)
+          .utc()
+          .format("YYYY-MM-DD HH:mm:ss")%>
+          </td>
+        </tr>
+
+        <% }else if(j==(CategoryData[i].user_subcategories_values-1)){%>
+        <tr>
+          <td>
+            <%= CategoryData[i].user_subcategories_values[j].value?CategoryData[i].user_subcategories_values[j].value:0 %>
+          </td>
+          <td>
+            <%=  moment(CategoryData[i].user_subcategories_values[j].createdAt)
+          .utc()
+          .format("YYYY-MM-DD HH:mm:ss")%>
+          </td>
+        </tr>
+
+        <% }else{ %>
+        <tr>
+          <td>
+            <%= CategoryData[i].user_subcategories_values[j].value?CategoryData[i].user_subcategories_values[j].value:0 %>
+          </td>
+          <td>
+            <%=  moment(CategoryData[i].user_subcategories_values[j].createdAt)
+          .utc()
+          .format("YYYY-MM-DD HH:mm:ss")%>
+          </td>
+        </tr>
+        <% } %>
+        <% } %>
         </tr>
 
         <% } %>
