@@ -38,6 +38,7 @@ const messages = {
   CareGiverDelete: "Data Deleted Successfully!",
   NoSymptom: "No Symptom Found!",
   DeleteSuccess: "Deleted Successfully",
+  UserAlreadyExist: "User Already Exists!",
 };
 
 const responseObj = (
