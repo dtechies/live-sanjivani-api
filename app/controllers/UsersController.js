@@ -4,8 +4,11 @@ let { jwt } = require("../imports");
 const dotenv = require("dotenv");
 const { raw } = require("express");
 dotenv.config();
+const { languageFunc } = require("../i18n/i18n");
+
 exports.registerUser = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     var random = Math.floor(1000 + Math.random() * 9000);
     let usersData = {
       first_name: req.body.first_name,
@@ -54,14 +57,14 @@ exports.registerUser = async (req, res, next) => {
       );
     } else {
       return res.json(
-        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
       );
     }
   } catch (error) {
     console.log(error, "error");
     // return res.json(constants.responseObj(false, 500, error));
     return res.json(
-      constants.responseObj(false, 500, constants.messages.DuplicateNumber)
+      constants.responseObj(false, 500, i18n.__(`DuplicateNumber`))
     );
   }
 };
@@ -81,11 +84,13 @@ exports.usersLogin = async (req, res, next) => {
       raw: true,
     }
   );
+
   if (!user) {
     return res.json(
-      constants.responseObj(false, 401, constants.messages.InvalidCredentials)
+      constants.responseObj(false, 401, constants.messages.UserNotFound)
     );
   }
+  let i18n = languageFunc(user.language);
   if (user.otp == Otp) {
     const secretKey = process.env.SECRET_JWT || "theseissecret";
     const token = jwt.sign(
@@ -100,18 +105,19 @@ exports.usersLogin = async (req, res, next) => {
     );
     user.dataValues.token = token;
     return res.json(
-      constants.responseObj(true, 200, constants.messages.UserLogin, false, {
+      constants.responseObj(true, 200, i18n.__(`UserLogin`), false, {
         user,
       })
     );
   } else {
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 exports.addEditPlayerId = async (req, res, next) => {
   const user_id = req.user_id;
+  let i18n = languageFunc(req.language);
   console.log(user_id, "user_id logg");
   try {
     await UsersModel.update(
@@ -121,14 +127,14 @@ exports.addEditPlayerId = async (req, res, next) => {
       { where: { id: user_id } }
     ).then((value) => {
       return res.json(
-        constants.responseObj(true, 201, constants.messages.UpdateStatus)
+        constants.responseObj(true, 201, i18n.__(`UpdateStatus`))
       );
     });
   } catch (error) {
     console.log(error, "error");
     // return res.json(constants.responseObj(false, 500, error));
     return res.json(
-      constants.responseObj(false, 500, constants.messages.DuplicateNumber)
+      constants.responseObj(false, 500, i18n.__(`DuplicateNumber`))
     );
   }
 };

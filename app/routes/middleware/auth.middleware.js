@@ -29,6 +29,7 @@ const auth = () => {
       }
       req.currentUser = user;
       req.user_id = user.id;
+      req.language = user.language;
       next();
     } catch (e) {
       return res.json(

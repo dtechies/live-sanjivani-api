@@ -6,8 +6,10 @@ const {
   Op,
 } = require("../imports");
 const constants = require("../imports").constants;
+const { languageFunc } = require("../i18n/i18n");
 
 exports.allSubCategory = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
 
   let subCategoryData = await UserSubcategoriesValueModel.findAll({
@@ -41,23 +43,18 @@ exports.allSubCategory = async (req, res, next) => {
     });
     let result = dataN.sort(compare);
     return res.json(
-      constants.responseObj(
-        true,
-        200,
-        constants.messages.DataFound,
-        false,
-        result
-      )
+      constants.responseObj(true, 200, i18n.__(`DataFound`), false, result)
     );
   } else {
     return res.json(
-      constants.responseObj(false, 202, constants.messages.NoSubCategory)
+      constants.responseObj(false, 202, i18n.__(`NoSubCategory`))
     );
   }
 };
 
 exports.addSubCategoryValue = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     const user_id = req.user_id;
     let subcategory_value_data = req.body.subcategory_data;
     let subcategoryValue = [];
@@ -77,34 +74,22 @@ exports.addSubCategoryValue = async (req, res, next) => {
       const addSubcategoryValue = await UserSubcategoriesValueModel.bulkCreate(
         subcategoryValue
       ).catch((err) => {
-        constants.responseObj(
-          false,
-          500,
-          constants.messages.SomethingWentWrong
-        );
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`));
       });
       if (addSubcategoryValue) {
         return res.json(
-          constants.responseObj(true, 201, constants.messages.AddSuccess, false)
+          constants.responseObj(true, 201, i18n.__(`AddSuccess`), false)
         );
       } else {
         return res.json(
-          constants.responseObj(
-            false,
-            500,
-            constants.messages.SomethingWentWrong
-          )
+          constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
         );
       }
     } else {
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`));
     }
   } catch (err) {
-    return constants.responseObj(
-      false,
-      500,
-      constants.messages.SomethingWentWrong
-    );
+    return constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`));
   }
 };
 function compare(a, b) {
@@ -118,6 +103,7 @@ function compare(a, b) {
 }
 
 exports.getSubCategoryGraph = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   const subcategory_id = req.body.subcategory_id;
   let daily_data = [];
@@ -266,7 +252,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
   }
 
   return res.json(
-    constants.responseObj(true, 201, constants.messages.DataFound, false, {
+    constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
       DailyData: daily_data,
       WeeklyData: weekly_data,
       MonthlyData: monthly_data,

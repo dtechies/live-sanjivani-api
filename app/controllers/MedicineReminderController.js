@@ -12,9 +12,11 @@ const { S3 } = require("../imports");
 const dotenv = require("dotenv");
 const { TipForDayModel } = require("../models");
 dotenv.config();
+const { languageFunc } = require("../i18n/i18n");
 
 exports.addMedicineReminderView = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     const DoctorsData = await DoctorsModel.findAll();
     const MedicineData = await MedicineDataModel.findAll();
     const MedicineStrengthData = await MedicineStrengthModel.findAll();
@@ -23,7 +25,7 @@ exports.addMedicineReminderView = async (req, res, next) => {
     const MedicineFormData = await ReminderTimeModel.findAll();
 
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         DoctorsData,
         MedicineData,
         MedicineStrengthData,
@@ -35,12 +37,13 @@ exports.addMedicineReminderView = async (req, res, next) => {
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.getMedicineReminderProfile = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   try {
     const MedicineReminderProfileData = await MedicineReminderModel.findAll({
@@ -50,20 +53,21 @@ exports.getMedicineReminderProfile = async (req, res, next) => {
     });
 
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         MedicineReminderProfileData,
       })
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.editMedicineReminderStatus = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     let editMedicineStatus = await MedicineReminderModel.update(
       {
         status: req.body.status,
@@ -79,7 +83,7 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
       constants.responseObj(
         true,
         201,
-        constants.messages.UpdateStatus,
+        i18n.__(`UpdateStatus`),
         false,
         editMedicineStatus
       )
@@ -87,13 +91,14 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.editReminderStatus = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     let editMedicineStatus = await MedicineReminderModel.update(
       {
         reminder_status: req.body.reminder_status,
@@ -110,7 +115,7 @@ exports.editReminderStatus = async (req, res, next) => {
       constants.responseObj(
         true,
         201,
-        constants.messages.UpdateStatus,
+        i18n.__(`UpdateStatus`),
         false,
         editMedicineStatus
       )
@@ -118,14 +123,13 @@ exports.editReminderStatus = async (req, res, next) => {
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 exports.getTipForDay = async (req, res, next) => {
-  // const user_id = req.user_id;
-
   try {
+    let i18n = languageFunc(req.language);
     const TipForDayData = await TipForDayModel.findOne({
       // where: {
       //   id: user_id,
@@ -135,7 +139,7 @@ exports.getTipForDay = async (req, res, next) => {
       constants.responseObj(
         true,
         201,
-        constants.messages.DataFound,
+        i18n.__(`DataFound`),
         false,
         TipForDayData
       )
@@ -143,7 +147,7 @@ exports.getTipForDay = async (req, res, next) => {
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
@@ -158,12 +162,13 @@ exports.addMedicineReminder = async (req, res, next) => {
   //   var Doctor_id = DoctorData.id;
   // } else {
   // }
+  let i18n = languageFunc(req.language);
   const DoctorData = await DoctorsModel.create({
     doctor_name: req.body.doctor_name,
   });
   if (!DoctorData) {
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
   var Doctor_id = DoctorData.id;
@@ -185,7 +190,7 @@ exports.addMedicineReminder = async (req, res, next) => {
     });
     if (!MedicineData) {
       return res.json(
-        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
       );
     }
     medicine_id = MedicineData.id;
@@ -232,15 +237,11 @@ exports.addMedicineReminder = async (req, res, next) => {
           );
           if (medicineReminder) {
             return res.json(
-              constants.responseObj(true, 201, constants.messages.AddSuccess)
+              constants.responseObj(true, 201, i18n.__(`AddSuccess`))
             );
           } else {
             return res.json(
-              constants.responseObj(
-                false,
-                500,
-                constants.messages.SomethingWentWrong
-              )
+              constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
             );
           }
         }
@@ -272,15 +273,11 @@ exports.addMedicineReminder = async (req, res, next) => {
       );
       if (medicineReminder) {
         return res.json(
-          constants.responseObj(true, 201, constants.messages.AddSuccess)
+          constants.responseObj(true, 201, i18n.__(`AddSuccess`))
         );
       } else {
         return res.json(
-          constants.responseObj(
-            false,
-            500,
-            constants.messages.SomethingWentWrong
-          )
+          constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
         );
       }
     }
@@ -311,6 +308,7 @@ function imageUpload(image, imgAttachement, cb) {
   });
 }
 exports.todaysMedicineReminderList = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   let user_id = req.user_id;
   console.log(user_id, "user_id logg");
   let todays_date = moment().format("YYYY-MM-DD");
@@ -321,19 +319,19 @@ exports.todaysMedicineReminderList = async (req, res, next) => {
     });
     if (MedicineReminderData.length) {
       return res.json(
-        constants.responseObj(true, 201, constants.messages.DataFound, false, {
+        constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
           MedicineReminderData,
         })
       );
     } else {
       return res.json(
-        constants.responseObj(false, 404, constants.messages.NoDataFound, false)
+        constants.responseObj(false, 404, i18n.__(`NoDataFound`), false)
       );
     }
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };

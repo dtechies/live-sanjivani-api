@@ -10,10 +10,11 @@ const {
 } = require("../imports");
 const AWS = require("aws-sdk");
 var https = require("https");
+const { languageFunc } = require("../i18n/i18n");
 
 exports.getNotification = async (req, res, next) => {
   var deviceToken = req.body.deviceToken;
-
+  let i18n = languageFunc(req.language);
   var subject = constants.messages.Subject;
   AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -42,9 +43,7 @@ exports.getNotification = async (req, res, next) => {
         if (err) {
           return res.json(constants.responseObj(false, 500, err));
         } else {
-          return res.json(
-            constants.responseObj(true, 201, constants.messages.Success)
-          );
+          return res.json(constants.responseObj(true, 201, i18n.__(`success`)));
         }
       }
     );

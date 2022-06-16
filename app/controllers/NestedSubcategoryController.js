@@ -1,47 +1,32 @@
-const {
-  NestedSubcategoryModel,
-  SubcategoryModel
-} = require("../imports");
+const { NestedSubcategoryModel, SubcategoryModel } = require("../imports");
 const constants = require("../imports").constants;
-let {
-  successCallback
-} = require("../constants");
-const http = require("https");
-let {
-  jwt
-} = require("../imports/");
+const { languageFunc } = require("../i18n/i18n");
 
 exports.allnestedsubcategory = async (req, res, next) => {
-
-
-  //  let subCategoryData = await SubcategoryModel.findAll(
-  //     {
-  //      include:[ {model : UserSubcategoriesValueModel,where:{user_id:decoded.user_id,is_selected:1},order: [['id', 'DESC']],attributes: ['value'],limit:1
-  //     }]
-  // })
+  let i18n = languageFunc(req.language);
   let nestedsubcategoryData = await SubcategoryModel.findAll({
     // where:{subcategory_id},
-    include: [{
-      model: NestedSubcategoryModel,
+    include: [
+      {
+        model: NestedSubcategoryModel,
 
-      order: [
-        ["id", "DESC"]
-      ],
-    }, ],
+        order: [["id", "DESC"]],
+      },
+    ],
   });
   if (nestedsubcategoryData) {
     return res.json(
       constants.responseObj(
         true,
         200,
-        constants.messages.Success,
+        i18n.__(`success`),
         false,
         nestedsubcategoryData
       )
     );
   } else {
     return res.json(
-      constants.responseObj(false, 202, constants.messages.NoNestedSubcategory)
+      constants.responseObj(false, 202, i18n.__(`NoNestedSubcategory`))
     );
   }
 };
