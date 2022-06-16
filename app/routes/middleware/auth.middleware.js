@@ -29,7 +29,7 @@ const auth = () => {
       }
       req.currentUser = user;
       req.user_id = user.id;
-      req.language = user.language;
+      req.language = user.language == "english" ? "en" : "hi";
       next();
     } catch (e) {
       return res.json(
