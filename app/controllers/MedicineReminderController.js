@@ -94,17 +94,19 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 
 exports.editReminderStatus = async (req, res, next) => {
   try {
-    let editMedicineStatus = await MedicineReminderModel.update(
-      {
-        reminder_status: req.body.reminder_status,
-        is_done: true,
+    let updateData = {
+      reminder_status: req.body.reminder_status,
+      is_done: true,
+    };
+    if (req.body.reminder_status == "snooze") {
+      let snooze_time = moment().add(5, "minutes").format("HH:mm:ss");
+      updateData.user_selected_time = snooze_time;
+    }
+    const editMedicineStatus = await MedicineReminderModel.update(updateData, {
+      where: {
+        id: req.body.id,
       },
-      {
-        where: {
-          id: req.body.id,
-        },
-      }
-    );
+    });
 
     return res.json(
       constants.responseObj(
