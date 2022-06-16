@@ -53,7 +53,7 @@ exports.editUserProfile = async (req, res, next) => {
                   constants.responseObj(
                     true,
                     201,
-                    constants.messages.UserCreated,
+                    i18n.__(`UpdateSuccess`),
                     false,
                     user_profile_data
                   )
@@ -97,12 +97,12 @@ exports.editUserProfile = async (req, res, next) => {
                 const deleteData = await OTPModel.destroy({
                   where: { id: req.body.otp_id },
                 });
-                console.log(deleteData, "deleteDatalog2");
+
                 return res.json(
                   constants.responseObj(
                     true,
                     201,
-                    i18n.__(`UserCreated`),
+                    i18n.__(`UpdateSuccess`),
                     false,
                     user_profile_data
                   )
