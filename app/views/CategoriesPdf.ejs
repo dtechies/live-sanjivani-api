@@ -20,20 +20,18 @@
     <table class="table table-bordered" style="width:90%; border: 1px solid groove;margin-left: 30px;">
       <thead>
         <tr>
-          <th scope="col">Sr.</th>
-          <th scope="col">Field</th>
-          <th scope="col">Value</th>
-          <th scope="col">Date And Time</th>
+          <!-- <th scope="col">Sr.</th> -->
+          <th scope="col" style="font-weight: bold !important">Field</th>
+          <th scope="col" style="font-weight: bold;">Value</th>
+          <th scope="col" style="font-weight: bold;">Date And Time</th>
 
         </tr>
       </thead>
       <tbody>
         <% for(var i=0; i < CategoryData.length; i++) { %>
         <tr>
-          <td rowspan="<%= CategoryData[i].user_subcategories_values.length%>">
-            <%= i+1 %></td>
-          <td rowspan="<%= CategoryData[i].user_subcategories_values.length%>">
-            <%= CategoryData[i].name %></td>
+          <!-- <td rowspan="<%= CategoryData[i].user_subcategories_values.length%>"><%= i+1 %></td> -->
+          <td rowspan="<%= CategoryData[i].user_subcategories_values.length%>" ><%= i+1 %>. <%= CategoryData[i].name %></td>
           <% for(var j=0; j < CategoryData[i].user_subcategories_values.length; j++) { %>
           <% if(j==0){%>
           <td>

@@ -168,6 +168,15 @@ function healthPdf(CategoryData, moment) {
   let compiled = ejs.compile(
     fs.readFileSync(__dirname.slice(0, -5) + "views/CategoriesPdf.ejs", "utf8")
   );
+  CategoryData.forEach((element) => {
+    element.user_subcategories_values.forEach((values) => {
+      let result = values.value.includes("{");
+      if (result) {
+        result = values.value.slice(1, values.value.length - 1);
+      }
+      result ? (values.value = result.replaceAll("'", "")) : "";
+    });
+  });
   let html = compiled({
     title: "EJS",
     CategoryData: CategoryData,
