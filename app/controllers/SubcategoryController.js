@@ -38,6 +38,7 @@ exports.allSubCategory = async (req, res, next) => {
           unit: data["subcategory.unit"],
           type: data["subcategory.type"],
           category_id: data["subcategory.category_id"],
+          is_graph: data["subcategory.is_graph"],
         });
       }
     });

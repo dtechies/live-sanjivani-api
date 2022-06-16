@@ -37,6 +37,9 @@ module.exports = (sequelize, Sequelize) => {
     UsersModel.hasMany(models.CareGiverModel, {
       foreignKey: "user_id",
     });
+    UsersModel.hasMany(models.OTPModel, {
+      foreignKey: "user_id",
+    });
   };
   return UsersModel;
 };
