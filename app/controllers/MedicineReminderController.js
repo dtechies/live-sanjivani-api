@@ -207,7 +207,7 @@ exports.addMedicineReminder = async (req, res, next) => {
         if (err) {
           console.log(err, "err logg");
           return res.json(
-            constants.responseObj(false, 422, constants.messages.InvalidFile)
+            constants.responseObj(false, 422, i18n.__(`InvalidFile`))
           );
         } else {
           let medicineReminderData = {

@@ -67,9 +67,7 @@ exports.getOTP = async (req, res, next) => {
         console.log("Error ==> ", err);
       });
   } else {
-    return res.json(
-      constants.responseObj(false, 404, constants.messages.UserNotFound)
-    );
+    return res.json(constants.responseObj(false, 404, i18n.__(`UserNotFound`)));
   }
 };
 exports.storeOTP = async (req, res, next) => {
@@ -81,7 +79,7 @@ exports.storeOTP = async (req, res, next) => {
   });
   if (userData) {
     return res.json(
-      constants.responseObj(false, 409, constants.messages.UserAlreadyExist)
+      constants.responseObj(false, 409, i18n.__(`UserAlreadyExist`))
     );
   } else {
     var PhoneNumber = req.body.country_code + req.body.mob_no;
