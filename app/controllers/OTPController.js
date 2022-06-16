@@ -4,6 +4,7 @@ require("dotenv").config();
 const { UsersModel, OTPModel } = require("../imports");
 
 const { AWS } = require("../imports");
+const { languageFunc } = require("../i18n/i18n");
 
 exports.getOTP = async (req, res, next) => {
   const user_id = req.body.user_id;
@@ -15,6 +16,7 @@ exports.getOTP = async (req, res, next) => {
   });
 
   if (userData) {
+    let i18n = languageFunc(req.language);
     var PhoneNumber = userData.country_code + userData.mob_no;
     var random = Math.floor(1000 + Math.random() * 9000);
 
@@ -45,25 +47,15 @@ exports.getOTP = async (req, res, next) => {
 
           if (EditUserOTP) {
             return res.json(
-              constants.responseObj(
-                true,
-                201,
-                constants.messages.Success,
-                false,
-                {
-                  otp: random,
-                  country_code: userData.country_code,
-                  mob_no: userData.mob_no,
-                }
-              )
+              constants.responseObj(true, 201, i18n.__(`success`), false, {
+                otp: random,
+                country_code: userData.country_code,
+                mob_no: userData.mob_no,
+              })
             );
           } else {
             return res.json(
-              constants.responseObj(
-                false,
-                500,
-                constants.messages.SomethingWentWrong
-              )
+              constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
             );
           }
         } catch (error) {

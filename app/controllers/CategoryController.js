@@ -6,27 +6,22 @@ const {
   OtherSubcategoryModel,
 } = require("../imports");
 const constants = require("../imports").constants;
+const { languageFunc } = require("../i18n/i18n");
 
 exports.allCategory = async (req, res, next) => {
   let category = await CategoryModel.findAll();
+  let i18n = languageFunc(req.language);
   if (category.length) {
     return res.json(
-      constants.responseObj(
-        true,
-        200,
-        constants.messages.Success,
-        false,
-        category
-      )
+      constants.responseObj(true, 200, false, i18n.__(`Success`), category)
     );
   } else {
-    return res.json(
-      constants.responseObj(false, 202, constants.messages.NoCategory)
-    );
+    return res.json(constants.responseObj(false, 202, i18n.__(`NoCategory`)));
   }
 };
 
 exports.allCatSubCategory = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   try {
     let categoryData = await CategoryModel.findAll({
@@ -58,19 +53,20 @@ exports.allCatSubCategory = async (req, res, next) => {
       order: [["id", "DESC"]],
     });
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         categoryData,
       })
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.generatePdf = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   let category = await CategoryModel.findAll({
     raw: true,
   });
@@ -103,39 +99,30 @@ exports.generatePdf = async (req, res, next) => {
         category[i].subcategory = arrObj;
       }
       return res.json(
-        constants.responseObj(
-          true,
-          200,
-          constants.messages.success,
-          false,
-          category
-        )
+        constants.responseObj(true, 200, i18n.__(`success`), false, category)
       );
     } else {
       return res.json(
-        constants.responseObj(false, 202, constants.messages.NoSubCategory)
+        constants.responseObj(false, 202, i18n.__(`NoSubCategory`))
       );
     }
   } else {
-    return res.json(
-      constants.responseObj(false, 202, constants.messages.NoCategory)
-    );
+    return res.json(constants.responseObj(false, 202, i18n.__(`NoCategory`)));
   }
 };
 
 exports.addOtherScreenValues = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     const addSubcategoryValue = await NestedSubcategoryModel.bulkCreate(
       req.body
     ).then(async (value) => {
-      return res.json(
-        constants.responseObj(true, 201, constants.messages.AddSuccess)
-      );
+      return res.json(constants.responseObj(true, 201, i18n.__(`AddSuccess`)));
     });
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };

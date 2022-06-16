@@ -1,14 +1,9 @@
-const {
-  AppointmentReminderModel,
-  MedicineReminderModel,
-  jwt,
-  moment,
-  Op,
-} = require("../imports");
+const { MedicineReminderModel, moment, Op } = require("../imports");
 const constants = require("../imports").constants;
-const { checkUser } = require("../utils/Utils");
+const { languageFunc } = require("../i18n/i18n");
 
 exports.medicationList = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   const created_at = req.body.created_at;
 
@@ -44,14 +39,14 @@ exports.medicationList = async (req, res, next) => {
     });
 
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         MedicineData,
       })
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };

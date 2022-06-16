@@ -4,8 +4,10 @@ const { S3 } = require("../imports");
 const dotenv = require("dotenv");
 let { jwt } = require("../imports");
 dotenv.config();
+const { languageFunc } = require("../i18n/i18n");
 
 exports.editUserProfile = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   const UserProfileData = await UsersModel.findOne({
     raw: true,
@@ -100,7 +102,7 @@ exports.editUserProfile = async (req, res, next) => {
                   constants.responseObj(
                     true,
                     201,
-                    constants.messages.UserCreated,
+                    i18n.__(`UserCreated`),
                     false,
                     user_profile_data
                   )
@@ -109,7 +111,9 @@ exports.editUserProfile = async (req, res, next) => {
             });
           }
         } else {
-          return res.json(constants.responseObj(false, 401, "Invalid Otp"));
+          return res.json(
+            constants.responseObj(true, 401, i18n.__(`InvalidOTP`))
+          );
         }
       } else {
         if (UserProfileData) {
@@ -135,7 +139,7 @@ exports.editUserProfile = async (req, res, next) => {
                       constants.responseObj(
                         true,
                         201,
-                        constants.messages.UpdateStatus,
+                        i18n.__(`UpdateSuccess`),
                         false,
                         profile_data
                       )
@@ -180,7 +184,7 @@ exports.editUserProfile = async (req, res, next) => {
                     constants.responseObj(
                       true,
                       201,
-                      constants.messages.UpdateStatus,
+                      i18n.__(`UpdateSuccess`),
                       false,
                       user_data
                     )
@@ -196,10 +200,12 @@ exports.editUserProfile = async (req, res, next) => {
       }
     } catch (error) {
       console.log(error, "error");
-      return res.json(constants.responseObj(false, 500, error.parent));
+      return res.json(
+        constants.responseObj(false, 409, i18n.__(`DuplicateNumber`))
+      );
     }
   } else {
-    return res.json(constants.responseObj(false, 404, "User Not Found"));
+    return res.json(constants.responseObj(false, 404, i18n.__(`UserNotFound`)));
   }
 };
 
@@ -283,20 +289,21 @@ function imageUpload(image, imgAttachement, cb) {
   });
 }
 exports.getUserProfileData = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   try {
     const user_id = req.user_id;
     const UserProfileData = await UsersModel.findOne({
       where: { id: user_id },
     });
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         UserProfileData,
       })
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };

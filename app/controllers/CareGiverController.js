@@ -2,8 +2,10 @@ const { CareGiverModel } = require("../imports");
 const constants = require("../imports").constants;
 const dotenv = require("dotenv");
 dotenv.config();
+const { languageFunc } = require("../i18n/i18n");
 
 exports.addCareGiver = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   try {
     let CareGiverData = {
@@ -16,12 +18,10 @@ exports.addCareGiver = async (req, res, next) => {
     };
     const CareGiver = await CareGiverModel.create(CareGiverData);
     if (CareGiver) {
-      return res.json(
-        constants.responseObj(true, 201, constants.messages.AddSuccess)
-      );
+      return res.json(constants.responseObj(true, 201, i18n.__(`AddSuccess`)));
     } else {
       return res.json(
-        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
       );
     }
   } catch (error) {
@@ -31,6 +31,7 @@ exports.addCareGiver = async (req, res, next) => {
 };
 
 exports.caregiverData = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   let caregiverData = await CareGiverModel.findAll({
     where: { user_id: user_id },
@@ -40,36 +41,31 @@ exports.caregiverData = async (req, res, next) => {
       constants.responseObj(
         true,
         200,
-        constants.messages.DataFound,
+        i18n.__(`DataFound`),
         false,
         caregiverData
       )
     );
   } else {
     return res.json(
-      constants.responseObj(false, 202, constants.messages.NoCareGiverData)
+      constants.responseObj(false, 202, i18n.__(`NoCareGiverData`))
     );
   }
 };
 
 exports.deleteCareGiver = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   let caregiverData = await CareGiverModel.destroy({
     where: { id: req.body.id },
   });
   if (caregiverData) {
     return res.json(
-      constants.responseObj(
-        true,
-        200,
-        constants.messages.CareGiverDelete,
-        false,
-        {}
-      )
+      constants.responseObj(true, 200, i18n.__(`CareGiverDelete`), false, {})
     );
   } else {
     return res.json(
-      constants.responseObj(false, 202, constants.messages.NoCareGiverData)
+      constants.responseObj(false, 202, i18n.__(`NoCareGiverData`))
     );
   }
 };

@@ -4,12 +4,10 @@ const {
   FavoriteModel,
 } = require("../imports");
 const constants = require("../imports").constants;
-let { successCallback } = require("../constants");
-const http = require("https");
-let { jwt } = require("../imports/");
-const sequelize = require("sequelize");
+const { languageFunc } = require("../i18n/i18n");
 
 exports.userFavorites = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   try {
     let subCategoryfav = await UserSubcategoriesValueModel.findAll({
@@ -23,9 +21,7 @@ exports.userFavorites = async (req, res, next) => {
       for (let i = 0; i < subCategoryfav.length; i++) {
         obj.push(subCategoryfav[i].subcategory_id);
       }
-      // let subCategoryData = await SubcategoryModel.findAll({
-      //   where: { id: obj },
-      // });
+
       let subCategoryData = await UserSubcategoriesValueModel.findAll({
         raw: true,
         where: { user_id: user_id },
@@ -75,24 +71,25 @@ exports.userFavorites = async (req, res, next) => {
       });
       subCategoryDataN.sort(compare);
       return res.json(
-        constants.responseObj(true, 201, constants.messages.DataFound, false, {
+        constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
           subCategoryDataN,
         })
       );
     } else {
       return res.json(
-        constants.responseObj(false, 404, constants.messages.NoDataFound)
+        constants.responseObj(false, 404, i18n.__(`NoDataFound`))
       );
     }
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.addFavorites = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   FavoriteModel.destroy({
     where: {
@@ -112,33 +109,20 @@ exports.addFavorites = async (req, res, next) => {
         const addFavorite = await FavoriteModel.bulkCreate(subcategoryValue);
         if (addFavorite) {
           return res.json(
-            constants.responseObj(
-              true,
-              201,
-              constants.messages.AddSuccess,
-              false
-            )
+            constants.responseObj(true, 201, i18n.__(`AddSuccess`), false)
           );
         } else {
           return res.json(
-            constants.responseObj(
-              false,
-              500,
-              constants.messages.SomethingWentWrong
-            )
+            constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
           );
         }
       } else {
-        constants.responseObj(
-          false,
-          500,
-          constants.messages.SomethingWentWrong
-        );
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`));
       }
     })
     .catch((err) => {
       console.log("err:", err);
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong);
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`));
     });
 };
 

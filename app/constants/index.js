@@ -5,7 +5,7 @@ const existsStatusCode = 409;
 const errorStatusCode = 500;
 const invalidStatusCode = 401;
 const systemError = "System error. Please contact your administrator";
-
+const i18n = require("../i18n/i18n");
 const messages = {
   SomethingWentWrong: "Something Went Wrong!",
   TokenExpired: "Token has expired",

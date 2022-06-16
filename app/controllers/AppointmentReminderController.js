@@ -1,27 +1,30 @@
 const { DoctorsModel, AppointmentReminderModel } = require("../imports");
 const constants = require("../imports").constants;
 const dotenv = require("dotenv");
-let { jwt } = require("../imports/");
+
 dotenv.config();
+const { languageFunc } = require("../i18n/i18n");
 
 exports.addAppointmentReminderView = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     const DoctorsData = await DoctorsModel.findAll();
 
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         DoctorsData,
       })
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.getAppointmentReminderProfile = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const user_id = req.user_id;
 
   try {
@@ -38,20 +41,21 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
         ],
       });
     return res.json(
-      constants.responseObj(true, 201, constants.messages.DataFound, false, {
+      constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         AppointmentReminderProfileData,
       })
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.editAppointmentReminderStatus = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
     let editAppointmentStatus = await AppointmentReminderModel.update(
       {
         status: req.body.status,
@@ -64,17 +68,18 @@ exports.editAppointmentReminderStatus = async (req, res, next) => {
     );
 
     return res.json(
-      constants.responseObj(true, 201, constants.messages.UpdateStatus, false)
+      constants.responseObj(true, 201, i18n.__(`UpdateStatus`), false)
     );
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
 
 exports.addAppointmentReminder = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   const DoctorData = await DoctorsModel.findOne({
     where: {
       doctor_name: req.body.doctor_name,
@@ -95,7 +100,7 @@ exports.addAppointmentReminder = async (req, res, next) => {
     });
     if (!DoctorData) {
       return res.json(
-        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
       );
     }
     var Doctor_id = DoctorData.id;
@@ -119,12 +124,10 @@ exports.addAppointmentReminder = async (req, res, next) => {
       AppointmentReminderData
     );
     if (AppointmentReminder) {
-      return res.json(
-        constants.responseObj(true, 201, constants.messages.AddSuccess)
-      );
+      return res.json(constants.responseObj(true, 201, i18n.__(`AddSuccess`)));
     } else {
       return res.json(
-        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
       );
     }
   } catch (error) {

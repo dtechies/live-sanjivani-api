@@ -4,8 +4,10 @@ const { AWS } = require("../imports");
 const { constants, moment } = require("../imports");
 const { healthPdf } = require("../utils/Utils");
 const { sendPdf } = require("../utils/Utils");
+const { languageFunc } = require("../i18n/i18n");
 
 exports.sendMail = async (req, res, next) => {
+  let i18n = languageFunc(req.language);
   var sourceEmail = req.body.email;
 
   var params = {
@@ -63,14 +65,14 @@ exports.sendMail = async (req, res, next) => {
       }
 
       return res.json(
-        constants.responseObj(true, 201, constants.messages.DataFound, false, {
+        constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
           link: `https: //live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
           categoryData,
         })
       );
     } else {
       return res.json(
-        constants.responseObj(true, 201, constants.messages.DataFound, false, {
+        constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
           link: `https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
           categoryData,
         })
@@ -79,7 +81,7 @@ exports.sendMail = async (req, res, next) => {
   } catch (error) {
     console.log(error, "error");
     return res.json(
-      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
     );
   }
 };
