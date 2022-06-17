@@ -98,6 +98,8 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 
 exports.editReminderStatus = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
+
     let updateData = {
       reminder_status: req.body.reminder_status,
       is_done: true,
