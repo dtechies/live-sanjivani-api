@@ -40,6 +40,7 @@ const CareGiverModel = db.CareGiverModel;
 const OtherSubcategoryModel = db.OtherSubcategoryModel;
 const SymptomModel = db.SymptomModel;
 const OTPModel = db.OTPModel;
+const ContactUsModel = db.ContactUsModel;
 
 module.exports = {
   constants,
@@ -75,4 +76,5 @@ module.exports = {
   OtherSubcategoryModel,
   SymptomModel,
   OTPModel,
+  ContactUsModel,
 };

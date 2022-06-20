@@ -64,7 +64,7 @@ exports.registerUser = async (req, res, next) => {
     console.log(error, "error");
     // return res.json(constants.responseObj(false, 500, error));
     return res.json(
-      constants.responseObj(false, 500, i18n.__(`DuplicateNumber`))
+      constants.responseObj(false, 500, constants.messages.DuplicateNumber)
     );
   }
 };

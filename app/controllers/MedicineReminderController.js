@@ -98,6 +98,8 @@ exports.editMedicineReminderStatus = async (req, res, next) => {
 
 exports.editReminderStatus = async (req, res, next) => {
   try {
+    let i18n = languageFunc(req.language);
+
     let updateData = {
       reminder_status: req.body.reminder_status,
       is_done: true,
@@ -174,7 +176,6 @@ exports.addMedicineReminder = async (req, res, next) => {
   }
   var Doctor_id = DoctorData.id;
 
-  //
   const MedicineData = await MedicineDataModel.findOne({
     where: {
       name: req.body.medicine_name,
@@ -199,6 +200,14 @@ exports.addMedicineReminder = async (req, res, next) => {
   }
 
   try {
+    const utc_date_and_time = moment
+      .utc(`${req.body.utc_date_and_time}`)
+      .format();
+    const local_date = moment
+      .utc(utc_date_and_time)
+      .local()
+      .format("YYYY-MM-DD");
+    const local_time = moment.utc(utc_date_and_time).local().format("HH:mm:ss");
     if (req.files) {
       let medicine_image = req.files.medicine_image;
       let filename = medicine_image.name;
@@ -222,9 +231,9 @@ exports.addMedicineReminder = async (req, res, next) => {
             medicine_strength: req.body.medicine_strength,
             medicine_strength_unit: req.body.medicine_strength_unit,
             reminder_frequency: req.body.reminder_frequency,
-            frequency_value: req.body.frequency_value,
+            frequency_value: local_date,
             reminder_time: req.body.reminder_time,
-            user_selected_time: req.body.user_selected_time,
+            user_selected_time: local_time,
             status: true,
             is_done: false,
           };
@@ -259,9 +268,9 @@ exports.addMedicineReminder = async (req, res, next) => {
         medicine_strength: req.body.medicine_strength,
         medicine_strength_unit: req.body.medicine_strength_unit,
         reminder_frequency: req.body.reminder_frequency,
-        frequency_value: req.body.frequency_value,
+        frequency_value: local_date,
         reminder_time: req.body.reminder_time,
-        user_selected_time: req.body.user_selected_time,
+        user_selected_time: local_time,
         status: true,
         is_done: false,
       };

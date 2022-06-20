@@ -66,7 +66,7 @@ exports.sendMail = async (req, res, next) => {
 
       return res.json(
         constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
-          link: `https: //live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
+          link: `https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}`,
           categoryData,
         })
       );

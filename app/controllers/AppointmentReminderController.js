@@ -1,4 +1,8 @@
-const { DoctorsModel, AppointmentReminderModel } = require("../imports");
+const {
+  DoctorsModel,
+  AppointmentReminderModel,
+  moment,
+} = require("../imports");
 const constants = require("../imports").constants;
 const dotenv = require("dotenv");
 
@@ -107,16 +111,25 @@ exports.addAppointmentReminder = async (req, res, next) => {
   }
 
   try {
+    const utc_date_and_time = moment
+      .utc(`${req.body.utc_date_and_time}`)
+      .format();
+    const local_date = moment
+      .utc(utc_date_and_time)
+      .local()
+      .format("YYYY-MM-DD");
+    const local_time = moment.utc(utc_date_and_time).local().format("HH:mm:ss");
+    console.log(local_date, local_time, "- UTC now to local");
     let AppointmentReminderData = {
       user_id: req.body.user_id,
       doctor_id: Doctor_id,
       // address1: req.body.address1,
       // address2: req.body.address2,
-      date: req.body.date,
+      date: local_date,
       // city: req.body.city,
       // state: req.body.state,
       // pincode: req.body.pincode,
-      user_selected_time: req.body.user_selected_time,
+      user_selected_time: local_time,
       reminder_time: req.body.reminder_time,
       status: true,
     };

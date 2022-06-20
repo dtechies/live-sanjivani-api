@@ -67,7 +67,9 @@ exports.getOTP = async (req, res, next) => {
         console.log("Error ==> ", err);
       });
   } else {
-    return res.json(constants.responseObj(false, 404, i18n.__(`UserNotFound`)));
+    return res.json(
+      constants.responseObj(false, 404, constants.messages.UserNotFound)
+    );
   }
 };
 exports.storeOTP = async (req, res, next) => {
