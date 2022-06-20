@@ -13,17 +13,22 @@
   <script src="public/assets/plugins/parsleyjs/parsley.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <style>
+  table, th, td {
+    border: 1px solid groove !important;  
+    border-collapse: collapse;
+  }
+  </style>
 </head>
-
 <body>
   <div>
-    <table class="table " style="width:90%; border: 1px solid groove;margin-left: 30px;">
+    <table class="table" style="width:90%; border: 1px solid groove;margin-left: 30px !important">
       <thead>
         <tr>
           <!-- <th scope="col">Sr.</th> -->
-          <th scope="col" style="font-weight: bold !important">Field</th>
-          <th scope="col" style="font-weight: bold;">Value</th>
-          <th scope="col" style="font-weight: bold;">Date And Time</th>
+          <th scope="col">Field</th>
+          <th scope="col">Value</th>
+          <th scope="col">Date And Time</th>
 
         </tr>
       </thead>

@@ -236,7 +236,6 @@ function healthPdf(CategoryData, moment) {
         });
       }
     );
-
   return pdfAttachement;
 }
 async function sendPdf(email, pdf) {

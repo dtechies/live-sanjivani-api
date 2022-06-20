@@ -63,6 +63,7 @@ db.OtherSubcategoryModel = require("./OtherSubcategoryModel")(
 );
 db.SymptomModel = require("./SymptomModel")(sequelize, Sequelize);
 db.OTPModel = require("./OTPModel")(sequelize, Sequelize);
+db.ContactUsModel = require("./ContactUsModel")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if ("associate" in db[modelName]) {
