@@ -201,13 +201,13 @@ const createPdf = (html, options) =>
     pdf
       .create(html, options)
       .toFile(
-        __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+        __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
         (err, result) => {
           pdfData = result;
           var params = {
             Bucket: "live-sanjivani",
             Body: fs.readFileSync(
-              __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement
+              __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement
             ),
 
             Key: "userFavouriteCategoryPDF/" + pdfAttachement,
@@ -220,7 +220,7 @@ const createPdf = (html, options) =>
               reject(err);
             } else {
               fs.stat(
-                __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+                __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
                 function (err, stats) {
                   if (err) {
                     return console.error(err);
