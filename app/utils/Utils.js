@@ -191,8 +191,8 @@ async function healthPdf(CategoryData, moment) {
       height: "10mm",
     },
   };
-  let pdf = await createPdf(html, options);
-  return pdf;
+  let generatedPdf = await createPdf(html, options);
+  return generatedPdf;
 }
 
 const createPdf = (html, options) => {
