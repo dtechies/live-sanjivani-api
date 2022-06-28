@@ -196,8 +196,8 @@ async function healthPdf(CategoryData, moment) {
 }
 
 const createPdf = (html, options) => {
-  console.log(__dirname, "loggWITHOUTslice");
-  console.log(__dirname.slice(0, -5), "logg");
+  console.log(__dirname, "dirname");
+  console.log(__dirname.slice(0, -5), "dirname log");
   return new Promise(function (resolve, reject) {
     let pdfAttachement = `${generateReferralString(10)}.pdf`;
     pdf
