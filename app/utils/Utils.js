@@ -196,20 +196,24 @@ async function healthPdf(CategoryData, moment) {
 }
 
 const createPdf = (html, options) => {
-  console.log(__dirname, "loggWITHOUTslice");
-  console.log(__dirname.slice(0, -5), "logg");
+  console.log(__dirname, "dirname");
+  console.log(__dirname.slice(0, -5), "dirname log");
   return new Promise(function (resolve, reject) {
     let pdfAttachement = `${generateReferralString(10)}.pdf`;
     pdf
       .create(html, options)
       .toFile(
-        __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
+        __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
         (err, result) => {
+          console.log(
+            __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+            "pdfAttachement log"
+          );
           pdfData = result;
           var params = {
             Bucket: "live-sanjivani",
             Body: fs.readFileSync(
-              __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement
+              __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement
             ),
 
             Key: "userFavouriteCategoryPDF/" + pdfAttachement,
@@ -222,7 +226,7 @@ const createPdf = (html, options) => {
               reject(err);
             } else {
               fs.stat(
-                __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
+                __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
                 function (err, stats) {
                   if (err) {
                     return console.error(err);
@@ -231,6 +235,18 @@ const createPdf = (html, options) => {
                 }
               );
             }
+          }).then(() => {
+            // fs.unlink(
+            //   __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
+            //   function (err) {
+            //     if (err) {
+            //       return console.log(err);
+            //     } else {
+            //       console.log("Pdf File deleted successfully");
+            //
+            //     }
+            //   }
+            // );
           });
         }
       );
