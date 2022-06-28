@@ -195,8 +195,10 @@ async function healthPdf(CategoryData, moment) {
   return pdf;
 }
 
-const createPdf = (html, options) =>
-  new Promise(function (resolve, reject) {
+const createPdf = (html, options) => {
+  console.log(__dirname, "loggWITHOUTslice");
+  console.log(__dirname.slice(0, -5), "logg");
+  return new Promise(function (resolve, reject) {
     let pdfAttachement = `${generateReferralString(10)}.pdf`;
     pdf
       .create(html, options)
@@ -233,6 +235,7 @@ const createPdf = (html, options) =>
         }
       );
   });
+};
 
 async function sendPdf(email, pdf) {
   const ses = new AWS.SES({
