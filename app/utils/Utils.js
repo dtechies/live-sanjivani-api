@@ -203,7 +203,7 @@ const createPdf = (html, options) => {
       }
 
       let stream = result.pipe(
-        fs.createWriteStream(__dirname.slice(0, -5) + "healthpdf/health.pdf")
+        fs.createWriteStream(__dirname.slice(0, -5) + "healthpdf1/health.pdf")
       );
       stream.on("finish", async () => {
         let uploadedData = await uploadPdf();
@@ -217,7 +217,7 @@ const uploadPdf = () => {
     let pdfAttachement = `${generateReferralString(10)}.pdf`;
     let params = {
       Bucket: "live-sanjivani",
-      Body: fs.readFileSync(__dirname.slice(0, -5) + "healthpdf/health.pdf"),
+      Body: fs.readFileSync(__dirname.slice(0, -5) + "healthpdf1/health.pdf"),
       Key: "userFavouriteCategoryPDF/" + pdfAttachement,
       ContentType: "application/pdf",
       ACL: "public-read",
