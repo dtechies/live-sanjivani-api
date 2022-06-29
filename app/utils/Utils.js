@@ -202,22 +202,23 @@ const createPdf = (html, options) => {
         console.log("err:", err);
       }
 
-      let stream = result.pipe(
-        fs.createWriteStream(__dirname.slice(0, -5) + "healthpdf1/health.pdf")
-      );
-      stream.on("finish", async () => {
-        let uploadedData = await uploadPdf();
-        resolve(uploadedData);
-      });
+      let stream = result;
+      let uploadedData = await uploadPdf(stream);
+      resolve(uploadedData);
+      // stream.on("finish", async () => {
+      //   let uploadedData = await uploadPdf();
+      //   resolve(uploadedData);
+      // });
     });
   });
 };
-const uploadPdf = () => {
+const uploadPdf = (stream) => {
   return new Promise(function (resolve, reject) {
     let pdfAttachement = `${generateReferralString(10)}.pdf`;
     let params = {
       Bucket: "live-sanjivani",
-      Body: fs.readFileSync(__dirname.slice(0, -5) + "healthpdf1/health.pdf"),
+      Body: stream,
+      // Body: fs.readFileSync(__dirname.slice(0, -5) + "healthpdf1/health.pdf"),
       Key: "userFavouriteCategoryPDF/" + pdfAttachement,
       ContentType: "application/pdf",
       ACL: "public-read",
