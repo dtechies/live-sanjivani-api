@@ -133,20 +133,23 @@ exports.editReminderStatus = async (req, res, next) => {
 exports.getTipForDay = async (req, res, next) => {
   try {
     let i18n = languageFunc(req.language);
-    const TipForDayData = await TipForDayModel.findOne({
-      // where: {
-      //   id: user_id,
-      // },
+    const TipForDayData = await TipForDayModel.findAll({
+      order: [["id", "DESC"]],
+      limit: 1,
     });
-    return res.json(
-      constants.responseObj(
-        true,
-        201,
-        i18n.__(`DataFound`),
-        false,
-        TipForDayData
-      )
-    );
+    if (TipForDayData.length) {
+      return res.json(
+        constants.responseObj(
+          true,
+          201,
+          i18n.__(`DataFound`),
+          false,
+          TipForDayData[0]
+        )
+      );
+    } else {
+      constants.responseObj(false, 404, i18n.__(`NoDataFound`));
+    }
   } catch (error) {
     console.log(error, "error");
     return res.json(
