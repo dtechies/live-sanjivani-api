@@ -196,61 +196,50 @@ async function healthPdf(CategoryData, moment) {
 }
 
 const createPdf = (html, options) => {
-  console.log(__dirname.slice(0, -5), "dirname log");
   return new Promise(function (resolve, reject) {
-    let pdfAttachement = `${generateReferralString(10)}.pdf`;
-    pdf
-      .create(html, options)
-      .toFile(
-        __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
-        (err, result) => {
-          if (err) {
-            console.log("err:", err);
-          }
-          pdfData = result;
-          var params = {
-            Bucket: "live-sanjivani",
-            Body: fs.readFileSync(
-              __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement
-            ),
+    pdf.create(html, options).toStream(async (err, result) => {
+      if (err) {
+        console.log("err:", err);
+      }
 
-            Key: "userFavouriteCategoryPDF/" + pdfAttachement,
-            ContentType: "application/pdf",
-            ACL: "public-read",
-          };
-          S3.upload(params, async function (err, data) {
-            if (err) {
-              console.log(err);
-              reject(err);
-            } else {
-              fs.stat(
-                __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
-                function (err, stats) {
-                  if (err) {
-                    return console.error(err);
-                  }
-                  resolve(pdfAttachement);
-                }
-              );
-            }
-          }).then(() => {
-            // fs.unlink(
-            //   __dirname.slice(0, -5) + "/healthpdf/" + pdfAttachement,
-            //   function (err) {
-            //     if (err) {
-            //       return console.log(err);
-            //     } else {
-            //       console.log("Pdf File deleted successfully");
-            //
-            //     }
-            //   }
-            // );
-          });
-        }
+      let stream = result.pipe(
+        fs.createWriteStream(__dirname.slice(0, -5) + "healthpdf/health.pdf")
       );
+      stream.on("finish", async () => {
+        let uploadedData = await uploadPdf();
+        resolve(uploadedData);
+      });
+    });
   });
 };
-
+const uploadPdf = () => {
+  return new Promise(function (resolve, reject) {
+    let pdfAttachement = `${generateReferralString(10)}.pdf`;
+    let params = {
+      Bucket: "live-sanjivani",
+      Body: fs.readFileSync(__dirname.slice(0, -5) + "healthpdf/health.pdf"),
+      Key: "userFavouriteCategoryPDF/" + pdfAttachement,
+      ContentType: "application/pdf",
+      ACL: "public-read",
+    };
+    S3.upload(params, async function (err, data) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        // fs.stat(
+        //   __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
+        //   function (err, stats) {
+        //     if (err) {
+        //       return console.error(err);
+        //     }
+        //   }
+        // );
+        resolve(pdfAttachement);
+      }
+    });
+  });
+};
 async function sendPdf(email, pdf) {
   const ses = new AWS.SES({
     AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
