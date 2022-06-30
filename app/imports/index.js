@@ -6,7 +6,7 @@ const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
-const Op = require("Sequelize").Op;
+const Op = require("sequelize").Op;
 
 require("dotenv").config();
 const AWS = require("aws-sdk");
