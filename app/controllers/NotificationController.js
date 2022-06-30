@@ -158,6 +158,8 @@ exports.sendNotificationForAppointmentReminder = async (req, res, next) => {
   });
 };
 async function sendNotifications(medicine_data) {
+  console.log(medicine_data, "medicine_data log");
+
   let title = "Medicine Reminder";
   var sendNotification = function (data) {
     var headers = {
@@ -207,6 +209,7 @@ async function sendNotifications(medicine_data) {
   sendNotification(message);
 }
 async function sendNotificationsForAppointment(appointment_data) {
+  console.log(appointment_data, "appointment_data log");
   let title = "Appointment Reminder";
   var sendNotification = function (data) {
     var headers = {
