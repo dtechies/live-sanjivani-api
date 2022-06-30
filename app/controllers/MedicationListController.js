@@ -28,6 +28,7 @@ exports.medicationList = async (req, res, next) => {
         "is_done",
         "medicine_form",
         "reminder_status",
+        "user_selected_local_time",
       ],
       where: {
         user_id: user_id,
