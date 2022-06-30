@@ -205,10 +205,6 @@ const createPdf = (html, options) => {
       let stream = result;
       let uploadedData = await uploadPdf(stream);
       resolve(uploadedData);
-      // stream.on("finish", async () => {
-      //   let uploadedData = await uploadPdf();
-      //   resolve(uploadedData);
-      // });
     });
   });
 };
@@ -218,7 +214,6 @@ const uploadPdf = (stream) => {
     let params = {
       Bucket: "live-sanjivani",
       Body: stream,
-      // Body: fs.readFileSync(__dirname.slice(0, -5) + "healthpdf1/health.pdf"),
       Key: "userFavouriteCategoryPDF/" + pdfAttachement,
       ContentType: "application/pdf",
       ACL: "public-read",
@@ -228,14 +223,6 @@ const uploadPdf = (stream) => {
         console.log(err);
         reject(err);
       } else {
-        // fs.stat(
-        //   __dirname.slice(0, -5) + "healthpdf/" + pdfAttachement,
-        //   function (err, stats) {
-        //     if (err) {
-        //       return console.error(err);
-        //     }
-        //   }
-        // );
         resolve(pdfAttachement);
       }
     });
