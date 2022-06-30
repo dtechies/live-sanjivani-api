@@ -3,7 +3,11 @@ require("dotenv").config();
 
 const { UsersModel, OTPModel } = require("../imports");
 const AWS = require("aws-sdk");
-
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.PDF_REGION,
+});
 const { languageFunc } = require("../i18n/i18n");
 
 exports.getOTP = async (req, res, next) => {
@@ -24,12 +28,6 @@ exports.getOTP = async (req, res, next) => {
       Message: "Your verification code is " + `${random}`,
       PhoneNumber: PhoneNumber,
     };
-    AWS.config.update({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_KEY,
-      region: process.env.PDF_REGION,
-    });
-
     var publishTextPromise = new AWS.SNS({
       apiVersion: "2010-03-31",
     })
@@ -86,7 +84,7 @@ exports.storeOTP = async (req, res, next) => {
   });
   if (userData) {
     return res.json(
-      constants.responseObj(false, 409, i18n.__(`UserAlreadyExist`))
+      constants.responseObj(false, 409, constants.messages.UserAlreadyExist)
     );
   } else {
     var PhoneNumber = req.body.country_code + req.body.mob_no;
