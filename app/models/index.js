@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
     dialect: "mysql",
     host: "localhost",
     dialectOptions: {
-      socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
+      // socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
       // socketPath: ""
     },
   }
