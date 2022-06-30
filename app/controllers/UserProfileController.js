@@ -112,7 +112,7 @@ exports.editUserProfile = async (req, res, next) => {
           }
         } else {
           return res.json(
-            constants.responseObj(true, 401, i18n.__(`InvalidOTP`))
+            constants.responseObj(false, 401, i18n.__(`InvalidOTP`))
           );
         }
       } else {
