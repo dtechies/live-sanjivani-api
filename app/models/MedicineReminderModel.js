@@ -42,6 +42,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(50),
         notNull: true,
       },
+      user_selected_local_time: {
+        type: Sequelize.STRING(50),
+        notNull: true,
+      },
       pills_remaining: {
         type: Sequelize.INTEGER,
         notNull: true,
