@@ -2,8 +2,8 @@ const constants = require("../imports").constants;
 require("dotenv").config();
 
 const { UsersModel, OTPModel } = require("../imports");
+const AWS = require("aws-sdk");
 
-const { AWS } = require("../imports");
 const { languageFunc } = require("../i18n/i18n");
 
 exports.getOTP = async (req, res, next) => {
@@ -24,6 +24,11 @@ exports.getOTP = async (req, res, next) => {
       Message: "Your verification code is " + `${random}`,
       PhoneNumber: PhoneNumber,
     };
+    AWS.config.update({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_KEY,
+      region: process.env.PDF_REGION,
+    });
 
     var publishTextPromise = new AWS.SNS({
       apiVersion: "2010-03-31",
