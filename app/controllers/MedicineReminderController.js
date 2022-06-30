@@ -237,6 +237,7 @@ exports.addMedicineReminder = async (req, res, next) => {
             frequency_value: local_date,
             reminder_time: req.body.reminder_time,
             user_selected_time: local_time,
+            user_selected_local_time: req.body.user_selected_time,
             status: true,
             is_done: false,
           };
@@ -274,6 +275,7 @@ exports.addMedicineReminder = async (req, res, next) => {
         frequency_value: local_date,
         reminder_time: req.body.reminder_time,
         user_selected_time: local_time,
+        user_selected_local_time: req.body.user_selected_time,
         status: true,
         is_done: false,
       };

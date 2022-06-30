@@ -130,6 +130,7 @@ exports.addAppointmentReminder = async (req, res, next) => {
       // state: req.body.state,
       // pincode: req.body.pincode,
       user_selected_time: local_time,
+      user_selected_local_time: req.body.user_selected_time,
       reminder_time: req.body.reminder_time,
       status: true,
     };
