@@ -38,31 +38,32 @@ exports.sendMail = async (req, res, next) => {
     let pdf = await healthPdf(categoryData, moment);
 
     if (!sourceEmail == "") {
-      var listIDsPromise = await new AWS.SES({
-        apiVersion: "2010-12-01",
-      })
-        .listIdentities(params)
-        .promise();
+      // var listIDsPromise = await new AWS.SES({
+      //   apiVersion: "2010-12-01",
+      // })
+      //   .listIdentities(params)
+      //   .promise();
 
-      let verified = listIDsPromise.Identities;
+      // let verified = listIDsPromise.Identities;
 
-      verified.includes(sourceEmail);
+      // verified.includes(sourceEmail);
 
-      if (verified.includes(sourceEmail) == true) {
-        sendPdf(req.body.email, pdf);
-      } else {
-        // Create promise and SES service object
-        var verifyEmailPromise = await new AWS.SES({
-          apiVersion: "2010-12-01",
-        })
-          .verifyEmailIdentity({
-            EmailAddress: sourceEmail,
-          })
-          .promise();
-      }
-      if (verifyEmailPromise) {
-        sendPdf(req.body.email, pdf);
-      }
+      // if (verified.includes(sourceEmail) == true) {
+      //   sendPdf(req.body.email, pdf);
+      // } else {
+      //   // Create promise and SES service object
+      //   var verifyEmailPromise = await new AWS.SES({
+      //     apiVersion: "2010-12-01",
+      //   })
+      //     .verifyEmailIdentity({
+      //       EmailAddress: sourceEmail,
+      //     })
+      //     .promise();
+      // }
+      // if (verifyEmailPromise) {
+      //   sendPdf(req.body.email, pdf);
+      // }
+      sendPdf(req.body.email, pdf);
 
       return res.json(
         constants.responseObj(true, 201, i18n.__(`DataFound`), false, {

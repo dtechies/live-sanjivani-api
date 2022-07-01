@@ -239,7 +239,7 @@ async function sendPdf(email, pdf) {
     Destination: {
       /* required */
       CcAddresses: [
-        "codentic.users@gmail.com",
+        "support@livesanjivani.com",
         /* more items */
       ],
       ToAddresses: [email] /* more items */,
@@ -260,10 +260,10 @@ async function sendPdf(email, pdf) {
       },
       Subject: {
         Charset: "UTF-8",
-        Data: "Test email",
+        Data: "Health Report",
       },
     },
-    Source: "codentic.users@gmail.com" /* required */,
+    Source: "support@livesanjivani.com" /* required */,
     ReplyToAddresses: [
       email,
       /* more items */
