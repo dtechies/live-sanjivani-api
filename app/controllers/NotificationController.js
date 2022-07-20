@@ -241,6 +241,7 @@ async function sendNotificationsForAppointment(appointment_data) {
       doctor_name: appointment_data["doctor.doctor_name"],
       doctor_address: appointment_data["doctor.doctor_address"],
       user_selected_time: appointment_data.user_selected_local_time,
+      appointment_time: appointment_data.appointment_time,
     },
     headings: { en: title },
     // included_segments: ["Subscribed Users"],

@@ -19,3 +19,25 @@ exports.getHelpSupport = async (req, res, next) => {
     );
   }
 };
+exports.deleteHelpSupport = async (req, res, next) => {
+  try {
+    let i18n = languageFunc(req.language);
+    const HelpSupportDelete = await HelpSupportModel.destroy({
+      where: req.query,
+    });
+    if (HelpSupportDelete) {
+      return res.json(
+        constants.responseObj(true, 201, i18n.__(`DeleteSuccess`), false)
+      );
+    } else {
+      return res.json(
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
+      );
+    }
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
+    );
+  }
+};

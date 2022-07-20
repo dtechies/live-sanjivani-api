@@ -8,6 +8,11 @@ module.exports = (app) => {
     auth(),
     HelpSupportController.getHelpSupport
   );
+  router.delete(
+    "/delete-helpsupport-data",
+    auth(),
+    HelpSupportController.deleteHelpSupport
+  );
 
   app.use("/", router);
 };
