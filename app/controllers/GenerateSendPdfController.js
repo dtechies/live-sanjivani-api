@@ -63,7 +63,7 @@ exports.sendMail = async (req, res, next) => {
       // if (verifyEmailPromise) {
       //   sendPdf(req.body.email, pdf);
       // }
-      sendPdf(req.body.email, pdf);
+      sendPdf(req.currentUser.first_name, req.body.email, pdf);
 
       return res.json(
         constants.responseObj(true, 201, i18n.__(`DataFound`), false, {

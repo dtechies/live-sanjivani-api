@@ -157,7 +157,31 @@ exports.getTipForDay = async (req, res, next) => {
     );
   }
 };
-
+exports.addTipForDay = async (req, res, next) => {
+  try {
+    const TipForDayData = await TipForDayModel.create(req.body);
+    if (TipForDayData) {
+      return res.json(
+        constants.responseObj(
+          true,
+          201,
+          constants.messages.AddSuccess,
+          false,
+          TipForDayData[0]
+        )
+      );
+    } else {
+      return res.json(
+        constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+      );
+    }
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, constants.messages.SomethingWentWrong)
+    );
+  }
+};
 exports.addMedicineReminder = async (req, res, next) => {
   // const DoctorData = await DoctorsModel.findOne({
   //   where: {

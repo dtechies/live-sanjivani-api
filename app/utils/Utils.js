@@ -228,7 +228,7 @@ const uploadPdf = (stream) => {
     });
   });
 };
-async function sendPdf(email, pdf) {
+async function sendPdf(userName, email, pdf) {
   const ses = new AWS.SES({
     AWSAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
     AWSSecretKey: process.env.AWS_SECRET_KEY,
@@ -260,7 +260,7 @@ async function sendPdf(email, pdf) {
       },
       Subject: {
         Charset: "UTF-8",
-        Data: "Health Report",
+        Data: `Live Sanjivani Health Report-${userName}`,
       },
     },
     Source: "support@livesanjivani.com" /* required */,

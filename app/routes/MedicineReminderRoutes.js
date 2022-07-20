@@ -38,6 +38,6 @@ module.exports = (app) => {
     auth(),
     medicineReminderController.todaysMedicineReminderList
   );
-
+  router.post("/add-tip-for-day", medicineReminderController.addTipForDay);
   app.use("/", router);
 };
