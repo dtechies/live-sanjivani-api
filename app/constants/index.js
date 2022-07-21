@@ -40,6 +40,7 @@ const messages = {
   DeleteSuccess: "Deleted Successfully",
   UpdateSuccess: "Data Updated Successfully",
   UserAlreadyExist: "User Already Exists!",
+  Token: "Token.",
 };
 
 const responseObj = (

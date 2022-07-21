@@ -6,6 +6,10 @@ module.exports = (app) => {
   router.post("/register-user", usersController.registerUser);
   router.post("/user-login", usersController.usersLogin);
   router.post("/add-edit-player-id", auth(), usersController.addEditPlayerId);
+  router.post(
+    "/get-refresh-token",
+    usersController.generateTokenFromRefreshToken
+  );
 
   app.use("/", router);
 };

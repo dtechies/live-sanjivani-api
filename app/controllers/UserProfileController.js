@@ -42,10 +42,32 @@ exports.editUserProfile = async (req, res, next) => {
                   },
                   secretKey,
                   {
-                    expiresIn: "24h",
+                    expiresIn: "30d",
                   }
                 );
+
+                const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
+                const refreshToken = jwt.sign(
+                  {
+                    mob_no: user_profile_data.mob_no,
+                    user_id: user_profile_data.id,
+                  },
+                  refreshTokenSecretKey,
+                  {
+                    expiresIn: "365d",
+                  }
+                );
+                const tokenTime = jwt.verify(token, secretKey);
+                const refreshTokenTime = jwt.verify(
+                  refreshToken,
+                  refreshTokenSecretKey
+                );
+
                 user_profile_data.dataValues.token = token;
+                user_profile_data.dataValues.refreshToken = refreshToken;
+                user_profile_data.dataValues.tokenTime = tokenTime.exp;
+                user_profile_data.dataValues.refreshTokenTime =
+                  refreshTokenTime.exp;
                 const deleteData = await OTPModel.destroy({
                   where: { id: req.body.otp_id },
                 });
@@ -90,10 +112,31 @@ exports.editUserProfile = async (req, res, next) => {
                   },
                   secretKey,
                   {
-                    expiresIn: "24h",
+                    expiresIn: "30d",
                   }
                 );
+                const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
+                const refreshToken = jwt.sign(
+                  {
+                    mob_no: user_profile_data.mob_no,
+                    user_id: user_profile_data.id,
+                  },
+                  refreshTokenSecretKey,
+                  {
+                    expiresIn: "365d",
+                  }
+                );
+                const tokenTime = jwt.verify(token, secretKey);
+                const refreshTokenTime = jwt.verify(
+                  refreshToken,
+                  refreshTokenSecretKey
+                );
+
                 user_profile_data.dataValues.token = token;
+                user_profile_data.dataValues.refreshToken = refreshToken;
+                user_profile_data.dataValues.tokenTime = tokenTime.exp;
+                user_profile_data.dataValues.refreshTokenTime =
+                  refreshTokenTime.exp;
                 const deleteData = await OTPModel.destroy({
                   where: { id: req.body.otp_id },
                 });
@@ -131,10 +174,32 @@ exports.editUserProfile = async (req, res, next) => {
                       },
                       secretKey,
                       {
-                        expiresIn: "24h",
+                        expiresIn: "30d",
                       }
                     );
+                    const refreshTokenSecretKey =
+                      process.env.REFRESH_SECRET_KEY;
+                    const refreshToken = jwt.sign(
+                      {
+                        mob_no: profile_data.mob_no,
+                        user_id: profile_data.id,
+                      },
+                      refreshTokenSecretKey,
+                      {
+                        expiresIn: "365d",
+                      }
+                    );
+                    const tokenTime = jwt.verify(token, secretKey);
+                    const refreshTokenTime = jwt.verify(
+                      refreshToken,
+                      refreshTokenSecretKey
+                    );
+
                     profile_data.dataValues.token = token;
+                    profile_data.dataValues.refreshToken = refreshToken;
+                    profile_data.dataValues.tokenTime = tokenTime.exp;
+                    profile_data.dataValues.refreshTokenTime =
+                      refreshTokenTime.exp;
                     return res.json(
                       constants.responseObj(
                         true,
@@ -176,10 +241,30 @@ exports.editUserProfile = async (req, res, next) => {
                     },
                     secretKey,
                     {
-                      expiresIn: "24h",
+                      expiresIn: "30d",
                     }
                   );
+                  const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
+                  const refreshToken = jwt.sign(
+                    {
+                      mob_no: user_data.mob_no,
+                      user_id: user_data.id,
+                    },
+                    refreshTokenSecretKey,
+                    {
+                      expiresIn: "365d",
+                    }
+                  );
+                  const tokenTime = jwt.verify(token, secretKey);
+                  const refreshTokenTime = jwt.verify(
+                    refreshToken,
+                    refreshTokenSecretKey
+                  );
+
                   user_data.dataValues.token = token;
+                  user_data.dataValues.refreshToken = refreshToken;
+                  user_data.dataValues.tokenTime = tokenTime.exp;
+                  user_data.dataValues.refreshTokenTime = refreshTokenTime.exp;
                   return res.json(
                     constants.responseObj(
                       true,
