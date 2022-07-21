@@ -41,3 +41,24 @@ exports.deleteHelpSupport = async (req, res, next) => {
     );
   }
 };
+
+exports.addHelpSupportData = async (req, res, next) => {
+  try {
+    let i18n = languageFunc(req.language);
+    const HelpSupportData = await HelpSupportModel.create(req.body);
+    if (HelpSupportData) {
+      return res.json(
+        constants.responseObj(true, 201, i18n.__(`AddSuccess`), false)
+      );
+    } else {
+      return res.json(
+        constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
+      );
+    }
+  } catch (error) {
+    console.log(error, "error");
+    return res.json(
+      constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
+    );
+  }
+};

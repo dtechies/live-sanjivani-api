@@ -250,8 +250,22 @@ async function sendPdf(userName, email, pdf) {
         /* required */
         Html: {
           Charset: "UTF-8",
-          Data: `<h3>Health report</h3>
-              <p>Download pdf <a href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}">here</a></p>`,
+          Data: `<html>
+            <body>
+            <section style="padding: 20px; text-align: center;">
+            <div style="font-size:12px;color:grey">To Help ensure delivery of our communications, please add support@livesanjivani.com to your address book.</div></br>
+            <img src="https://live-sanjivani.s3.us-east-2.amazonaws.com/icons/app-logo.png"  alt="Live Sanjivani" width="250px;" height="250px;">
+            </br><a href="#">Live Sanjivani</a></br></br>
+            <div  style="font-size:22px;color:black">Please find the attchment for your health report(hyperlink).</div></br>
+            <div style="font-size:22px;color:black">If you are not able to click on the above link copy and paste the below link in browser window.</div>
+            </br></br><a href="href="https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}"">https://live-sanjivani.s3.us-east-2.amazonaws.com/userFavouriteCategoryPDF/${pdf}</a>   </br> </br> </br>
+            <div style="font-size:12px;color:grey">This email was sent to:<a href="#">${email}</a></div>
+            <div style="font-size:12px;color:grey">This email was sent by: Live Sanjivani</div>
+            <div style="font-size:12px;color:grey">Contact us at <a href="#">support@livesanjivani.com</a></div>
+            <div style="font-size:12px;color:grey">We respect your right to privacy – <a href="#">view our policy</a></div>
+            </section>
+           </body>
+           </html>`,
         },
         Text: {
           Charset: "UTF-8",
