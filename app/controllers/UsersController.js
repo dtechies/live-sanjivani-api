@@ -42,9 +42,10 @@ exports.registerUser = async (req, res, next) => {
         },
         secretKey,
         {
-          expiresIn: "1m",
+          expiresIn: "30d",
         }
       );
+      const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
       const refreshToken = jwt.sign(
         {
           mob_no: user.mob_no,
@@ -52,7 +53,7 @@ exports.registerUser = async (req, res, next) => {
         },
         refreshTokenSecretKey,
         {
-          expiresIn: "4m",
+          expiresIn: "365d",
         }
       );
       const tokenTime = jwt.verify(token, secretKey);
@@ -117,7 +118,7 @@ exports.usersLogin = async (req, res, next) => {
       },
       secretKey,
       {
-        expiresIn: "1m",
+        expiresIn: "30d",
       }
     );
     const refreshToken = jwt.sign(
@@ -127,7 +128,7 @@ exports.usersLogin = async (req, res, next) => {
       },
       refreshTokenSecretKey,
       {
-        expiresIn: "4m",
+        expiresIn: "365d",
       }
     );
     const tokenTime = jwt.verify(token, secretKey);
@@ -184,7 +185,7 @@ exports.generateTokenFromRefreshToken = async (req, res, next) => {
       },
       secretKey,
       {
-        expiresIn: "1m",
+        expiresIn: "30d",
       }
     );
     const refreshToken = jwt.sign(
@@ -194,7 +195,7 @@ exports.generateTokenFromRefreshToken = async (req, res, next) => {
       },
       refreshTokenSecretKey,
       {
-        expiresIn: "4m",
+        expiresIn: "365d",
       }
     );
     const tokenTime = jwt.verify(token, secretKey);
