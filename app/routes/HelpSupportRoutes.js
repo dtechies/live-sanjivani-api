@@ -13,6 +13,11 @@ module.exports = (app) => {
     auth(),
     HelpSupportController.deleteHelpSupport
   );
+  router.post(
+    "/add-helpsupport-data",
+    auth(),
+    HelpSupportController.addHelpSupportData
+  );
 
   app.use("/", router);
 };
