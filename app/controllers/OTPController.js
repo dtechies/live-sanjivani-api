@@ -26,6 +26,7 @@ exports.getOTP = async (req, res, next) => {
     if (userData.mob_no == "8155821151") {
       random = "5462";
     }
+    console.log("OTP::", random);
     var params = {
       Message: "Your verification code is " + `${random}`,
       PhoneNumber: PhoneNumber,
