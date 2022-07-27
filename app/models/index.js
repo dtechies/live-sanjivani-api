@@ -7,6 +7,7 @@ const sequelize = new Sequelize(
   {
     dialect: "mysql",
     host: "localhost",
+    port: 8889,
     dialectOptions: {
       // socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
       // socketPath: ""
@@ -58,6 +59,10 @@ db.NestedSubcategoryModel = require("./NestedSubcategoryModel")(
 db.FavoriteModel = require("./FavoriteModel")(sequelize, Sequelize);
 db.CareGiverModel = require("./CareGiverModel")(sequelize, Sequelize);
 db.OtherSubcategoryModel = require("./OtherSubcategoryModel")(
+  sequelize,
+  Sequelize
+);
+db.NestedSubcategoryTableModel = require("./NestedSubcategoryTable")(
   sequelize,
   Sequelize
 );
