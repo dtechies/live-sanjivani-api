@@ -5,8 +5,6 @@ const { languageFunc } = require("../i18n/i18n");
 exports.medicationList = async (req, res, next) => {
   let i18n = languageFunc(req.language);
   const user_id = req.user_id;
-  const created_at = req.body.created_at;
-
   let today = moment().format("YYYY-MM-DD");
   let startDate = today + " 00:00:00";
   let endDate = today + " 23:59:59";
@@ -33,8 +31,11 @@ exports.medicationList = async (req, res, next) => {
       where: {
         user_id: user_id,
         status: true,
-        created_at: {
-          [Op.between]: [startDate, endDate],
+        [Op.or]: {
+          frequency_value: {
+            [Op.between]: [startDate, endDate],
+          },
+          reminder_frequency: "EveryDay",
         },
       },
     });
