@@ -32,9 +32,7 @@ exports.medicationList = async (req, res, next) => {
         user_id: user_id,
         status: true,
         [Op.or]: {
-          frequency_value: {
-            [Op.between]: [startDate, endDate],
-          },
+          frequency_value: today,
           reminder_frequency: "EveryDay",
         },
       },
