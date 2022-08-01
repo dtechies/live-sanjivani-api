@@ -28,6 +28,7 @@ exports.medicationList = async (req, res, next) => {
         "reminder_status",
         "user_selected_local_time",
       ],
+      order: [["user_selected_time", "ASC"]],
       where: {
         user_id: user_id,
         status: true,
@@ -37,7 +38,6 @@ exports.medicationList = async (req, res, next) => {
         },
       },
     });
-
     return res.json(
       constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
         MedicineData,

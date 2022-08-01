@@ -4,9 +4,10 @@ module.exports = (sequelize, Sequelize) => {
     {
       first_name: { type: Sequelize.STRING(50), notNull: false },
       last_name: { type: Sequelize.STRING(50), notNull: false },
-      contact_no: { type: Sequelize.STRING(13), notNull: true },
-      email: { type: Sequelize.STRING(50), notNull: true },
+      contact_no: { type: Sequelize.STRING(13), notNull: false },
+      email: { type: Sequelize.STRING(50), notNull: false },
       nick_name: { type: Sequelize.STRING(50), notNull: true },
+      address: { type: Sequelize.STRING(200), notNull: true },
     },
     {
       timestamps: true,

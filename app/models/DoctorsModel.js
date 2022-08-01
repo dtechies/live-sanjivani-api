@@ -4,7 +4,7 @@ module.exports = (sequelize, Sequelize) => {
     {
       doctor_name: { type: Sequelize.STRING(50), notNull: true },
       speciality: { type: Sequelize.STRING(50), notNull: true },
-      doctor_address: { type: Sequelize.STRING(150), notNull: true },
+      doctor_address: { type: Sequelize.STRING(150), notNull: false },
     },
     {
       timestamps: true,
