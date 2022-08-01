@@ -14,6 +14,7 @@ exports.addCareGiver = async (req, res, next) => {
       last_name: req.body.last_name,
       contact_no: req.body.contact_no,
       email: req.body.email,
+      address: req.body.address,
       nick_name: req.body.nick_name,
     };
     const CareGiver = await CareGiverModel.create(CareGiverData);
