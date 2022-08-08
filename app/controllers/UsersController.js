@@ -29,7 +29,7 @@ exports.registerUser = async (req, res, next) => {
     var PhoneNumber = req.body.country_code + req.body.mob_no;
 
     var params = {
-      Message: "Your verification code is " + `${random}`,
+      Message: "Your Live Sanjivani one-time password is: " + `${random}`,
       PhoneNumber: PhoneNumber,
     };
     var publishTextPromise = new AWS.SNS({
