@@ -28,7 +28,7 @@ exports.getOTP = async (req, res, next) => {
     }
     console.log("OTP::", random);
     var params = {
-      Message: "Your verification code is " + `${random}`,
+      Message: "Your Live Sanjivani one-time password is: " + `${random}`,
       PhoneNumber: PhoneNumber,
     };
     var publishTextPromise = new AWS.SNS({
@@ -93,7 +93,7 @@ exports.storeOTP = async (req, res, next) => {
     var PhoneNumber = req.body.country_code + req.body.mob_no;
     var random = Math.floor(1000 + Math.random() * 9000);
     var params = {
-      Message: "Your verification code is " + `${random}`,
+      Message: "Your Live Sanjivani one-time password is: " + `${random}`,
       PhoneNumber: PhoneNumber,
     };
 
