@@ -109,8 +109,11 @@ exports.getSubCategoryGraph = async (req, res, next) => {
   const subcategory_id = req.body.subcategory_id;
   let daily_data = [];
   let today = moment().format("YYYY-MM-DD");
+  console.log("1 today logg", today);
   let startDate = today + " 00:00:00";
+  console.log("2 startDate logg", startDate);
   let endDate = today + " 23:59:59";
+  console.log("3 endDate logg", endDate);
   for (let time = 0; time < 24; time += 2) {
     let subCategoryData = await UserSubcategoriesValueModel.findAll({
       raw: true,
@@ -132,6 +135,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       order: [["created_at", "DESC"]],
       attributes: ["subcategory_id", "value"],
     });
+    console.log("4 subCategoryData logg", subCategoryData);
     if (subCategoryData.length) {
       let sum = 0;
       for (let value = 0; value < subCategoryData.length; value++) {
@@ -158,8 +162,10 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       });
     }
   }
+  console.log("5 daily_data logg", daily_data);
   let weekly_data = [];
   let week_dates = getCurrentWeek();
+  console.log("6 week_dates logg", week_dates);
   for (let week = 0; week < week_dates.length; week++) {
     let startDate = week_dates[week] + " 00:00:00";
     let endDate = week_dates[week] + " 23:59:59";
@@ -175,6 +181,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       order: [["created_at", "DESC"]],
       attributes: ["subcategory_id", "value"],
     });
+    console.log("7 subCategoryData logg", subCategoryData);
     if (subCategoryData.length) {
       let sum = 0;
       for (let value = 0; value < subCategoryData.length; value++) {
@@ -191,6 +198,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
 
   let monthly_data = [];
   let month_dates = getCurrentMonthDateRange();
+  console.log("8 month_dates logg", month_dates);
   for (let month = 0; month < month_dates.length; month++) {
     let startDate = month_dates[month].startDate + " 00:00:00";
     let endDate =
@@ -209,6 +217,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       order: [["created_at", "DESC"]],
       attributes: ["subcategory_id", "value"],
     });
+    console.log("9 subCategoryData logg", subCategoryData);
     if (subCategoryData.length) {
       let sum = 0;
       for (let value = 0; value < subCategoryData.length; value++) {
@@ -238,6 +247,7 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       order: [["created_at", "DESC"]],
       attributes: ["subcategory_id", "value"],
     });
+    console.log("10 subCategoryData logg", subCategoryData);
     let sum = 0;
     for (let value = 0; value < subCategoryData.length; value++) {
       sum = sum + Number(subCategoryData[value].value);
