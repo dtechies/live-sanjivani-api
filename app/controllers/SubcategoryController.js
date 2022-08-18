@@ -111,6 +111,22 @@ exports.getSubCategoryGraph = async (req, res, next) => {
   let today = moment().format("YYYY-MM-DD");
   let startDate = today + " 00:00:00";
   let endDate = today + " 23:59:59";
+  let updatedTime = "";
+  if (req.body.timestamp) {
+    let newString = req.body.timestamp
+      .substr(0, req.body.timestamp.indexOf(":"))
+      .substring(1);
+    if (Number(newString) % 2 !== 0) {
+      updatedTime =
+        `${req.body.timestamp.charAt(0)}` + `${Number(newString) + 1}`;
+      console.log(updatedTime);
+    } else {
+      updatedTime = req.body.timestamp.substr(
+        0,
+        req.body.timestamp.indexOf(":")
+      );
+    }
+  }
   for (let time = 0; time < 24; time += 2) {
     let subCategoryData = await UserSubcategoriesValueModel.findAll({
       raw: true,
@@ -132,6 +148,13 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       order: [["created_at", "DESC"]],
       attributes: ["subcategory_id", "value"],
     });
+    let newTime = eval(`${time}` + `${updatedTime}`);
+    if (newTime >= 24) {
+      newTime = newTime - 24;
+    }
+    if (newTime < 0) {
+      newTime = newTime + 24;
+    }
     if (subCategoryData.length) {
       let sum = 0;
       for (let value = 0; value < subCategoryData.length; value++) {
@@ -139,20 +162,24 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       }
       daily_data.push({
         time:
-          `${time.toString().length > 1 ? time : "0" + time}:00` +
+          `${newTime.toString().length > 1 ? newTime : "0" + newTime}:00` +
           "-" +
           `${
-            (time + 2).toString().length > 1 ? time + 2 : "0" + (time + 2)
+            (newTime + 2).toString().length > 1
+              ? newTime + 2
+              : "0" + (newTime + 2)
           }:00`,
         data: parseInt(Number(sum) / Number(subCategoryData.length)),
       });
     } else {
       daily_data.push({
         time:
-          `${time.toString().length > 1 ? time : "0" + time}:00` +
+          `${newTime.toString().length > 1 ? newTime : "0" + newTime}:00` +
           "-" +
           `${
-            (time + 2).toString().length > 1 ? time + 2 : "0" + (time + 2)
+            (newTime + 2).toString().length > 1
+              ? newTime + 2
+              : "0" + (newTime + 2)
           }:00`,
         data: null,
       });
@@ -251,7 +278,15 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       yearly_data.push({ month: year, data: null });
     }
   }
-
+  daily_data = daily_data.sort((a, b) => {
+    if (a.time < b.time) {
+      return -1;
+    }
+    if (a.time > b.time) {
+      return 1;
+    }
+    return 0;
+  });
   return res.json(
     constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
       DailyData: daily_data,
