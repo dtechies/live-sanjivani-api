@@ -28,11 +28,16 @@ exports.addAppointmentReminderView = async (req, res, next) => {
 };
 
 exports.getAppointmentReminderProfile = async (req, res, next) => {
+  let timestamp = req.body.timestamp;
+  let today = moment().format("YYYY-MM-DD");
+  let hours = timestamp.substr(0, timestamp.indexOf(":")).substring(1);
+  let minute = timestamp.slice(-2);
+  let op = timestamp.charAt(0);
   let i18n = languageFunc(req.language);
   const user_id = req.user_id;
 
   try {
-    const AppointmentReminderProfileData =
+    const appointmentReminderProfileData =
       await AppointmentReminderModel.findAll({
         where: {
           user_id: user_id,
@@ -44,9 +49,28 @@ exports.getAppointmentReminderProfile = async (req, res, next) => {
           },
         ],
       });
+    if (appointmentReminderProfileData.length) {
+      for (let i = 0; i < appointmentReminderProfileData.length; i++) {
+        if (op === "+") {
+          let eDate =
+            today + ` ${appointmentReminderProfileData[i].user_selected_time}`;
+          appointmentReminderProfileData[i].user_selected_time = moment(eDate)
+            .add(Number(hours), "hours")
+            .add(Number(minute), "minute")
+            .format("HH:mm:ss");
+        } else {
+          let eDate =
+            today + ` ${appointmentReminderProfileData[i].user_selected_time}`;
+          appointmentReminderProfileData[i].user_selected_time = moment(eDate)
+            .subtract(Number(hours), "hours")
+            .subtract(Number(minute), "minute")
+            .format("HH:mm:ss");
+        }
+      }
+    }
     return res.json(
       constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
-        AppointmentReminderProfileData,
+        appointmentReminderProfileData,
       })
     );
   } catch (error) {
