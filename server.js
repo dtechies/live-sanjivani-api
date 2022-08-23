@@ -15,11 +15,12 @@ const today = require("moment");
 
 var cronJobs = require("./app/CronJobs");
 cronJobs.sendNotification();
+cronJobs.clearRemainders();
 
 // To upload files
 app.use(
   fileUpload({
-    createParentPath: true,
+    createParentPath: true
   })
 );
 
@@ -29,24 +30,18 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(
   express.urlencoded({
-    extended: true,
+    extended: true
   })
 );
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "*");
   // Request methods you wish to allow
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
   // Request headers you wish to allow
   // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
@@ -61,7 +56,7 @@ app.use(cors());
 // simple route
 app.get("/", (req, res) => {
   res.json({
-    message: "Welcome To Live Sanjivani",
+    message: "Welcome To Live Sanjivani"
   });
 });
 

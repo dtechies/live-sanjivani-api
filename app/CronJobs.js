@@ -1,5 +1,5 @@
 var cron = require("node-cron");
-exports.sendNotification = function (req, res, cb) {
+exports.sendNotification = function(req, res, cb) {
   cron.schedule(
     "* * * * * *",
     () => {
@@ -8,7 +8,20 @@ exports.sendNotification = function (req, res, cb) {
     },
     {
       scheduled: true,
-      timezone: "Asia/Kolkata",
+      timezone: "Asia/Kolkata"
+    }
+  );
+};
+
+exports.clearRemainders = function(req, res, cb) {
+  cron.schedule(
+    "0 0 0 * * *",
+    () => {
+      require("../app/controllers/NotificationController").clearRemainders();
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Kolkata"
     }
   );
 };
