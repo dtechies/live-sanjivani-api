@@ -3,6 +3,10 @@ const constants = require("../imports").constants;
 const { languageFunc } = require("../i18n/i18n");
 
 exports.medicationList = async (req, res, next) => {
+  let timestamp = req.body.timestamp;
+  let hours = timestamp.substr(0, timestamp.indexOf(":")).substring(1);
+  let minute = timestamp.slice(-2);
+  let op = timestamp.charAt(0);
   let i18n = languageFunc(req.language);
   const user_id = req.user_id;
   let today = moment().format("YYYY-MM-DD");
@@ -11,7 +15,7 @@ exports.medicationList = async (req, res, next) => {
   console.log(startDate, endDate);
   console.log("date****", today);
   try {
-    const MedicineData = await MedicineReminderModel.findAll({
+    const medicineData = await MedicineReminderModel.findAll({
       attributes: [
         "reminder_name",
         "id",
@@ -38,9 +42,27 @@ exports.medicationList = async (req, res, next) => {
         },
       },
     });
+    if (medicineData.length) {
+      for (let i = 0; i < medicineData.length; i++) {
+        if (op === "+") {
+          let eDate = today + ` ${medicineData[i].user_selected_time}`;
+          medicineData[i].user_selected_time = moment(eDate)
+            .add(Number(hours), "hours")
+            .add(Number(minute), "minute")
+            .format("HH:mm:ss");
+        } else {
+          let eDate = today + ` ${medicineData[i].user_selected_time}`;
+          medicineData[i].user_selected_time = moment(eDate)
+            .subtract(Number(hours), "hours")
+            .subtract(Number(minute), "minute")
+            .format("HH:mm:ss");
+        }
+      }
+    }
+
     return res.json(
       constants.responseObj(true, 201, i18n.__(`DataFound`), false, {
-        MedicineData,
+        medicineData,
       })
     );
   } catch (error) {

@@ -59,8 +59,31 @@ exports.addSubCategoryValue = async (req, res, next) => {
     const user_id = req.user_id;
     let subcategory_value_data = req.body.subcategory_data;
     let subcategoryValue = [];
+    let timestamp = req.body.timestamp || null;
+    let convertedTime = "";
+
     if (subcategory_value_data) {
-      let current_time = moment().format("HH:mm");
+      if (timestamp) {
+        let hours = timestamp.substr(0, timestamp.indexOf(":")).substring(1);
+        let minute = timestamp.slice(-2);
+        let op = timestamp.charAt(0);
+        let today = moment().format("YYYY-MM-DD");
+
+        if (op === "+") {
+          let eDate = today + ` ${moment().format("HH:mm")}`;
+          convertedTime = moment(eDate)
+            .add(Number(hours), "hours")
+            .add(Number(minute), "minute")
+            .format("HH:mm");
+        } else {
+          let eDate = today + ` ${moment().format("HH:mm")}`;
+          convertedTime = moment(eDate)
+            .subtract(Number(hours), "hours")
+            .subtract(Number(minute), "minute")
+            .format("HH:mm");
+        }
+      }
+      let current_time = convertedTime || moment().format("HH:mm");
       let current_month = moment().format("M");
       subcategory_value_data.forEach((data) => {
         subcategoryValue.push({
@@ -112,6 +135,10 @@ exports.getSubCategoryGraph = async (req, res, next) => {
   let startDate = today + " 00:00:00";
   let endDate = today + " 23:59:59";
   let updatedTime = "";
+  let timestamp = req.body.timestamp;
+  let hours = timestamp.substr(0, timestamp.indexOf(":")).substring(1);
+  let minute = timestamp.slice(-2);
+  let op = timestamp.charAt(0);
   if (req.body.timestamp) {
     let newString = req.body.timestamp
       .substr(0, req.body.timestamp.indexOf(":"))
@@ -127,59 +154,68 @@ exports.getSubCategoryGraph = async (req, res, next) => {
       );
     }
   }
-  for (let time = 0; time < 24; time += 2) {
-    let subCategoryData = await UserSubcategoriesValueModel.findAll({
-      raw: true,
-      where: {
-        user_id: user_id,
-        subcategory_id: subcategory_id,
-        value_added_time: {
-          [Op.between]: [
-            `${time.toString().length > 1 ? time : "0" + time}:00`,
-            `${
-              (time + 2).toString().length > 1 ? time + 2 : "0" + (time + 2)
-            }:00`,
-          ],
-        },
-        created_at: {
-          [Op.between]: [startDate, endDate],
-        },
+  let subCategory = await UserSubcategoriesValueModel.findAll({
+    raw: true,
+    where: {
+      user_id: user_id,
+      subcategory_id: subcategory_id,
+      created_at: {
+        [Op.between]: [startDate, endDate],
       },
-      order: [["created_at", "DESC"]],
-      attributes: ["subcategory_id", "value"],
-    });
-    let newTime = eval(`${time}` + `${updatedTime}`);
-    if (newTime >= 24) {
-      newTime = newTime - 24;
-    }
-    if (newTime < 0) {
-      newTime = newTime + 24;
-    }
-    if (subCategoryData.length) {
-      let sum = 0;
-      for (let value = 0; value < subCategoryData.length; value++) {
-        sum = sum + Number(subCategoryData[value].value);
+    },
+    order: [["created_at", "DESC"]],
+    attributes: ["subcategory_id", "value", "value_added_time"],
+  });
+  if (subCategory.length) {
+    for (let i = 0; i < subCategory.length; i++) {
+      if (op === "+") {
+        let eDate = today + ` ${subCategory[i].value_added_time}`;
+        subCategory[i].value_added_time = moment(eDate)
+          .add(Number(hours), "hours")
+          .add(Number(minute), "minute")
+          .format("HH:mm:ss");
+      } else {
+        let eDate = today + ` ${subCategory[i].value_added_time}`;
+        subCategory[i].value_added_time = moment(eDate)
+          .subtract(Number(hours), "hours")
+          .subtract(Number(minute), "minute")
+          .format("HH:mm:ss");
       }
+    }
+  }
+  for (let time = 0; time < 24; time += 2) {
+    let sum = 0;
+    let total = 0;
+    for (let i = 0; i < subCategory.length; i++) {
+      if (
+        Number(
+          subCategory[i].value_added_time.substr(
+            0,
+            subCategory[i].value_added_time.indexOf(":")
+          )
+        ) === time
+      ) {
+        sum = sum + Number(subCategory[i].value);
+        total = total + 1;
+      }
+    }
+    if (sum) {
       daily_data.push({
         time:
-          `${newTime.toString().length > 1 ? newTime : "0" + newTime}:00` +
+          `${time.toString().length > 1 ? time : "0" + time}:00` +
           "-" +
           `${
-            (newTime + 2).toString().length > 1
-              ? newTime + 2
-              : "0" + (newTime + 2)
+            (time + 2).toString().length > 1 ? time + 2 : "0" + (time + 2)
           }:00`,
-        data: parseInt(Number(sum) / Number(subCategoryData.length)),
+        data: parseInt(Number(sum) / Number(total)),
       });
     } else {
       daily_data.push({
         time:
-          `${newTime.toString().length > 1 ? newTime : "0" + newTime}:00` +
+          `${time.toString().length > 1 ? time : "0" + time}:00` +
           "-" +
           `${
-            (newTime + 2).toString().length > 1
-              ? newTime + 2
-              : "0" + (newTime + 2)
+            (time + 2).toString().length > 1 ? time + 2 : "0" + (time + 2)
           }:00`,
         data: null,
       });
