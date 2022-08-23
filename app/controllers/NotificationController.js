@@ -7,6 +7,7 @@ const {
   moment,
   UsersModel,
   DoctorsModel,
+  Op
 } = require("../imports");
 const AWS = require("aws-sdk");
 var https = require("https");
@@ -19,15 +20,15 @@ exports.getNotification = async (req, res, next) => {
   AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_KEY,
-    region: process.env.PDF_REGION,
+    region: process.env.PDF_REGION
   });
   var SNS = new AWS.SNS();
   const params = {
     PlatformApplicationArn: `${process.env.PLATFORM_APPLICATION_ARN}`,
-    Token: deviceToken,
+    Token: deviceToken
   };
 
-  SNS.createPlatformEndpoint(params, function (err, EndPointResult) {
+  SNS.createPlatformEndpoint(params, function(err, EndPointResult) {
     var client_arn = EndPointResult["EndpointArn"];
 
     SNS.publish(
@@ -35,11 +36,11 @@ exports.getNotification = async (req, res, next) => {
         TargetArn: client_arn,
         MessageStructure: "json",
         Message: JSON.stringify({
-          GCM: `{ \"data\": { \"title\": \"Sample message for Android endpoints\",\"message\": \"Sample message for Android endpoints\" } }`,
+          GCM: `{ \"data\": { \"title\": \"Sample message for Android endpoints\",\"message\": \"Sample message for Android endpoints\" } }`
         }),
-        Subject: subject,
+        Subject: subject
       },
-      function (err, data) {
+      function(err, data) {
         if (err) {
           return res.json(constants.responseObj(false, 500, err));
         } else {
@@ -58,12 +59,12 @@ exports.sendNotification = async (req, res, next) => {
     include: [
       {
         model: UsersModel,
-        attributes: ["player_id"],
-      },
-    ],
+        attributes: ["player_id"]
+      }
+    ]
   });
 
-  MedicineReminderProfileData.forEach((medicine_data) => {
+  MedicineReminderProfileData.forEach(medicine_data => {
     // console.log(medicine_data);
     // console.log(medicine_data, "medicine_data logg");
     let current_date = moment().format("YYYY-MM-DD");
@@ -90,12 +91,12 @@ exports.sendNotification = async (req, res, next) => {
             .format("YYYY-MM-DD");
           MedicineReminderModel.update(
             {
-              frequency_value: new_date,
+              frequency_value: new_date
             },
             {
               where: {
-                id: medicine_data.id,
-              },
+                id: medicine_data.id
+              }
             }
           );
           if (medicine_data["user.player_id"]) {
@@ -111,12 +112,12 @@ exports.sendNotification = async (req, res, next) => {
             .format("YYYY-MM-DD");
           MedicineReminderModel.update(
             {
-              frequency_value: new_date,
+              frequency_value: new_date
             },
             {
               where: {
-                id: medicine_data.id,
-              },
+                id: medicine_data.id
+              }
             }
           );
           if (medicine_data["user.player_id"]) {
@@ -136,16 +137,16 @@ exports.sendNotificationForAppointmentReminder = async (req, res, next) => {
     include: [
       {
         model: UsersModel,
-        attributes: ["player_id"],
+        attributes: ["player_id"]
       },
       {
         model: DoctorsModel,
-        attributes: ["doctor_name", "doctor_address"],
-      },
-    ],
+        attributes: ["doctor_name", "doctor_address"]
+      }
+    ]
   });
 
-  AppointmentReminderModelData.forEach((appointment_data) => {
+  AppointmentReminderModelData.forEach(appointment_data => {
     let current_date = moment().format("YYYY-MM-DD");
     if (current_date == appointment_data.date) {
       let current_time = moment().format("HH:mm:ss");
@@ -159,20 +160,20 @@ exports.sendNotificationForAppointmentReminder = async (req, res, next) => {
 };
 async function sendNotifications(medicine_data) {
   let title = "Medicine Reminder";
-  var sendNotification = function (data) {
+  var sendNotification = function(data) {
     var headers = {
       "Content-Type": "application/json; charset=utf-8",
-      Authorization: "Basic YzlmNzkxZmMtNWIwMi00NzJjLWI0NWMtOGY3NzZhNDdmYzM0",
+      Authorization: "Basic YzlmNzkxZmMtNWIwMi00NzJjLWI0NWMtOGY3NzZhNDdmYzM0"
     };
     var options = {
       host: "onesignal.com",
       port: 443,
       path: "/api/v1/notifications",
       method: "POST",
-      headers: headers,
+      headers: headers
     };
-    var newReq = https.request(options, function (newRes) {
-      newRes.on("data", function (data) {
+    var newReq = https.request(options, function(newRes) {
+      newRes.on("data", function(data) {
         console.log("Response:");
         console.log(JSON.parse(data));
         data = JSON.parse(data);
@@ -184,7 +185,7 @@ async function sendNotifications(medicine_data) {
   var message = {
     app_id: "3b7300ff-2be3-46f8-ad6a-5473e664b134",
     contents: {
-      en: "You have Medicine Reminder",
+      en: "You have Medicine Reminder"
     },
     data: {
       id: medicine_data.id,
@@ -198,30 +199,30 @@ async function sendNotifications(medicine_data) {
       reminder_name: medicine_data.reminder_name,
       user_selected_time: medicine_data.user_selected_local_time,
       dose: medicine_data.dose,
-      medicine_form: medicine_data.medicine_form,
+      medicine_form: medicine_data.medicine_form
     },
     headings: { en: title },
     // included_segments: ["Subscribed Users"],
-    include_player_ids: [medicine_data["user.player_id"]],
+    include_player_ids: [medicine_data["user.player_id"]]
   };
   sendNotification(message);
 }
 async function sendNotificationsForAppointment(appointment_data) {
   let title = "Appointment Reminder";
-  var sendNotification = function (data) {
+  var sendNotification = function(data) {
     var headers = {
       "Content-Type": "application/json; charset=utf-8",
-      Authorization: "Basic YzlmNzkxZmMtNWIwMi00NzJjLWI0NWMtOGY3NzZhNDdmYzM0",
+      Authorization: "Basic YzlmNzkxZmMtNWIwMi00NzJjLWI0NWMtOGY3NzZhNDdmYzM0"
     };
     var options = {
       host: "onesignal.com",
       port: 443,
       path: "/api/v1/notifications",
       method: "POST",
-      headers: headers,
+      headers: headers
     };
-    var newReq = https.request(options, function (newRes) {
-      newRes.on("data", function (data) {
+    var newReq = https.request(options, function(newRes) {
+      newRes.on("data", function(data) {
         console.log("Response:");
         console.log(JSON.parse(data));
         data = JSON.parse(data);
@@ -233,7 +234,7 @@ async function sendNotificationsForAppointment(appointment_data) {
   var message = {
     app_id: "3b7300ff-2be3-46f8-ad6a-5473e664b134",
     contents: {
-      en: "You have Appointment Reminder",
+      en: "You have Appointment Reminder"
     },
     data: {
       id: appointment_data.id,
@@ -241,11 +242,26 @@ async function sendNotificationsForAppointment(appointment_data) {
       doctor_name: appointment_data["doctor.doctor_name"],
       doctor_address: appointment_data["doctor.doctor_address"],
       user_selected_time: appointment_data.user_selected_local_time,
-      appointment_time: appointment_data.appointment_time,
+      appointment_time: appointment_data.appointment_time
     },
     headings: { en: title },
     // included_segments: ["Subscribed Users"],
-    include_player_ids: [appointment_data["user.player_id"]],
+    include_player_ids: [appointment_data["user.player_id"]]
   };
   sendNotification(message);
 }
+
+exports.clearRemainders = async (req, res, next) => {
+  let updateData = {
+    reminder_status: null,
+    is_done: "0"
+  };
+  const editMedicineStatus = await MedicineReminderModel.update(updateData, {
+    where: {
+      reminder_frequency: ["EveryDay", "Alternate Day"]
+    }
+  });
+  if (!editMedicineStatus) {
+    console.log("Reminder status not updated");
+  }
+};
