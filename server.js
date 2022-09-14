@@ -59,7 +59,11 @@ app.get("/", (req, res) => {
     message: "Welcome To Live Sanjivani"
   });
 });
-
+app.get("/demo", (req, res) => {
+  res.json({
+    message: "Welcome To Live Sanjivani-demo route"
+  });
+});
 // Include All Routes
 require("./app/routes/LanguageRoutes")(app);
 require("./app/routes/CategoryRoutes")(app);
