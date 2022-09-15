@@ -22,7 +22,7 @@
   "author": "codentic",
   "license": "ISC",
   "dependencies": {
-    "@sendgrid/mail": "^7.4.7",
+    "@sendgrid/mail": "^7.7.0",
     "api": "^4.5.1",
     "aws-sdk": "^2.1115.0",
     "axios": "^0.22.0",

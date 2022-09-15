@@ -26,23 +26,7 @@ exports.registerUser = async (req, res, next) => {
       otp: random,
       country_code: req.body.country_code,
     };
-    var PhoneNumber = req.body.country_code + req.body.mob_no;
-    console.log(usersData,"usersData")
-    var params = {
-      Message: "Your Live Sanjivani one-time password is: " + `${random}`,
-      PhoneNumber: PhoneNumber,
-    };
-    console.log(params,"parmas")
-    var publishTextPromise = new AWS.SNS({
-      apiVersion: "2010-03-31",
-    })
-    .publish(params)
-    .promise();
-    console.log(publishTextPromise,"publishTextPromise")
-    
-    publishTextPromise.then(async function (data) {
       const addUser = await UsersModel.create(usersData);
-      console.log(addUser,"addUser")
       if (addUser) {
         const user = await UsersModel.findOne(
           {
@@ -56,7 +40,6 @@ exports.registerUser = async (req, res, next) => {
           );
           
           const secretKey = process.env.SECRET_JWT || "theseissecret";
-          console.log(secretKey,"secretKey")
           const token = jwt.sign(
             {
               mob_no: user.mob_no,
@@ -67,7 +50,6 @@ exports.registerUser = async (req, res, next) => {
               expiresIn: "30d",
             }
             );
-            console.log(token,"token")
             const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
             const refreshToken = jwt.sign(
               {
@@ -79,7 +61,6 @@ exports.registerUser = async (req, res, next) => {
             expiresIn: "365d",
           }
           );
-          console.log(refreshToken,"refreshToken")
           const tokenTime = jwt.verify(token, secretKey);
           const refreshTokenTime = jwt.verify(
             refreshToken,
@@ -90,7 +71,6 @@ exports.registerUser = async (req, res, next) => {
             user.dataValues.refreshToken = refreshToken;
             user.dataValues.tokenTime = tokenTime.exp;
             user.dataValues.refreshTokenTime = refreshTokenTime.exp;
-            console.log(user,"user+++")
             return res.json(
               constants.responseObj(
                 true,
@@ -106,11 +86,10 @@ exports.registerUser = async (req, res, next) => {
           constants.responseObj(false, 500, i18n.__(`SomethingWentWrong`))
           );
         }
-      });
+      // });
     } catch (error) {
       console.log(error, "error");
-    // return res.json(constants.responseObj(false, 500, error));
-    return res.json(
+      return res.json(
       constants.responseObj(false, 500, constants.messages.DuplicateNumber)
     );
   }
@@ -120,7 +99,6 @@ exports.usersLogin = async (req, res, next) => {
   const mob_no = req.body.mob_no;
   const Otp = req.body.otp;
   const country_code = req.body.country_code;
-  console.log(req.body,"body++")
   let user = await UsersModel.findOne(
     {
       where: {
@@ -133,7 +111,6 @@ exports.usersLogin = async (req, res, next) => {
     }
     );
     
-    console.log(user,"user++")
     if (!user) {
       return res.json(
         constants.responseObj(false, 401, constants.messages.UserNotFound)

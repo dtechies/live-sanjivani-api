@@ -16,6 +16,7 @@ const messages = {
   SomethingWentWrong: "Something Went Wrong!",
   Success: "OTP sent Successfully.",
   UserCreated: "User Created Successfully.",
+  errorUserCreate: "Error user not created.",
   InvalidCredentials: "Invalid Credentials!",
   UserLogin: "User Login successfully.",
   UserLogout: "User Login successfully.",
@@ -40,6 +41,10 @@ const messages = {
   DeleteSuccess: "Deleted Successfully",
   UpdateSuccess: "Data Updated Successfully",
   UserAlreadyExist: "User Already Exists!",
+  errorSendOtp: "Error sms not sent!",
+  errorSendMail: "Error mail not sent!",
+  successSendOtp: "Successfully sent sms!",
+  successSendMail: "Successfully sent mail!",
   Token: "Token.",
 };
 
