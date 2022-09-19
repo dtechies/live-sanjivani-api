@@ -1,4 +1,4 @@
-const { UsersModel, OTPModel } = require("../imports");
+const { UsersModel, OTPModel,Op } = require("../imports");
 const constants = require("../imports").constants;
 const { S3 } = require("../imports");
 const dotenv = require("dotenv");
@@ -16,22 +16,19 @@ exports.editUserProfile = async (req, res, next) => {
   if (UserProfileData) {
     try {
       if (req.body.otp) {
-        const OTPData = await OTPModel.findOne({
-          where: {
-            mob_no: req.body.mob_no,
-            country_code: req.body.country_code,
-            user_id: user_id,
-            id: req.body.otp_id,
-          },
-        });
-        if (`${req.body.otp}` == `${OTPData.otp}`) {
+        if (`${req.body.otp}` == `${UserProfileData.otp}`) {
           if (req.files == null) {
             await updateUserProfile(
               user_id,
               req.body,
               UserProfileData,
-              OTPData
+              i18n
             ).then(async (value) => {
+              if(value){
+                return res.json(
+                  constants.responseObj(false, 409, value)
+                );
+              }
               const user_profile_data = await getUserProfileData(user_id);
               if (user_profile_data) {
                 const secretKey = process.env.SECRET_JWT || "theseissecret";
@@ -68,9 +65,9 @@ exports.editUserProfile = async (req, res, next) => {
                 user_profile_data.dataValues.tokenTime = tokenTime.exp;
                 user_profile_data.dataValues.refreshTokenTime =
                   refreshTokenTime.exp;
-                const deleteData = await OTPModel.destroy({
-                  where: { id: req.body.otp_id },
-                });
+                // const deleteData = await OTPModel.destroy({
+                //   where: { id: req.body.otp_id },
+                // });
                 return res.json(
                   constants.responseObj(
                     true,
@@ -99,8 +96,14 @@ exports.editUserProfile = async (req, res, next) => {
               req.files.image.name,
               user_id,
               req.body,
-              UserProfileData
+              UserProfileData,
+              i18n
             ).then(async (value) => {
+              if(value){
+                return res.json(
+                  constants.responseObj(false, 409, value)
+                );
+              }
               const user_profile_data = await getUserProfileData(user_id);
 
               if (user_profile_data) {
@@ -158,129 +161,139 @@ exports.editUserProfile = async (req, res, next) => {
             constants.responseObj(false, 401, i18n.__(`InvalidOTP`))
           );
         }
-      } else {
-        if (UserProfileData) {
-          try {
-            if (req.files == null) {
-              await updateUserProfile(user_id, req.body, UserProfileData).then(
-                async (value) => {
-                  const profile_data = await getUserProfileData(user_id);
-                  if (profile_data) {
-                    const secretKey = process.env.SECRET_JWT || "theseissecret";
-                    const token = jwt.sign(
-                      {
-                        mob_no: profile_data.mob_no,
-                        user_id: profile_data.id,
-                      },
-                      secretKey,
-                      {
-                        expiresIn: "30d",
-                      }
-                    );
-                    const refreshTokenSecretKey =
-                      process.env.REFRESH_SECRET_KEY;
-                    const refreshToken = jwt.sign(
-                      {
-                        mob_no: profile_data.mob_no,
-                        user_id: profile_data.id,
-                      },
-                      refreshTokenSecretKey,
-                      {
-                        expiresIn: "365d",
-                      }
-                    );
-                    const tokenTime = jwt.verify(token, secretKey);
-                    const refreshTokenTime = jwt.verify(
-                      refreshToken,
-                      refreshTokenSecretKey
-                    );
-
-                    profile_data.dataValues.token = token;
-                    profile_data.dataValues.refreshToken = refreshToken;
-                    profile_data.dataValues.tokenTime = tokenTime.exp;
-                    profile_data.dataValues.refreshTokenTime =
-                      refreshTokenTime.exp;
-                    return res.json(
-                      constants.responseObj(
-                        true,
-                        201,
-                        i18n.__(`UpdateSuccess`),
-                        false,
-                        profile_data
-                      )
-                    );
-                  }
+      } else{
+        if (req.files == null) {
+          await updateUserProfile(
+            user_id,
+            req.body,
+            UserProfileData,
+            i18n
+          ).then(async (value) => {
+            if(value){
+              return res.json(
+                constants.responseObj(false, 409, value)
+              );
+            }
+            const user_profile_data = await getUserProfileData(user_id);
+            if (user_profile_data) {
+              const secretKey = process.env.SECRET_JWT || "theseissecret";
+              const token = jwt.sign(
+                {
+                  mob_no: user_profile_data.mob_no,
+                  user_id: user_profile_data.id,
+                },
+                secretKey,
+                {
+                  expiresIn: "30d",
                 }
               );
-            } else {
-              var params = {
-                Bucket: "live-sanjivani",
-                Key: `userProfileImages/${UserProfileData.image}`,
-              };
-              S3.deleteObject(params, function (err, data) {
-                if (err) {
-                  console.log(err, "err");
-                } else {
-                  console.log("sucessfully deleted images", data);
-                }
-              });
-              await updateUserProfileData(
-                req.files.image,
-                req.files.image.name,
-                user_id,
-                req.body,
-                UserProfileData
-              ).then(async (value) => {
-                const user_data = await getUserProfileData(user_id);
-                if (user_data) {
-                  const secretKey = process.env.SECRET_JWT || "theseissecret";
-                  const token = jwt.sign(
-                    {
-                      mob_no: user_data.mob_no,
-                      user_id: user_data.id,
-                    },
-                    secretKey,
-                    {
-                      expiresIn: "30d",
-                    }
-                  );
-                  const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
-                  const refreshToken = jwt.sign(
-                    {
-                      mob_no: user_data.mob_no,
-                      user_id: user_data.id,
-                    },
-                    refreshTokenSecretKey,
-                    {
-                      expiresIn: "365d",
-                    }
-                  );
-                  const tokenTime = jwt.verify(token, secretKey);
-                  const refreshTokenTime = jwt.verify(
-                    refreshToken,
-                    refreshTokenSecretKey
-                  );
 
-                  user_data.dataValues.token = token;
-                  user_data.dataValues.refreshToken = refreshToken;
-                  user_data.dataValues.tokenTime = tokenTime.exp;
-                  user_data.dataValues.refreshTokenTime = refreshTokenTime.exp;
-                  return res.json(
-                    constants.responseObj(
-                      true,
-                      201,
-                      i18n.__(`UpdateSuccess`),
-                      false,
-                      user_data
-                    )
-                  );
+              const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
+              const refreshToken = jwt.sign(
+                {
+                  mob_no: user_profile_data.mob_no,
+                  user_id: user_profile_data.id,
+                },
+                refreshTokenSecretKey,
+                {
+                  expiresIn: "365d",
                 }
-              });
+              );
+              const tokenTime = jwt.verify(token, secretKey);
+              const refreshTokenTime = jwt.verify(
+                refreshToken,
+                refreshTokenSecretKey
+              );
+
+              user_profile_data.dataValues.token = token;
+              user_profile_data.dataValues.refreshToken = refreshToken;
+              user_profile_data.dataValues.tokenTime = tokenTime.exp;
+              user_profile_data.dataValues.refreshTokenTime =
+                refreshTokenTime.exp;
+          
+              return res.json(
+                constants.responseObj(
+                  true,
+                  201,
+                  i18n.__(`UpdateSuccess`),
+                  false,
+                  user_profile_data
+                )
+              );
             }
-          } catch (error) {
-            console.log(error, "error");
-            return res.json(constants.responseObj(false, 500, error.parent));
-          }
+          });
+        } else {
+          var params = {
+            Bucket: "live-sanjivani",
+            Key: `userProfileImages/${UserProfileData.image}`,
+          };
+          S3.deleteObject(params, function (err, data) {
+            if (err) {
+              console.log(err, "err");
+            } else {
+              console.log("sucessfully deleted images", data);
+            }
+          });
+          await updateUserProfileData(
+            req.files.image,
+            req.files.image.name,
+            user_id,
+            req.body,
+            UserProfileData,
+            i18n
+          ).then(async (value) => {
+            if(value){
+              return res.json(
+                constants.responseObj(false, 409, value)
+              );
+            }
+            const user_profile_data = await getUserProfileData(user_id);
+            if (user_profile_data) {
+              const secretKey = process.env.SECRET_JWT || "theseissecret";
+              const token = jwt.sign(
+                {
+                  mob_no: user_profile_data.mob_no,
+                  user_id: user_profile_data.id,
+                },
+                secretKey,
+                {
+                  expiresIn: "30d",
+                }
+              );
+              const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
+              const refreshToken = jwt.sign(
+                {
+                  mob_no: user_profile_data.mob_no,
+                  user_id: user_profile_data.id,
+                },
+                refreshTokenSecretKey,
+                {
+                  expiresIn: "365d",
+                }
+              );
+              const tokenTime = jwt.verify(token, secretKey);
+              const refreshTokenTime = jwt.verify(
+                refreshToken,
+                refreshTokenSecretKey
+              );
+
+              user_profile_data.dataValues.token = token;
+              user_profile_data.dataValues.refreshToken = refreshToken;
+              user_profile_data.dataValues.tokenTime = tokenTime.exp;
+              user_profile_data.dataValues.refreshTokenTime =
+                refreshTokenTime.exp;
+          
+              return res.json(
+                constants.responseObj(
+                  true,
+                  201,
+                  i18n.__(`UpdateSuccess`),
+                  false,
+                  user_profile_data
+                )
+              );
+            }
+          });
         }
       }
     } catch (error) {
@@ -294,30 +307,47 @@ exports.editUserProfile = async (req, res, next) => {
   }
 };
 
-async function updateUserProfile(user_id, body, UserProfileData, OTPData) {
+async function updateUserProfile(user_id, body, UserProfileData, i18n) {
   let profileData = {
     first_name: body.first_name,
     last_name: body.last_name,
     gender: body.gender,
     dob: body.dob,
-    email: body.email,
     language: body.language,
   };
-  body.otp ? (profileData.otp = body.otp) : "";
-  body.mob_no ? (profileData.mob_no = body.mob_no) : "";
+  let mob = body.mob_no || null;
+  if(mob && typeof mob !== 'undefined'){
+    let findMob = await UsersModel.findAll({
+      where: { mob_no: mob , id:{[Op.ne]: user_id} },
+    });
+    if(findMob.length){
+      return i18n.__(`mobExists`)
+    }
+    profileData.mob_no = mob;
+    profileData.country_code = body.country_code;
+  }
+  let findEmail = await UsersModel.findAll({
+    where: { email: body.email , id:{[Op.ne]: user_id} },
+  });
+  if(findEmail.length){
+    return i18n.__(`emailExists`)
+  }
+  profileData.email = body.email;
   let UserProfilePicData = await UsersModel.update(profileData, {
     where: { id: user_id },
   });
   if (UserProfilePicData) {
-    return;
+    return null;
   }
 }
+
 async function updateUserProfileData(
   image,
   name,
   user_id,
   body,
-  UserProfileData
+  UserProfileData,
+  i18n
 ) {
   imageUpload(image, name, async function (err, image) {
     if (err) {
@@ -326,26 +356,40 @@ async function updateUserProfileData(
   });
 
   try {
+    let mob = body.mob_no || null;
     let UserProfilePicData = {
-      user_id: user_id,
       first_name: body.first_name,
       last_name: body.last_name,
       gender: body.gender,
       dob: body.dob,
-      email: body.email,
       language: body.language,
       image:
         "https://live-sanjivani.s3.us-east-2.amazonaws.com/userProfileImages/" +
         name,
     };
-    body.otp ? (UserProfilePicData.otp = body.otp) : "";
-    body.mob_no ? (UserProfilePicData.mob_no = body.mob_no) : "";
-    const UserProfilePicUpdate = await UsersModel.update(UserProfilePicData, {
-      where: { id: UserProfileData.id },
+    if(mob && typeof mob !== 'undefined'){
+      let findMob = await UsersModel.findAll({
+        where: { mob_no: mob , id:{[Op.ne]: user_id} },
+      });
+      if(findMob.length){
+        return i18n.__(`mobExists`)
+      }
+      UserProfilePicData.mob_no = mob;
+      UserProfilePicData.country_code = body.country_code;
+    } 
+    let findEmail = await UsersModel.findAll({
+      where: { email: body.email , id:{[Op.ne]: user_id} },
     });
+    if(findEmail.length){
+      return i18n.__(`emailExists`)
+    }
+    UserProfilePicData.email = body.email;
+    const UserProfilePicUpdate = await UsersModel.update(UserProfilePicData, {
+      where: { id: user_id },
+    });
+    return null;
   } catch (error) {
-    console.log(error, "error");
-    return false;
+    return i18n.__(`errorUpdateProfile`);
   }
 }
 async function getUserProfileData(user_id) {

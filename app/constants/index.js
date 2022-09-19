@@ -43,8 +43,8 @@ const messages = {
   UserAlreadyExist: "User Already Exists!",
   errorSendOtp: "Error sms not sent!",
   errorSendMail: "Error mail not sent!",
-  successSendOtp: "Successfully sent sms!",
-  successSendMail: "Successfully sent mail!",
+  successSendOtp: "Otp sent on your mobile no.",
+  successSendMail: "Otp sent on your email-address.",
   Token: "Token.",
 };
 

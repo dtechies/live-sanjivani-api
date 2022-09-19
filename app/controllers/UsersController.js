@@ -13,6 +13,22 @@ AWS.config.update({
 });
 exports.registerUser = async (req, res, next) => {
   try {
+    let findMob = await UsersModel.findAll({
+      where: { mob_no: req.body.mob_no },
+    });
+    if(findMob.length){
+      return res.json(
+        constants.responseObj(false, 409, i18n.__(`mobExists`))
+        );
+    }
+    let findEmail = await UsersModel.findAll({
+      where: { email: req.body.email},
+    });
+    if(findEmail.length){
+      return res.json(
+        constants.responseObj(false, 409, i18n.__(`emailExists`))
+        );
+    }
     let i18n = languageFunc(req.language);
     var random = Math.floor(1000 + Math.random() * 9000);
     let usersData = {
@@ -117,9 +133,7 @@ exports.usersLogin = async (req, res, next) => {
         );
       }
       let i18n = languageFunc(user.language);
-      console.log(typeof user.otp,typeof Otp,"otp++")
       if (user.otp == Otp) {
-        console.log('here')
         const secretKey = process.env.SECRET_JWT;
         const refreshTokenSecretKey = process.env.REFRESH_SECRET_KEY;
         const token = jwt.sign(
@@ -163,7 +177,6 @@ exports.usersLogin = async (req, res, next) => {
 exports.addEditPlayerId = async (req, res, next) => {
   const user_id = req.user_id;
   let i18n = languageFunc(req.language);
-  console.log(user_id, "user_id logg");
   try {
     await UsersModel.update(
       {

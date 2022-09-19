@@ -31,5 +31,8 @@
 	"DeleteSuccess": "Deleted Successfully",
 	"UpdateSuccess": "Data Updated Successfully",
 	"InvalidOTP": "Invalid Otp",
-	"success": "success"
+	"success": "success",
+	"mobExists": "Mobile no. already exist.",
+	"emailExists": "Email already exist.",
+	"errorUpdateProfile": "Error user profile not updated."
 }

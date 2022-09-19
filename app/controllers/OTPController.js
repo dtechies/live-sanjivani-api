@@ -29,7 +29,6 @@ exports.getOTP = async (req, res, next) => {
     if (userData.mob_no == "8155821151") {
       random = "5462";
     }
-    console.log("OTP::", random);
     var params = {
       Message: "Your Live Sanjivani one-time password is: " + `${random}`,
       PhoneNumber: PhoneNumber,
@@ -85,6 +84,65 @@ exports.getOTP = async (req, res, next) => {
 exports.sendOTP = async (req, res, next) => {
   const otpMethod = req.body.otpMethod || 'sms';
   let random = Math.floor(1000 + Math.random() * 9000);
+  if(req.body.id){
+    await UsersModel.findOne({
+      where: {
+        id: req.body.id,
+      },
+    }).then(async(user)=>{
+      console.log(user)
+      const editUser = await UsersModel.update(
+        {
+            otp: random
+        },
+        {
+        where: {
+          id: req.body.id,
+        },
+      })
+      if(!editUser){
+        return res.send(constants.responseObj(false, 409, constants.messages.errorUserCreate))
+      }
+      if(otpMethod === 'mail'){
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+        const msg = {
+          to: req.body.email, // Change to your recipient
+          from: process.env.SENDGRID_SENDER_MAIL, // Change to your verified sender
+          subject: 'Verify your Otp',
+          html: `<p>Your Live Sanjivani one-time password is: ${random}.</p>`,
+        }
+        sgMail
+          .send(msg)
+          .then((response) => {
+            return res.send(constants.responseObj(true, 200, constants.messages.successSendMail,{otp:random}))
+          })
+          .catch((error) => {
+            return res.send(constants.responseObj(false, 409, constants.messages.errorSendMail))
+          })
+      }else{
+        let PhoneNumber = req.body.countryCode + req.body.mob_no;
+        let params = {
+          Message: `Your Live Sanjivani one-time password is: ${random}. Text HELP for more info and STOP to opt out.`,
+          PhoneNumber: PhoneNumber,
+        };
+        let publishTextPromise = new AWS.SNS({
+          apiVersion: "2010-03-31",
+        })
+        .publish(params)
+        .promise();
+  
+        publishTextPromise.then(async function (data) {
+          return res.send(constants.responseObj(true, 200, constants.messages.successSendOtp,{otp:random}))
+        }).catch(async function (error){
+          console.log(error,"error")
+          return res.send(constants.responseObj(false, 409, constants.messages.errorSendOtp))
+        })
+      }
+    }).catch((error)=>{
+      return res.send(constants.responseObj(false, 409, constants.messages.UserNotFound))
+    })
+  
+}else{
   await UsersModel.findOne({
     where: {
       mob_no: req.body.mob_no,
@@ -108,12 +166,12 @@ exports.sendOTP = async (req, res, next) => {
         to: user.email, // Change to your recipient
         from: process.env.SENDGRID_SENDER_MAIL, // Change to your verified sender
         subject: 'Verify your Otp',
-        html: `<p>Your Live Sanjivani one-time password is: ${random}. Text HELP for more info and STOP to opt out.</p>`,
+        html: `<p>Your Live Sanjivani one-time password is: ${random}.</p>`,
       }
       sgMail
         .send(msg)
         .then((response) => {
-          return res.send(constants.responseObj(true, 200, constants.messages.errorSendMail))
+          return res.send(constants.responseObj(true, 200, constants.messages.successSendMail,{otp:random}))
         })
         .catch((error) => {
           console.log(error)
@@ -132,7 +190,7 @@ exports.sendOTP = async (req, res, next) => {
       .promise();
 
       publishTextPromise.then(async function (data) {
-        return res.send(constants.responseObj(true, 200, constants.messages.successSendOtp))
+        return res.send(constants.responseObj(true, 200, constants.messages.successSendOtp,{otp:random}))
       }).catch(async function (error){
         return res.send(constants.responseObj(false, 409, constants.messages.errorSendOtp))
       })
@@ -140,6 +198,7 @@ exports.sendOTP = async (req, res, next) => {
   }).catch((error)=>{
     return res.send(constants.responseObj(false, 409, constants.messages.UserNotFound))
   })
+}
 };
 exports.storeOTP = async (req, res, next) => {
   const userData = await UsersModel.findOne({
