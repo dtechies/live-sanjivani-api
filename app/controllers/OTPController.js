@@ -107,8 +107,11 @@ exports.sendOTP = async (req, res, next) => {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY)
         const msg = {
           to: req.body.email, // Change to your recipient
-          from: process.env.SENDGRID_SENDER_MAIL, // Change to your verified sender
-          subject: 'Verify your Otp',
+          from: {
+            name: 'Live Sanjivani',
+            email: process.env.SENDGRID_SENDER_MAIL,
+           }, 
+          subject: 'Verify your OTP',
           html: `<p>Your Live Sanjivani one-time password is: ${random}.</p>`,
         }
         sgMail
@@ -164,8 +167,11 @@ exports.sendOTP = async (req, res, next) => {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
       const msg = {
         to: user.email, // Change to your recipient
-        from: process.env.SENDGRID_SENDER_MAIL, // Change to your verified sender
-        subject: 'Verify your Otp',
+        from: {
+          name: 'Live Sanjivani',
+          email: process.env.SENDGRID_SENDER_MAIL,
+      }, 
+        subject: 'Verify your OTP',
         html: `<p>Your Live Sanjivani one-time password is: ${random}.</p>`,
       }
       sgMail
