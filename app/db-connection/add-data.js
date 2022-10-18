@@ -8,6 +8,7 @@ const addData = async () => {
   seeder.addReminderTimeData();
   seeder.addSymptomData();
   seeder.addTipForDayData();
+  seeder.addUserData();
 };
 
 addData();

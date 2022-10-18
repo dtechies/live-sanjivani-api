@@ -616,3 +616,21 @@ exports.addTipForDayData = () => {
   ];
   db.TipForDayModel.bulkCreate(tipForTheDayData);
 };
+
+exports.addUserData = async () => {
+  let findUser = await db.UsersModel.findOne({email: 'livesanjivani@gmail.com'});
+  if(!findUser){
+    let usersData = {
+      first_name: 'Live',
+      last_name: 'Sanjivani',
+      gender: 'male',
+      email: 'livesanjivani@gmail.com',
+      mob_no: '9876543210',
+      language: 'en',
+      otp: '5432',
+      country_code: '+91',
+  };
+  const addUser = await db.UsersModel.create(usersData);
+  }
+  console.log('User created')  
+};
